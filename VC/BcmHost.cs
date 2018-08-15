@@ -1,9 +1,9 @@
 using System;
 using System.Runtime.InteropServices;
 
-namespace Bcm
+namespace VC
 {
-    public static class Host
+    public static class BcmHost
     {
         [DllImport("bcm_host", EntryPoint = "bcm_host_init")]
         public extern static void Init();
