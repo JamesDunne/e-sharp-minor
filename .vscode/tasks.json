@@ -12,10 +12,12 @@
             "problemMatcher": "$msCompile"
         },
         {
-            "label": "publish Debug linux-arm",
-            "command": "dotnet",
-            "type": "process",
-            "args" : ["publish", "--configuration", "Debug", "--runtime", "linux-arm"],
+            "label": "publish and sync to pi",
+            "command": "./sync.sh",
+            "type": "shell",
+            "options": {
+                "cwd": "${workspaceRoot}"
+            },
             "problemMatcher": "$msCompile"
         }
     ]
