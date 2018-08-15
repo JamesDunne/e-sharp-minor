@@ -63,6 +63,13 @@ namespace VC
             eglReleaseThread();
         }
 
+        public void SwapBuffers()
+        {
+            eglSwapBuffers(egldisplay, eglsurface);
+        }
+
+        #region DllImports
+
         // This should be "EGL" technically, but libEGL.so on raspbian depends on libGLESv2.so, so we import that instead:
         const string eglName = "GLESv2";
 
@@ -114,6 +121,11 @@ namespace VC
 
         [DllImport(eglName, EntryPoint = "eglReleaseThread")]
         extern static uint eglReleaseThread(); // returns EGLBoolean
+
+        [DllImport(eglName, EntryPoint = "eglSwapBuffers")]
+        extern static uint eglSwapBuffers(uint dpy, uint surface); // returns EGLBoolean
+
+        #endregion
     }
 
     [StructLayout(LayoutKind.Sequential)]

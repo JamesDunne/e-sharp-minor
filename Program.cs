@@ -18,6 +18,7 @@ namespace e_sharp_minor
                     using (var eglContext = dispmanxDisplay.CreateEGLContext())
                     {
                         Console.WriteLine("EGL initialized");
+                        eglContext.SwapBuffers();
                         Thread.Sleep(1000);
                     }
                     Console.WriteLine("EGL destroyed");
