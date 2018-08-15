@@ -13,6 +13,10 @@ namespace e_sharp_minor
                 using (var dispmanxDisplay = bcmDisplay.CreateDispmanXDisplay())
                 {
                     Console.WriteLine("Display initialized");
+                    using (var eglContext = dispmanxDisplay.CreateEGLContext())
+                    {
+                        Console.WriteLine("EGL initialized");
+                    }
                 }
             }
             Console.WriteLine("Shutdown");

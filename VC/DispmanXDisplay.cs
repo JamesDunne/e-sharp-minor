@@ -57,6 +57,7 @@ namespace VC
             src_rect.width = (int)this.bcmDisplay.width << 16;
             src_rect.height = (int)this.bcmDisplay.height << 16;
 
+            // TODO: translate error codes into exceptions?
             this.dispman_display = vc_dispmanx_display_open(this.bcmDisplay.display);
             this.dispman_update = vc_dispmanx_update_start(0 /* priority */);
 
