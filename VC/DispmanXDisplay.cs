@@ -81,6 +81,11 @@ namespace VC
             vc_dispmanx_element_remove(this.dispman_update, this.dispman_element);
             vc_dispmanx_display_close(this.dispman_display);
         }
+
+        public EGLContext CreateEGLContext()
+        {
+            return new EGLContext(this);
+        }
     }
 
     [StructLayout(LayoutKind.Sequential)]
