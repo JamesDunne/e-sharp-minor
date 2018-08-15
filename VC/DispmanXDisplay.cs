@@ -30,6 +30,12 @@ namespace VC
         [DllImport("bcm_host", EntryPoint = "vc_dispmanx_element_remove")]
         extern static int vc_dispmanx_element_remove(uint update, uint element);
 
+        [DllImport("bcm_host", EntryPoint = "vc_dispmanx_update_submit_sync")]
+        extern static int vc_dispmanx_update_submit_sync(uint update);
+
+        [DllImport("bcm_host", EntryPoint = "vc_dispmanx_display_close")]
+        extern static int vc_dispmanx_display_close(uint display);
+
         internal uint dispman_display;
         internal uint dispman_update;
         internal uint dispman_element;
@@ -66,11 +72,14 @@ namespace VC
                 IntPtr.Zero /*clamp*/,
                 0 /*transform*/
             );
+
+            vc_dispmanx_update_submit_sync(this.dispman_update);
         }
 
         public void Dispose()
         {
             vc_dispmanx_element_remove(this.dispman_update, this.dispman_element);
+            vc_dispmanx_display_close(this.dispman_display);
         }
     }
 
