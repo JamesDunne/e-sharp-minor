@@ -63,7 +63,7 @@ namespace VC
             eglReleaseThread();
         }
 
-        // This should be "EGL" technically, but libEGL.so on raspbian depends on libGLESv2.so or vice-versa, so we import that instead:
+        // This should be "EGL" technically, but libEGL.so on raspbian depends on libGLESv2.so, so we import that instead:
         const string eglName = "GLESv2";
 
         // DllImports:
