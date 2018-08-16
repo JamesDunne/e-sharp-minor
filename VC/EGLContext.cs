@@ -34,11 +34,11 @@ namespace VC
 
             int major, minor;
             eglInitialize(egldisplay, out major, out minor);
-            // assert(eglGetError() == EGL_SUCCESS);
+            throwIfError();
             eglBindAPI(EGL.EGL_OPENVG_API);
 
             eglChooseConfig(egldisplay, s_configAttribs, out eglconfig, 1, out numconfigs);
-            // assert(eglGetError() == EGL_SUCCESS);
+            throwIfError();
             // assert(numconfigs == 1);
 
             EGL_DISPMANX_WINDOW_T window;
@@ -47,20 +47,30 @@ namespace VC
             window.height = (int)this.dispmanXDisplay.bcmDisplay.height;
 
             eglsurface = eglCreateWindowSurface(egldisplay, eglconfig, ref window, null);
-            // assert(eglGetError() == EGL_SUCCESS);
+            throwIfError();
             eglcontext = eglCreateContext(egldisplay, eglconfig, 0, null);
-            // assert(eglGetError() == EGL_SUCCESS);
+            throwIfError();
             eglMakeCurrent(egldisplay, eglsurface, eglsurface, eglcontext);
-            // assert(eglGetError() == EGL_SUCCESS);
+            throwIfError();
         }
 
         public void Dispose()
         {
             eglMakeCurrent(egldisplay, (uint)EGL.EGL_NO_SURFACE, (uint)EGL.EGL_NO_SURFACE, (uint)EGL.EGL_NO_CONTEXT);
-            // assert(eglGetError() == EGL_SUCCESS);
+            throwIfError();
             eglTerminate(egldisplay);
-            // assert(eglGetError() == EGL_SUCCESS);
+            throwIfError();
             eglReleaseThread();
+            throwIfError();
+        }
+
+        private void throwIfError()
+        {
+            EGL_ERROR err = eglGetError();
+            if (err != EGL_ERROR.EGL_SUCCESS)
+            {
+                throw new Exception(String.Format("EGL error code {0:4X}", err));
+            }
         }
 
         public void SwapBuffers()
@@ -70,10 +80,12 @@ namespace VC
 
         #region DllImports
 
-        // This should be "EGL" technically, but libEGL.so on raspbian depends on libGLESv2.so, so we import that instead:
+        // This should be "EGL" but libEGL.so on raspbian is missing some symbols that are found in libGLESv2.so
         const string eglName = "GLESv2";
 
-        // DllImports:
+        [DllImport(eglName, EntryPoint = "eglGetError")]
+        extern static EGL_ERROR eglGetError();
+
         [DllImport(eglName, EntryPoint = "eglGetDisplay")]
         extern static uint eglGetDisplay(uint display);
 
@@ -169,5 +181,24 @@ namespace VC
         EGL_VG_ALPHA_FORMAT_PRE_BIT = 0x0040,   /* EGL_SURFACE_TYPE mask bits */
         EGL_MULTISAMPLE_RESOLVE_BOX_BIT = 0x0200,  /* EGL_SURFACE_TYPE mask bits */
         EGL_SWAP_BEHAVIOR_PRESERVED_BIT = 0x0400  /* EGL_SURFACE_TYPE mask bits */
+    }
+
+    internal enum EGL_ERROR : uint
+    {
+        EGL_SUCCESS =			0x3000,
+        EGL_NOT_INITIALIZED =		0x3001,
+        EGL_BAD_ACCESS =			0x3002,
+        EGL_BAD_ALLOC =			0x3003,
+        EGL_BAD_ATTRIBUTE =		0x3004,
+        EGL_BAD_CONFIG =			0x3005,
+        EGL_BAD_CONTEXT =			0x3006,
+        EGL_BAD_CURRENT_SURFACE =		0x3007,
+        EGL_BAD_DISPLAY =			0x3008,
+        EGL_BAD_MATCH =			0x3009,
+        EGL_BAD_NATIVE_PIXMAP =		0x300A,
+        EGL_BAD_NATIVE_WINDOW =		0x300B,
+        EGL_BAD_PARAMETER =		0x300C,
+        EGL_BAD_SURFACE =			0x300D,
+        EGL_CONTEXT_LOST =		0x300E	/* EGL 1.1 - IMG_power_management */
     }
 }
