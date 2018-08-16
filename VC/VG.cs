@@ -8,7 +8,7 @@ namespace VC
         const string vg = "OpenVG";
 
         [DllImport(vg, EntryPoint = "vgSetfv")]
-        extern public static void Setfv(ParamType paramType, float[] values);
+        extern public static void Setfv([MarshalAs(UnmanagedType.I4)] ParamType paramType, float[] values);
 
         [DllImport(vg, EntryPoint = "vgClear")]
         extern public static void Clear(int x, int y, int width, int height);

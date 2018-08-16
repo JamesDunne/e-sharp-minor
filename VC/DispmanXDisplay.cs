@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 
 namespace VC
@@ -58,9 +59,14 @@ namespace VC
             src_rect.height = (int)this.bcmDisplay.height << 16;
 
             // TODO: translate error codes into exceptions?
+            Debug.WriteLine("vc_dispmanx_display_open(...)");
             this.dispman_display = vc_dispmanx_display_open(this.bcmDisplay.display);
+            Debug.WriteLine("dispman_display = {0}", dispman_display);
+            Debug.WriteLine("vc_dispmanx_update_start(...)");
             this.dispman_update = vc_dispmanx_update_start(0 /* priority */);
+            Debug.WriteLine("dispman_update = {0}", dispman_update);
 
+            Debug.WriteLine("vc_dispmanx_element_add(...)");
             this.dispman_element = vc_dispmanx_element_add(
                 this.dispman_update,
                 this.dispman_display,
@@ -73,14 +79,26 @@ namespace VC
                 IntPtr.Zero /*clamp*/,
                 0 /*transform*/
             );
+            Debug.WriteLine("dispman_element = {0}", dispman_element);
 
-            vc_dispmanx_update_submit_sync(this.dispman_update);
+            Debug.WriteLine("vc_dispmanx_update_submit_sync(dispman_update)");
+            checkError(vc_dispmanx_update_submit_sync(this.dispman_update));
         }
 
         public void Dispose()
         {
-            vc_dispmanx_element_remove(this.dispman_update, this.dispman_element);
-            vc_dispmanx_display_close(this.dispman_display);
+            Debug.WriteLine("vc_dispmanx_element_remove(update, element)");
+            checkError(vc_dispmanx_element_remove(this.dispman_update, this.dispman_element));
+            Debug.WriteLine("vc_dispmanx_display_close(display)");
+            checkError(vc_dispmanx_display_close(this.dispman_display));
+        }
+
+        private void checkError(int ret)
+        {
+            if (ret != 0)
+            {
+                throw new Exception(String.Format("dispmanx function returned {0}", ret));
+            }
         }
 
         public EGLContext CreateEGLContext()

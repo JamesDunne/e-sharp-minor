@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 
 namespace VC
@@ -7,61 +8,87 @@ namespace VC
     {
         private readonly DispmanXDisplay dispmanXDisplay;
 
+        public readonly int majorVersion, minorVersion;
+
         internal readonly uint egldisplay;
         internal readonly uint eglsurface;
         internal readonly uint eglcontext;
+
+        internal readonly EGL_DISPMANX_WINDOW_T window;
 
         internal EGLContext(DispmanXDisplay dispmanXDisplay)
         {
             this.dispmanXDisplay = dispmanXDisplay;
 
-            EGL_ATTRIBUTES[] s_configAttribs = new EGL_ATTRIBUTES[]{
-                EGL_ATTRIBUTES.EGL_RED_SIZE,       (EGL_ATTRIBUTES)8,
-                EGL_ATTRIBUTES.EGL_GREEN_SIZE,     (EGL_ATTRIBUTES)8,
-                EGL_ATTRIBUTES.EGL_BLUE_SIZE,      (EGL_ATTRIBUTES)8,
-                EGL_ATTRIBUTES.EGL_ALPHA_SIZE,     (EGL_ATTRIBUTES)8,
-                EGL_ATTRIBUTES.EGL_LUMINANCE_SIZE, EGL_ATTRIBUTES.EGL_DONT_CARE,        //EGL_DONT_CARE
-                EGL_ATTRIBUTES.EGL_SURFACE_TYPE,   EGL_ATTRIBUTES.EGL_WINDOW_BIT,
-                EGL_ATTRIBUTES.EGL_SAMPLES,        (EGL_ATTRIBUTES)1,
-                EGL_ATTRIBUTES.EGL_NONE
+            int[] s_configAttribs = new int[] {
+                (int)EGL_ATTRIBUTES.EGL_RED_SIZE,       8,
+                (int)EGL_ATTRIBUTES.EGL_GREEN_SIZE,     8,
+                (int)EGL_ATTRIBUTES.EGL_BLUE_SIZE,      8,
+                (int)EGL_ATTRIBUTES.EGL_ALPHA_SIZE,     8,
+                (int)EGL_ATTRIBUTES.EGL_LUMINANCE_SIZE, (int)EGL_ATTRIBUTES.EGL_DONT_CARE,        //EGL_DONT_CARE
+                (int)EGL_ATTRIBUTES.EGL_SURFACE_TYPE,   (int)EGL_ATTRIBUTES.EGL_WINDOW_BIT,
+                (int)EGL_ATTRIBUTES.EGL_SAMPLES,        1,
+                (int)EGL_ATTRIBUTES.EGL_NONE
             };
             int numconfigs;
             uint eglconfig;
 
             // TODO: validate this assumption that display number goes here (what other values to use besides EGL_DEFAULT_DISPLAY?)
+            Debug.WriteLine("eglGetDisplay(...)");
             this.egldisplay = eglGetDisplay(this.dispmanXDisplay.bcmDisplay.display);
             //this.egldisplay = eglGetDisplay(EGL_DEFAULT_DISPLAY);
-
-            int major, minor;
-            eglInitialize(egldisplay, out major, out minor);
             throwIfError();
-            eglBindAPI(EGL.EGL_OPENVG_API);
+            Debug.WriteLine("egldisplay = {0}", egldisplay);
 
+            Debug.WriteLine("eglInitialize(egldisplay)");
+            eglInitialize(egldisplay, out majorVersion, out minorVersion);
+            throwIfError();
+            Debug.WriteLine("eglBindAPI(EGL_OPENVG_API)");
+            eglBindAPI(EGL.EGL_OPENVG_API);
+            throwIfError();
+
+            Debug.WriteLine("eglChooseConfig(egldisplay, ...)");
             eglChooseConfig(egldisplay, s_configAttribs, out eglconfig, 1, out numconfigs);
             throwIfError();
-            // assert(numconfigs == 1);
+            if (numconfigs != 1)
+            {
+                throw new Exception("numconfigs != 1");
+            }
+            Debug.WriteLine("eglconfig = {0}", eglconfig);
 
-            EGL_DISPMANX_WINDOW_T window;
             window.element = this.dispmanXDisplay.dispman_element;
             window.width = (int)this.dispmanXDisplay.bcmDisplay.width;
             window.height = (int)this.dispmanXDisplay.bcmDisplay.height;
 
+            Debug.WriteLine("eglCreateWindowSurface(egldisplay, ...)");
             eglsurface = eglCreateWindowSurface(egldisplay, eglconfig, ref window, null);
             throwIfError();
+            Debug.WriteLine("eglsurface = {0}", eglsurface);
+            Debug.WriteLine("eglCreateContext(egldisplay, ...)");
             eglcontext = eglCreateContext(egldisplay, eglconfig, 0, null);
             throwIfError();
+            Debug.WriteLine("eglcontext = {0}", eglcontext);
+            Debug.WriteLine("eglMakeCurrent(egldisplay, eglsurface, eglsurface, eglcontext)");
             eglMakeCurrent(egldisplay, eglsurface, eglsurface, eglcontext);
             throwIfError();
         }
 
         public void Dispose()
         {
+            Debug.WriteLine("eglMakeCurrent(display, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT)");
             eglMakeCurrent(egldisplay, (uint)EGL.EGL_NO_SURFACE, (uint)EGL.EGL_NO_SURFACE, (uint)EGL.EGL_NO_CONTEXT);
             throwIfError();
+
+            Debug.WriteLine("eglTerminate(display)");
             eglTerminate(egldisplay);
             throwIfError();
-            eglReleaseThread();
-            throwIfError();
+
+            if ((majorVersion > 1) || (majorVersion == 1 && minorVersion >= 2))
+            {
+                Debug.WriteLine("eglReleaseThread(display)");
+                eglReleaseThread();
+                throwIfError();
+            }
         }
 
         private void throwIfError()
@@ -75,6 +102,7 @@ namespace VC
 
         public void SwapBuffers()
         {
+            Debug.WriteLine("eglSwapBuffers(display, surface)");
             eglSwapBuffers(egldisplay, eglsurface);
         }
 
@@ -98,7 +126,7 @@ namespace VC
         [DllImport(eglName, EntryPoint = "eglChooseConfig")]
         extern static uint eglChooseConfig(
             uint dpy,
-            EGL_ATTRIBUTES[] attrib_list,
+            int[] attrib_list,
             out uint configs,
             int config_size,
             out int num_config
@@ -112,6 +140,9 @@ namespace VC
             int[] attrib_list
         ); // returns EGLSurface
 
+        [DllImport(eglName, EntryPoint = "eglDestroySurface")]
+        extern static uint eglDestroySurface(uint dpy, uint surface); // returns EGLBoolean
+
         [DllImport(eglName, EntryPoint = "eglCreateContext")]
         extern static uint eglCreateContext(
             uint dpy,
@@ -119,6 +150,9 @@ namespace VC
             uint share_context,
             int[] attrib_list
         ); // returns EGLContext
+
+        [DllImport(eglName, EntryPoint = "eglDestroyContext")]
+        extern static uint eglDestroyContext(uint dpy, uint ctx); // returns EGLBoolean
 
         [DllImport(eglName, EntryPoint = "eglMakeCurrent")]
         extern static uint eglMakeCurrent(
@@ -185,20 +219,20 @@ namespace VC
 
     internal enum EGL_ERROR : uint
     {
-        EGL_SUCCESS =			0x3000,
-        EGL_NOT_INITIALIZED =		0x3001,
-        EGL_BAD_ACCESS =			0x3002,
-        EGL_BAD_ALLOC =			0x3003,
-        EGL_BAD_ATTRIBUTE =		0x3004,
-        EGL_BAD_CONFIG =			0x3005,
-        EGL_BAD_CONTEXT =			0x3006,
-        EGL_BAD_CURRENT_SURFACE =		0x3007,
-        EGL_BAD_DISPLAY =			0x3008,
-        EGL_BAD_MATCH =			0x3009,
-        EGL_BAD_NATIVE_PIXMAP =		0x300A,
-        EGL_BAD_NATIVE_WINDOW =		0x300B,
-        EGL_BAD_PARAMETER =		0x300C,
-        EGL_BAD_SURFACE =			0x300D,
-        EGL_CONTEXT_LOST =		0x300E	/* EGL 1.1 - IMG_power_management */
+        EGL_SUCCESS = 0x3000,
+        EGL_NOT_INITIALIZED = 0x3001,
+        EGL_BAD_ACCESS = 0x3002,
+        EGL_BAD_ALLOC = 0x3003,
+        EGL_BAD_ATTRIBUTE = 0x3004,
+        EGL_BAD_CONFIG = 0x3005,
+        EGL_BAD_CONTEXT = 0x3006,
+        EGL_BAD_CURRENT_SURFACE = 0x3007,
+        EGL_BAD_DISPLAY = 0x3008,
+        EGL_BAD_MATCH = 0x3009,
+        EGL_BAD_NATIVE_PIXMAP = 0x300A,
+        EGL_BAD_NATIVE_WINDOW = 0x300B,
+        EGL_BAD_PARAMETER = 0x300C,
+        EGL_BAD_SURFACE = 0x300D,
+        EGL_CONTEXT_LOST = 0x300E	/* EGL 1.1 - IMG_power_management */
     }
 }
