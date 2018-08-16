@@ -15,15 +15,15 @@ namespace VC
         {
             this.dispmanXDisplay = dispmanXDisplay;
 
-            int[] s_configAttribs = new int[]{
-                (int)EGL_ATTRIBUTES.EGL_RED_SIZE,       8,
-                (int)EGL_ATTRIBUTES.EGL_GREEN_SIZE,     8,
-                (int)EGL_ATTRIBUTES.EGL_BLUE_SIZE,      8,
-                (int)EGL_ATTRIBUTES.EGL_ALPHA_SIZE,     8,
-                (int)EGL_ATTRIBUTES.EGL_LUMINANCE_SIZE, (int)EGL_ATTRIBUTES.EGL_DONT_CARE,        //EGL_DONT_CARE
-                (int)EGL_ATTRIBUTES.EGL_SURFACE_TYPE,   (int)EGL_ATTRIBUTES.EGL_WINDOW_BIT,
-                (int)EGL_ATTRIBUTES.EGL_SAMPLES,        1,
-                (int)EGL_ATTRIBUTES.EGL_NONE
+            EGL_ATTRIBUTES[] s_configAttribs = new EGL_ATTRIBUTES[]{
+                EGL_ATTRIBUTES.EGL_RED_SIZE,       (EGL_ATTRIBUTES)8,
+                EGL_ATTRIBUTES.EGL_GREEN_SIZE,     (EGL_ATTRIBUTES)8,
+                EGL_ATTRIBUTES.EGL_BLUE_SIZE,      (EGL_ATTRIBUTES)8,
+                EGL_ATTRIBUTES.EGL_ALPHA_SIZE,     (EGL_ATTRIBUTES)8,
+                EGL_ATTRIBUTES.EGL_LUMINANCE_SIZE, EGL_ATTRIBUTES.EGL_DONT_CARE,        //EGL_DONT_CARE
+                EGL_ATTRIBUTES.EGL_SURFACE_TYPE,   EGL_ATTRIBUTES.EGL_WINDOW_BIT,
+                EGL_ATTRIBUTES.EGL_SAMPLES,        (EGL_ATTRIBUTES)1,
+                EGL_ATTRIBUTES.EGL_NONE
             };
             int numconfigs;
             uint eglconfig;
@@ -98,7 +98,7 @@ namespace VC
         [DllImport(eglName, EntryPoint = "eglChooseConfig")]
         extern static uint eglChooseConfig(
             uint dpy,
-            int[] attrib_list,
+            EGL_ATTRIBUTES[] attrib_list,
             out uint configs,
             int config_size,
             out int num_config
