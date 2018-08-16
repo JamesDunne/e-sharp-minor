@@ -10,7 +10,13 @@ namespace VC
         const string vg = "OpenVG";
 
         [DllImport(vg, EntryPoint = "vgSetfv")]
-        extern public static void Setfv([MarshalAs(UnmanagedType.I4)] ParamType paramType, float[] values);
+        extern public static void Setfv(ParamType paramType, float[] values);
+
+        [DllImport(vg, EntryPoint = "vgSetParameteri")]
+        extern public static void SetPaintParameteri(uint paint, PaintParamType paramType, int value);
+
+        [DllImport(vg, EntryPoint = "vgSetParameterfv")]
+        extern public static void SetPaintParameterfv(uint paint, PaintParamType paramType, int count, float[] values);
 
         [DllImport(vg, EntryPoint = "vgClear")]
         extern public static void Clear(int x, int y, int width, int height);
@@ -23,8 +29,14 @@ namespace VC
                                 int coordCapacityHint,
                                 PathCapabilities capabilities);
 
+        [DllImport(vg, EntryPoint = "vgDrawPath")]
+        extern public static void DrawPath(uint path, PaintMode paintModes);
+
+        [DllImport(vg, EntryPoint = "vgCreatePaint")]
+        extern public static uint CreatePaint();
+
         [DllImport(vg, EntryPoint = "vgSetPaint")]
-        extern public static void SetPaint(uint paint, uint paintModes);
+        extern public static void SetPaint(uint paint, PaintMode paintModes);
 
         #endregion
 
@@ -127,7 +139,7 @@ namespace VC
             VG_PARAM_TYPE_FORCE_SIZE = VG_MAX_ENUM
         }
 
-        public enum FillRule
+        public enum FillRule : uint
         {
             VG_EVEN_ODD = 0x1900,
             VG_NON_ZERO = 0x1901,
@@ -135,7 +147,7 @@ namespace VC
             VG_FILL_RULE_FORCE_SIZE = VG_MAX_ENUM
         }
 
-        public enum PaintMode
+        public enum PaintMode : uint
         {
             VG_STROKE_PATH = (1 << 0),
             VG_FILL_PATH = (1 << 1),
@@ -143,7 +155,7 @@ namespace VC
             VG_PAINT_MODE_FORCE_SIZE = VG_MAX_ENUM
         }
 
-        public enum PaintParamType
+        public enum PaintParamType : int
         {
             /* Color paint parameters */
             VG_PAINT_TYPE = 0x1A00,
@@ -164,7 +176,7 @@ namespace VC
             VG_PAINT_PARAM_TYPE_FORCE_SIZE = VG_MAX_ENUM
         }
 
-        public enum PaintType
+        public enum PaintType : int
         {
             VG_PAINT_TYPE_COLOR = 0x1B00,
             VG_PAINT_TYPE_LINEAR_GRADIENT = 0x1B01,
