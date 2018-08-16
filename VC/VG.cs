@@ -9,8 +9,14 @@ namespace VC
 
         const string vg = "OpenVG";
 
+        [DllImport(vg, EntryPoint = "vgSeti")]
+        extern public static void Seti(ParamType paramType, int value);
+
+        [DllImport(vg, EntryPoint = "vgSetf")]
+        extern public static void Setf(ParamType paramType, float value);
+
         [DllImport(vg, EntryPoint = "vgSetfv")]
-        extern public static void Setfv(ParamType paramType, float[] values);
+        extern public static void Setfv(ParamType paramType, int count, float[] values);
 
         [DllImport(vg, EntryPoint = "vgSetParameteri")]
         extern public static void SetPaintParameteri(uint paint, PaintParamType paramType, int value);

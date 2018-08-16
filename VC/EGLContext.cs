@@ -20,19 +20,6 @@ namespace VC
         {
             this.dispmanXDisplay = dispmanXDisplay;
 
-            int[] s_configAttribs = new int[] {
-                (int)EGL_ATTRIBUTES.EGL_RED_SIZE,       8,
-                (int)EGL_ATTRIBUTES.EGL_GREEN_SIZE,     8,
-                (int)EGL_ATTRIBUTES.EGL_BLUE_SIZE,      8,
-                (int)EGL_ATTRIBUTES.EGL_ALPHA_SIZE,     8,
-                (int)EGL_ATTRIBUTES.EGL_LUMINANCE_SIZE, (int)EGL_ATTRIBUTES.EGL_DONT_CARE,        //EGL_DONT_CARE
-                (int)EGL_ATTRIBUTES.EGL_SURFACE_TYPE,   (int)EGL_ATTRIBUTES.EGL_WINDOW_BIT,
-                (int)EGL_ATTRIBUTES.EGL_SAMPLES,        1,
-                (int)EGL_ATTRIBUTES.EGL_NONE
-            };
-            int numconfigs;
-            uint eglconfig;
-
             // TODO: validate this assumption that display number goes here (what other values to use besides EGL_DEFAULT_DISPLAY?)
             Debug.WriteLine("eglGetDisplay(...)");
             this.egldisplay = eglGetDisplay(this.dispmanXDisplay.bcmDisplay.display);
@@ -47,8 +34,22 @@ namespace VC
             eglBindAPI(EGL.EGL_OPENVG_API);
             throwIfError();
 
+            int[] attribs = new int[] {
+                (int)EGL_ATTRIBUTES.EGL_COLOR_BUFFER_TYPE,  (int)EGL.EGL_RGB_BUFFER,
+                (int)EGL_ATTRIBUTES.EGL_SURFACE_TYPE,       (int)EGL_ATTRIBUTES.EGL_WINDOW_BIT,
+                (int)EGL_ATTRIBUTES.EGL_SAMPLES,            1,
+                (int)EGL_ATTRIBUTES.EGL_RED_SIZE,           8,
+                (int)EGL_ATTRIBUTES.EGL_GREEN_SIZE,         8,
+                (int)EGL_ATTRIBUTES.EGL_BLUE_SIZE,          8,
+                (int)EGL_ATTRIBUTES.EGL_ALPHA_SIZE,         8,
+                (int)EGL_ATTRIBUTES.EGL_LUMINANCE_SIZE,     0,
+                (int)EGL_ATTRIBUTES.EGL_NONE
+            };
+            int numconfigs;
+            uint eglconfig;
+
             Debug.WriteLine("eglChooseConfig(egldisplay, ...)");
-            eglChooseConfig(egldisplay, s_configAttribs, out eglconfig, 1, out numconfigs);
+            eglChooseConfig(egldisplay, attribs, out eglconfig, 1, out numconfigs);
             throwIfError();
             if (numconfigs != 1)
             {
@@ -188,6 +189,9 @@ namespace VC
         EGL_NO_CONTEXT = 0,
         EGL_NO_DISPLAY = 0,
 
+        EGL_RGB_BUFFER = 0x308E,    /* EGL_COLOR_BUFFER_TYPE value */
+        EGL_LUMINANCE_BUFFER = 0x308F,	/* EGL_COLOR_BUFFER_TYPE value */
+
         EGL_OPENGL_ES_API = 0x30A0,
         EGL_OPENVG_API = 0x30A1,
         EGL_OPENGL_API = 0x30A2
@@ -206,6 +210,7 @@ namespace VC
         EGL_SURFACE_TYPE = 0x3033,
         EGL_NONE = 0x3038,   /* Attrib list terminator */
         EGL_LUMINANCE_SIZE = 0x303D,
+        EGL_COLOR_BUFFER_TYPE = 0x303F,
 
         /* Config attribute mask bits */
         EGL_PBUFFER_BIT = 0x0001,   /* EGL_SURFACE_TYPE mask bits */
