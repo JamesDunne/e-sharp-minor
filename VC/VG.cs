@@ -5,6 +5,8 @@ namespace VC
 {
     public static class VG
     {
+        #region DllImports
+
         const string vg = "OpenVG";
 
         [DllImport(vg, EntryPoint = "vgSetfv")]
@@ -12,6 +14,52 @@ namespace VC
 
         [DllImport(vg, EntryPoint = "vgClear")]
         extern public static void Clear(int x, int y, int width, int height);
+
+        [DllImport(vg, EntryPoint = "vgCreatePath")]
+        extern public static uint CreatePath(int pathFormat,
+                                PathDatatype datatype,
+                                float scale, float bias,
+                                int segmentCapacityHint,
+                                int coordCapacityHint,
+                                PathCapabilities capabilities);
+
+        [DllImport(vg, EntryPoint = "vgSetPaint")]
+        extern public static void SetPaint(uint paint, uint paintModes);
+
+        #endregion
+
+        const int VG_MAX_ENUM = 0x7FFFFFFF;
+
+        public const int VG_PATH_FORMAT_STANDARD = 0;
+
+        public enum PathDatatype : int
+        {
+            VG_PATH_DATATYPE_S_8 = 0,
+            VG_PATH_DATATYPE_S_16 = 1,
+            VG_PATH_DATATYPE_S_32 = 2,
+            VG_PATH_DATATYPE_F = 3,
+
+            VG_PATH_DATATYPE_FORCE_SIZE = VG_MAX_ENUM
+        }
+
+        public enum PathCapabilities : uint
+        {
+            VG_PATH_CAPABILITY_APPEND_FROM = (1 << 0),
+            VG_PATH_CAPABILITY_APPEND_TO = (1 << 1),
+            VG_PATH_CAPABILITY_MODIFY = (1 << 2),
+            VG_PATH_CAPABILITY_TRANSFORM_FROM = (1 << 3),
+            VG_PATH_CAPABILITY_TRANSFORM_TO = (1 << 4),
+            VG_PATH_CAPABILITY_INTERPOLATE_FROM = (1 << 5),
+            VG_PATH_CAPABILITY_INTERPOLATE_TO = (1 << 6),
+            VG_PATH_CAPABILITY_PATH_LENGTH = (1 << 7),
+            VG_PATH_CAPABILITY_POINT_ALONG_PATH = (1 << 8),
+            VG_PATH_CAPABILITY_TANGENT_ALONG_PATH = (1 << 9),
+            VG_PATH_CAPABILITY_PATH_BOUNDS = (1 << 10),
+            VG_PATH_CAPABILITY_PATH_TRANSFORMED_BOUNDS = (1 << 11),
+            VG_PATH_CAPABILITY_ALL = (1 << 12) - 1,
+
+            VG_PATH_CAPABILITIES_FORCE_SIZE = VG_MAX_ENUM
+        }
 
         public enum ParamType : int
         {
@@ -76,7 +124,54 @@ namespace VC
             VG_MAX_FLOAT = 0x1169,
             VG_MAX_GAUSSIAN_STD_DEVIATION = 0x116A,
 
-            VG_PARAM_TYPE_FORCE_SIZE = 0x7FFFFFFF
+            VG_PARAM_TYPE_FORCE_SIZE = VG_MAX_ENUM
+        }
+
+        public enum FillRule
+        {
+            VG_EVEN_ODD = 0x1900,
+            VG_NON_ZERO = 0x1901,
+
+            VG_FILL_RULE_FORCE_SIZE = VG_MAX_ENUM
+        }
+
+        public enum PaintMode
+        {
+            VG_STROKE_PATH = (1 << 0),
+            VG_FILL_PATH = (1 << 1),
+
+            VG_PAINT_MODE_FORCE_SIZE = VG_MAX_ENUM
+        }
+
+        public enum PaintParamType
+        {
+            /* Color paint parameters */
+            VG_PAINT_TYPE = 0x1A00,
+            VG_PAINT_COLOR = 0x1A01,
+            VG_PAINT_COLOR_RAMP_SPREAD_MODE = 0x1A02,
+            VG_PAINT_COLOR_RAMP_PREMULTIPLIED = 0x1A07,
+            VG_PAINT_COLOR_RAMP_STOPS = 0x1A03,
+
+            /* Linear gradient paint parameters */
+            VG_PAINT_LINEAR_GRADIENT = 0x1A04,
+
+            /* Radial gradient paint parameters */
+            VG_PAINT_RADIAL_GRADIENT = 0x1A05,
+
+            /* Pattern paint parameters */
+            VG_PAINT_PATTERN_TILING_MODE = 0x1A06,
+
+            VG_PAINT_PARAM_TYPE_FORCE_SIZE = VG_MAX_ENUM
+        }
+
+        public enum PaintType
+        {
+            VG_PAINT_TYPE_COLOR = 0x1B00,
+            VG_PAINT_TYPE_LINEAR_GRADIENT = 0x1B01,
+            VG_PAINT_TYPE_RADIAL_GRADIENT = 0x1B02,
+            VG_PAINT_TYPE_PATTERN = 0x1B03,
+
+            VG_PAINT_TYPE_FORCE_SIZE = VG_MAX_ENUM
         }
     }
 }
