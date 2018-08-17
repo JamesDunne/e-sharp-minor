@@ -6,6 +6,22 @@ namespace VC
 {
     public partial class OpenVGContext : IOpenVG
     {
+        public int Width
+        {
+            get
+            {
+                return (int)dispmanXDisplay.bcmDisplay.width;
+            }
+        }
+
+        public int Height
+        {
+            get
+            {
+                return (int)dispmanXDisplay.bcmDisplay.height;
+            }
+        }
+
         #region VG
 
         const string vg = "OpenVG";

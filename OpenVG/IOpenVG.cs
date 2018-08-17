@@ -2,6 +2,18 @@ namespace OpenVG
 {
     public interface IOpenVG
     {
+        int Width
+        {
+            get;
+        }
+
+        int Height
+        {
+            get;
+        }
+
+        void SwapBuffers();
+
         #region VG
 
         void Seti(ParamType paramType, int value);
