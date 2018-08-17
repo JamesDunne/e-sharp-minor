@@ -32,10 +32,6 @@ namespace Shapes
             vg.DestroyPath(this.path);
         }
 
-        static Dictionary<string, ParamType> fieldParamTypes = new Dictionary<string, ParamType> {
-            { nameof(StrokeLineWidth), ParamType.VG_STROKE_LINE_WIDTH },
-        };
-
         protected void setContextParam(float? newValue, ParamType type)
         {
             if (!newValue.HasValue) return;
@@ -49,7 +45,7 @@ namespace Shapes
 
         protected virtual void setRenderState()
         {
-            setContextParam(StrokeLineWidth, fieldParamTypes[nameof(StrokeLineWidth)]);
+            setContextParam(StrokeLineWidth, ParamType.VG_STROKE_LINE_WIDTH);
         }
 
         public void Render(PaintMode? paintModes)
