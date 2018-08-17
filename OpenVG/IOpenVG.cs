@@ -16,6 +16,11 @@ namespace OpenVG
 
         #region VG
 
+        int Geti(ParamType type);
+        float Getf(ParamType type);
+        float[] Getfv(ParamType type);
+        int[] Getiv(ParamType type);
+
         void Seti(ParamType paramType, int value);
         void Setf(ParamType paramType, float value);
         void Setfv(ParamType paramType, float[] values);

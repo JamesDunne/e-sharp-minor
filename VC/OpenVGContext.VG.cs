@@ -47,6 +47,42 @@ namespace VC
             vgSetfv(paramType, values.Length, values);
         }
 
+        [DllImport(vg, EntryPoint = "vgGeti")]
+        extern static int vgGeti(ParamType type);
+        public int Geti(ParamType type)
+        {
+            return vgGeti(type);
+        }
+
+        [DllImport(vg, EntryPoint = "vgGetf")]
+        extern static float vgGetf(ParamType type);
+        public float Getf(ParamType type)
+        {
+            return vgGetf(type);
+        }
+
+        [DllImport(vg, EntryPoint = "vgGetVectorSize")]
+        extern static int vgGetVectorSize(ParamType type);
+        [DllImport(vg, EntryPoint = "vgGetfv")]
+        extern static void vgGetfv(ParamType type, int count, float[] values);
+        public float[] Getfv(ParamType type)
+        {
+            int size = vgGetVectorSize(type);
+            float[] vec = new float[size];
+            vgGetfv(type, size, vec);
+            return vec;
+        }
+
+        [DllImport(vg, EntryPoint = "vgGetiv")]
+        extern static void vgGetiv(ParamType type, int count, int[] values);
+        public int[] Getiv(ParamType type)
+        {
+            int size = vgGetVectorSize(type);
+            int[] vec = new int[size];
+            vgGetiv(type, size, vec);
+            return vec;
+        }
+
         [DllImport(vg, EntryPoint = "vgSetParameteri")]
         extern static void vgSetParameteri(uint handle, int paramType, int value);
         public void SetParameteri(uint handle, int paramType, int value)

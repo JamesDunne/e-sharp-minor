@@ -34,13 +34,14 @@ namespace e_sharp_minor
 
             using (var strokePaint = new PaintColor(vg, new float[] { 1.0f, 1.0f, 1.0f, 1.0f }))
             using (var fillPaint = new PaintColor(vg, new float[] { 0.6f, 0.6f, 0.6f, 1.0f }))
-            using (var rect = new RoundRect(vg, 100, 100, vg.Width - 100 * 2, vg.Height - 100 * 2, 16, 16))
+            using (var rect = new RoundRect(vg, 100, 100, vg.Width - 100 * 2, vg.Height - 100 * 2, 16, 16)
             {
-                vg.Setf(ParamType.VG_STROKE_LINE_WIDTH, 1.0f);
+                StrokeLineWidth = 1.0f
                 // vgSeti(VG_STROKE_CAP_STYLE, ps->m_paths[i].m_capStyle);
                 // vgSeti(VG_STROKE_JOIN_STYLE, ps->m_paths[i].m_joinStyle);
                 // vgSetf(VG_STROKE_MITER_LIMIT, ps->m_paths[i].m_miterLimit);
-
+            })
+            {
                 // Render at 60fps for 5 seconds:
                 var sw = new Stopwatch();
                 for (int f = 0; f < 60 * 5; f++)

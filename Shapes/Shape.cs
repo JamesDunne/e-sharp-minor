@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using OpenVG;
 
 namespace Shapes
@@ -11,6 +12,7 @@ namespace Shapes
         protected Shape(IOpenVG vg)
         {
             this.vg = vg;
+            this.PaintModes = PaintMode.VG_STROKE_PATH;
 
             // Create an OpenVG path resource:
             this.path = vg.CreatePath(
@@ -30,12 +32,40 @@ namespace Shapes
             vg.DestroyPath(this.path);
         }
 
-        public void Render(PaintMode? paintModes)
+        static Dictionary<string, ParamType> fieldParamTypes = new Dictionary<string, ParamType> {
+            { nameof(StrokeLineWidth), ParamType.VG_STROKE_LINE_WIDTH },
+        };
+
+        protected void setContextParam(float? newValue, ParamType type)
         {
-            vg.DrawPath(this.path, paintModes ?? this.PaintModes ?? PaintMode.VG_STROKE_PATH);
+            if (!newValue.HasValue) return;
+
+            float oldValue = vg.Getf(type);
+            if (newValue.Value != oldValue)
+            {
+                vg.Setf(type, newValue.Value);
+            }
         }
 
-        public PaintMode? PaintModes {
+        protected virtual void setRenderState()
+        {
+            setContextParam(StrokeLineWidth, fieldParamTypes[nameof(StrokeLineWidth)]);
+        }
+
+        public void Render(PaintMode? paintModes)
+        {
+            setRenderState();
+            vg.DrawPath(this.path, paintModes ?? this.PaintModes);
+        }
+
+        public PaintMode PaintModes
+        {
+            get;
+            set;
+        }
+
+        public float? StrokeLineWidth
+        {
             get;
             set;
         }
