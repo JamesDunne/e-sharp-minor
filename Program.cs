@@ -21,10 +21,7 @@ namespace e_sharp_minor
 
                     vg.Setfv(ParamType.VG_CLEAR_COLOR, new float[] { 0.0f, 0.0f, 0.2f, 1.0f });
 
-                    var strokePaint = vg.CreatePaint();
-                    vg.SetParameteri(strokePaint, (int)PaintParamType.VG_PAINT_TYPE, (int)PaintType.VG_PAINT_TYPE_COLOR);
-                    vg.SetParameterfv(strokePaint, (int)PaintParamType.VG_PAINT_COLOR, new float[] { 1.0f, 1.0f, 1.0f, 1.0f });
-
+                    using (var strokePaint = new PaintColor(vg, new float[] { 1.0f, 1.0f, 1.0f, 1.0f }))
                     using (var rect = new RoundRect(vg, 100, 100, bcmDisplay.width - 100 * 2, bcmDisplay.height - 100 * 2, 16, 16))
                     {
                         vg.Setf(ParamType.VG_STROKE_LINE_WIDTH, 1.0f);
@@ -41,7 +38,7 @@ namespace e_sharp_minor
                             // Render our pre-made paths each frame:
                             vg.Clear(0, 0, (int)bcmDisplay.width, (int)bcmDisplay.height);
 
-                            vg.SetPaint(strokePaint, PaintMode.VG_STROKE_PATH);
+                            strokePaint.Activate(PaintMode.VG_STROKE_PATH);
                             rect.Render(null);
 
                             // Swap buffers to display and vsync:
@@ -51,8 +48,6 @@ namespace e_sharp_minor
                             Console.WriteLine("{0} ms", sw.ElapsedMilliseconds);
                         }
                     }
-
-                    vg.DestroyPaint(strokePaint);
 
                     Console.WriteLine("Wait");
 

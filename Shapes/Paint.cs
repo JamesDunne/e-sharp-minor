@@ -3,16 +3,14 @@ using OpenVG;
 
 namespace Shapes
 {
-    public class Paint : IDisposable
+    public abstract class Paint : IDisposable
     {
         private readonly IOpenVG vg;
-        protected readonly PaintMode paintMode;
         protected readonly uint paint;
 
-        public Paint(IOpenVG vg, PaintMode paintMode)
+        protected Paint(IOpenVG vg)
         {
             this.vg = vg;
-            this.paintMode = paintMode;
             this.paint = vg.CreatePaint();
         }
 
@@ -21,9 +19,15 @@ namespace Shapes
             vg.DestroyPaint(this.paint);
         }
 
-        public void Activate()
+        public void Activate(PaintMode? paintModes)
         {
-            vg.SetPaint(paint, paintMode);
+            vg.SetPaint(paint, paintModes ?? this.PaintModes ?? PaintMode.VG_STROKE_PATH);
+        }
+
+        public PaintMode? PaintModes
+        {
+            get;
+            set;
         }
     }
 }

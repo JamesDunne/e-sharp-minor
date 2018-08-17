@@ -8,7 +8,7 @@ namespace Shapes
         protected readonly IOpenVG vg;
         protected readonly uint path;
 
-        public Shape(IOpenVG vg)
+        protected Shape(IOpenVG vg)
         {
             this.vg = vg;
 
