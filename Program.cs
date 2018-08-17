@@ -22,6 +22,7 @@ namespace e_sharp_minor
                     vg.Setfv(ParamType.VG_CLEAR_COLOR, new float[] { 0.0f, 0.0f, 0.2f, 1.0f });
 
                     using (var strokePaint = new PaintColor(vg, new float[] { 1.0f, 1.0f, 1.0f, 1.0f }))
+                    using (var fillPaint = new PaintColor(vg, new float[] { 0.6f, 0.6f, 0.6f, 1.0f }))
                     using (var rect = new RoundRect(vg, 100, 100, bcmDisplay.width - 100 * 2, bcmDisplay.height - 100 * 2, 16, 16))
                     {
                         vg.Setf(ParamType.VG_STROKE_LINE_WIDTH, 1.0f);
@@ -39,12 +40,13 @@ namespace e_sharp_minor
                             vg.Clear(0, 0, (int)bcmDisplay.width, (int)bcmDisplay.height);
 
                             strokePaint.Activate(PaintMode.VG_STROKE_PATH);
-                            rect.Render(null);
+                            fillPaint.Activate(PaintMode.VG_FILL_PATH);
+                            rect.Render(PaintMode.VG_FILL_PATH | PaintMode.VG_STROKE_PATH);
 
                             // Swap buffers to display and vsync:
                             vg.SwapBuffers();
 
-                            // usually writes "15 ms"
+                            // usually writes "16 ms"
                             Console.WriteLine("{0} ms", sw.ElapsedMilliseconds);
                         }
                     }
