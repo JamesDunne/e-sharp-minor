@@ -100,6 +100,13 @@ namespace VC
             return vgCreatePaint();
         }
 
+        [DllImport(vg, EntryPoint = "vgDestroyPaint")]
+        extern static void vgDestroyPaint(uint paint);
+        public void DestroyPaint(uint paint)
+        {
+            vgDestroyPaint(paint);
+        }
+
         [DllImport(vg, EntryPoint = "vgSetPaint")]
         extern static void vgSetPaint(uint paint, PaintMode paintModes);
         public void SetPaint(uint paint, PaintMode paintModes)

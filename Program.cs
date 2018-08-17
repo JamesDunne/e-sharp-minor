@@ -51,9 +51,8 @@ namespace e_sharp_minor
                         Console.WriteLine("{0} ms", sw.ElapsedMilliseconds);
                     }
 
-                    // TODO:
-                    // DestroyPath
-                    // DestroyPaint
+                    vg.DestroyPath(path);
+                    vg.DestroyPaint(strokePaint);
 
                     Console.WriteLine("Wait");
 

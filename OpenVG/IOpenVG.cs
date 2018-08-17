@@ -24,6 +24,7 @@ namespace OpenVG
         void DrawPath(uint path, PaintMode paintModes);
 
         uint CreatePaint();
+        void DestroyPaint(uint paint);
         void SetPaint(uint paint, PaintMode paintModes);
     }
 
