@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 
 namespace VC
 {
-    public class EGLContext : IDisposable
+    public partial class OpenVGContext : IDisposable
     {
         private readonly DispmanXDisplay dispmanXDisplay;
 
@@ -16,7 +16,7 @@ namespace VC
 
         internal readonly EGL_DISPMANX_WINDOW_T window;
 
-        internal EGLContext(DispmanXDisplay dispmanXDisplay)
+        internal OpenVGContext(DispmanXDisplay dispmanXDisplay)
         {
             this.dispmanXDisplay = dispmanXDisplay;
 

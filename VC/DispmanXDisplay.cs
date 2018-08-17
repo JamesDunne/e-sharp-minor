@@ -101,9 +101,9 @@ namespace VC
             }
         }
 
-        public EGLContext CreateEGLContext()
+        public OpenVGContext CreateOpenVGContext()
         {
-            return new EGLContext(this);
+            return new OpenVGContext(this);
         }
     }
 
