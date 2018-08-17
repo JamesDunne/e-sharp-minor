@@ -6,7 +6,7 @@ namespace VC
 {
     public partial class OpenVGContext : IOpenVG
     {
-        #region DllImports
+        #region VG
 
         const string vg = "OpenVG";
 
@@ -112,6 +112,24 @@ namespace VC
         public void SetPaint(uint paint, PaintMode paintModes)
         {
             vgSetPaint(paint, paintModes);
+        }
+
+        #endregion
+
+        #region VGU
+
+        [DllImport(vg, EntryPoint = "vguLine")]
+        extern public static uint vgLine(uint path, float x0, float y0, float x1, float y1);
+        public uint Line(uint path, float x0, float y0, float x1, float y1)
+        {
+            return vgLine(path, x0, y0, x1, y1);
+        }
+
+        [DllImport(vg, EntryPoint = "vguRoundRect")]
+        extern public static uint vgRoundRect(uint path, float x, float y, float width, float height, float arcWidth, float arcHeight);
+        public uint RoundRect(uint path, float x, float y, float width, float height, float arcWidth, float arcHeight)
+        {
+            return vgRoundRect(path, x, y, width, height, arcWidth, arcHeight);
         }
 
         #endregion

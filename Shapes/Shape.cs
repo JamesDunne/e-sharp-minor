@@ -7,12 +7,10 @@ namespace Shapes
     {
         protected readonly IOpenVG vg;
         protected readonly uint path;
-        protected readonly PaintMode paintModes;
 
-        public Shape(IOpenVG vg, PaintMode paintModes)
+        public Shape(IOpenVG vg)
         {
             this.vg = vg;
-            this.paintModes = paintModes;
 
             // Create an OpenVG path resource:
             this.path = vg.CreatePath(
@@ -28,18 +26,18 @@ namespace Shapes
 
         public void Dispose()
         {
-            if (this.path != 0)
-            {
-                // Destroy the OpenVG path resource:
-                vg.DestroyPath(this.path);
-            }
+            // Destroy the OpenVG path resource:
+            vg.DestroyPath(this.path);
         }
 
-        public abstract void ConstructPath();
-
-        public void Render()
+        public void Render(PaintMode? paintModes)
         {
-            vg.DrawPath(this.path, paintModes);
+            vg.DrawPath(this.path, paintModes ?? this.PaintModes ?? PaintMode.VG_STROKE_PATH);
+        }
+
+        public PaintMode? PaintModes {
+            get;
+            set;
         }
     }
 }

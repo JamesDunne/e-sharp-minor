@@ -2,6 +2,8 @@ namespace OpenVG
 {
     public interface IOpenVG
     {
+        #region VG
+
         void Seti(ParamType paramType, int value);
         void Setf(ParamType paramType, float value);
         void Setfv(ParamType paramType, float[] values);
@@ -26,6 +28,16 @@ namespace OpenVG
         uint CreatePaint();
         void DestroyPaint(uint paint);
         void SetPaint(uint paint, PaintMode paintModes);
+
+        #endregion
+
+        #region VGU
+
+        uint Line(uint path, float x0, float y0, float x1, float y1);
+
+        uint RoundRect(uint path, float x, float y, float width, float height, float arcWidth, float arcHeight);
+
+        #endregion
     }
 
     static class Constants

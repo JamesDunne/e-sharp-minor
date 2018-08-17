@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Threading;
 using VC;
 using OpenVG;
+using Shapes;
 
 namespace e_sharp_minor
 {
@@ -24,34 +25,33 @@ namespace e_sharp_minor
                     vg.SetParameteri(strokePaint, (int)PaintParamType.VG_PAINT_TYPE, (int)PaintType.VG_PAINT_TYPE_COLOR);
                     vg.SetParameterfv(strokePaint, (int)PaintParamType.VG_PAINT_COLOR, new float[] { 1.0f, 1.0f, 1.0f, 1.0f });
 
-                    // Set up rounded rectangle path:
-                    var path = vg.CreatePath(Constants.VG_PATH_FORMAT_STANDARD, PathDatatype.VG_PATH_DATATYPE_F, 1.0f, 0.0f, 0, 0, PathCapabilities.VG_PATH_CAPABILITY_ALL);
-                    vg.Setf(ParamType.VG_STROKE_LINE_WIDTH, 1.0f);
-                    // vgSeti(VG_STROKE_CAP_STYLE, ps->m_paths[i].m_capStyle);
-                    // vgSeti(VG_STROKE_JOIN_STYLE, ps->m_paths[i].m_joinStyle);
-                    // vgSetf(VG_STROKE_MITER_LIMIT, ps->m_paths[i].m_miterLimit);
-                    VGU.RoundRect(path, 100, 100, bcmDisplay.width - 100 * 2, bcmDisplay.height - 100 * 2, 16, 16);
-
-                    // Render at 60fps for 5 seconds:
-                    var sw = new Stopwatch();
-                    for (int f = 0; f < 60 * 5; f++)
+                    using (var rect = new RoundRect(vg, 100, 100, bcmDisplay.width - 100 * 2, bcmDisplay.height - 100 * 2, 16, 16))
                     {
-                        sw.Restart();
+                        vg.Setf(ParamType.VG_STROKE_LINE_WIDTH, 1.0f);
+                        // vgSeti(VG_STROKE_CAP_STYLE, ps->m_paths[i].m_capStyle);
+                        // vgSeti(VG_STROKE_JOIN_STYLE, ps->m_paths[i].m_joinStyle);
+                        // vgSetf(VG_STROKE_MITER_LIMIT, ps->m_paths[i].m_miterLimit);
 
-                        // Render our pre-made paths each frame:
-                        vg.Clear(0, 0, (int)bcmDisplay.width, (int)bcmDisplay.height);
+                        // Render at 60fps for 5 seconds:
+                        var sw = new Stopwatch();
+                        for (int f = 0; f < 60 * 5; f++)
+                        {
+                            sw.Restart();
 
-                        vg.SetPaint(strokePaint, PaintMode.VG_STROKE_PATH);
-                        vg.DrawPath(path, PaintMode.VG_STROKE_PATH);
+                            // Render our pre-made paths each frame:
+                            vg.Clear(0, 0, (int)bcmDisplay.width, (int)bcmDisplay.height);
 
-                        // Swap buffers to display and vsync:
-                        vg.SwapBuffers();
+                            vg.SetPaint(strokePaint, PaintMode.VG_STROKE_PATH);
+                            rect.Render(null);
 
-                        // usually writes "15 ms"
-                        Console.WriteLine("{0} ms", sw.ElapsedMilliseconds);
+                            // Swap buffers to display and vsync:
+                            vg.SwapBuffers();
+
+                            // usually writes "15 ms"
+                            Console.WriteLine("{0} ms", sw.ElapsedMilliseconds);
+                        }
                     }
 
-                    vg.DestroyPath(path);
                     vg.DestroyPaint(strokePaint);
 
                     Console.WriteLine("Wait");
