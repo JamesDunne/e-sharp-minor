@@ -23,6 +23,18 @@
                 "kind": "build",
                 "isDefault": true
             }
+        },
+        {
+            "label": "build osx",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "build",
+                "${workspaceFolder}/e-sharp-minor.csproj",
+                "--configuration",
+                "osx-debug"
+            ],
+            "problemMatcher": "$msCompile"
         }
     ]
 }
