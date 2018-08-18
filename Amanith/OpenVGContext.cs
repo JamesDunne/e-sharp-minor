@@ -10,13 +10,26 @@ namespace Amanith
         internal readonly IntPtr vgContext;
         internal readonly IntPtr vgSurface;
 
+        internal readonly Glfw.Monitor monitor;
+        internal readonly Glfw.Window window;
+
         public OpenVGContext(int width, int height)
         {
             this.Width = width;
             this.Height = height;
 
+            Debug.WriteLine("glfw.Init()");
+            Glfw.Init();
+
+            Debug.WriteLine("window = glfw.CreateWindow()");
+            window = Glfw.CreateWindow(width, height, "e-sharp-minor");
+
+            Debug.WriteLine("glfw.MakeContextCurrent(window)");
+            Glfw.MakeContextCurrent(window);
+
             // create an OpenVG context
-            vgContext = vgPrivContextCreateMZT(IntPtr.Zero);
+            Debug.WriteLine("vgContext = vgPrivContextCreateAM(0)");
+            vgContext = vgPrivContextCreateAM(IntPtr.Zero);
 
 #if false
             // create a drawing surface (sRGBA premultiplied color space)
@@ -25,22 +38,38 @@ namespace Amanith
             // bind context and surface
             vgPrivMakeCurrentMZT(vgContext, vgSurface);
 #endif
+
+            Debug.WriteLine("glfw.ShowWindow(window)");
+            Glfw.ShowWindow(window);
         }
 
         public void Dispose()
         {
-            // TODO
+            Glfw.HideWindow(window);
+
+            // TODO: destroy OpenVG context.
+
+            Debug.WriteLine("vgPrivContextDestroyAM(vgContext)");
+            vgPrivContextDestroyAM(vgContext);
+
+            Debug.WriteLine("glfw.DestroyWindow(window)");
+            Glfw.DestroyWindow(window);
+
+            Debug.WriteLine("glfw.Terminate()");
+            Glfw.Terminate();
         }
 
         const string vg = "AmanithVG";
 
         [DllImport(vg)]
-        extern static IntPtr vgPrivContextCreateMZT(IntPtr sharedContext);
+        extern static IntPtr vgPrivContextCreateAM(IntPtr sharedContext);
+
+        [DllImport(vg)]
+        extern static void vgPrivContextDestroyAM(IntPtr context);
 
         public int Width
         {
             get;
-            private set;
         }
 
         public int Height
@@ -50,7 +79,8 @@ namespace Amanith
 
         public void SwapBuffers()
         {
-
+            Glfw.SwapBuffers(window);
+            Glfw.PollEvents();
         }
 
         #region VG

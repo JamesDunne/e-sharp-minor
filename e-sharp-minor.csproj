@@ -13,5 +13,6 @@
   <PropertyGroup Condition="'$(Configuration)' == 'osx-debug'">
     <RuntimeIdentifier>osx.10.12-x64</RuntimeIdentifier>
     <DefineConstants>OSX</DefineConstants>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 </Project>

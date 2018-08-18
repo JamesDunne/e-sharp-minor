@@ -21,7 +21,7 @@ namespace e_sharp_minor
                 using (var bcmDisplay = new BcmDisplay(0))
                 using (var dispmanxDisplay = bcmDisplay.CreateDispmanXDisplay())
                 using (var vg = dispmanxDisplay.CreateOpenVGContext())
-#elif OSX
+#else
                 using (var vg = new OpenVGContext(800, 480))
 #endif
                 {
