@@ -31,13 +31,11 @@ namespace Amanith
             Debug.WriteLine("vgContext = vgPrivContextCreateAM(0)");
             vgContext = vgPrivContextCreateAM(IntPtr.Zero);
 
-#if false
             // create a drawing surface (sRGBA premultiplied color space)
-            vgSurface = vgPrivSurfaceCreateMZT(width, height, VG_FALSE, VG_TRUE, VG_TRUE);
+            vgSurface = vgPrivSurfaceCreateAM(width, height, 0, 1, 1);
 
             // bind context and surface
-            vgPrivMakeCurrentMZT(vgContext, vgSurface);
-#endif
+            vgPrivMakeCurrentAM(vgContext, vgSurface);
 
             Debug.WriteLine("glfw.ShowWindow(window)");
             Glfw.ShowWindow(window);
@@ -47,11 +45,17 @@ namespace Amanith
         {
             Glfw.HideWindow(window);
 
-            // TODO: destroy OpenVG context.
+            // Destroy OpenVG context:
+            Debug.WriteLine("vgPrivMakeCurrentAM(0, 0)");
+            vgPrivMakeCurrentAM(IntPtr.Zero, IntPtr.Zero);
+
+            Debug.WriteLine("vgPrivSurfaceDestroyAM(vgSurface)");
+            vgPrivSurfaceDestroyAM(vgSurface);
 
             Debug.WriteLine("vgPrivContextDestroyAM(vgContext)");
             vgPrivContextDestroyAM(vgContext);
 
+            // Tear down glfw:
             Debug.WriteLine("glfw.DestroyWindow(window)");
             Glfw.DestroyWindow(window);
 
@@ -66,6 +70,16 @@ namespace Amanith
 
         [DllImport(vg)]
         extern static void vgPrivContextDestroyAM(IntPtr context);
+
+        [DllImport(vg)]
+        extern static IntPtr vgPrivSurfaceCreateAM(int width, int height,uint linearColorSpace, uint alphaPremultiplied, uint alphaMask);
+
+        [DllImport(vg)]
+        extern static void vgPrivSurfaceDestroyAM(IntPtr surface);
+
+        [DllImport(vg)]
+        extern static uint vgPrivMakeCurrentAM(IntPtr context, IntPtr surface);
+
 
         public int Width
         {
