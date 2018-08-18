@@ -15,9 +15,6 @@ namespace Amanith
 
         public OpenVGContext(int width, int height)
         {
-            this.Width = width;
-            this.Height = height;
-
             Debug.WriteLine("glfw.Init()");
             Glfw.Init();
 
@@ -27,12 +24,17 @@ namespace Amanith
             Debug.WriteLine("glfw.MakeContextCurrent(window)");
             Glfw.MakeContextCurrent(window);
 
+            // Get the real framebuffer size for OpenGL pixels; should work with Retina:
+            Glfw.GetFramebufferSize(window, out width, out height);
+            this.Width = width;
+            this.Height = height;
+
             // create an OpenVG context
             Debug.WriteLine("vgContext = vgPrivContextCreateAM(0)");
             vgContext = vgPrivContextCreateAM(IntPtr.Zero);
 
             // create a drawing surface (sRGBA premultiplied color space)
-            vgSurface = vgPrivSurfaceCreateAM(width, height, 0, 1, 1);
+            vgSurface = vgPrivSurfaceCreateAM(this.Width, this.Height, 0, 1, 1);
 
             // bind context and surface
             vgPrivMakeCurrentAM(vgContext, vgSurface);
