@@ -1,3 +1,5 @@
+using System;
+
 namespace OpenVG
 {
     public interface IOpenVG
@@ -81,6 +83,7 @@ namespace OpenVG
         VG_PATH_DATATYPE_FORCE_SIZE = Constants.VG_MAX_ENUM
     }
 
+    [Flags]
     public enum PathCapabilities : uint
     {
         VG_PATH_CAPABILITY_APPEND_FROM = (1 << 0),
@@ -185,6 +188,7 @@ namespace OpenVG
         VG_FILL_RULE_FORCE_SIZE = Constants.VG_MAX_ENUM
     }
 
+    [Flags]
     public enum PaintMode : uint
     {
         VG_STROKE_PATH = (1 << 0),

@@ -1,0 +1,23 @@
+
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2017
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "e-sharp-minor", "e-sharp-minor.csproj", "{39CC7D9E-F86D-45EE-8A91-9E7FBDE129CE}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		pi-debug|Any CPU = pi-debug|Any CPU
+		osx-debug|Any CPU = osx-debug|Any CPU
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{39CC7D9E-F86D-45EE-8A91-9E7FBDE129CE}.pi-debug|Any CPU.ActiveCfg = pi-debug|Any CPU
+		{39CC7D9E-F86D-45EE-8A91-9E7FBDE129CE}.pi-debug|Any CPU.Build.0 = pi-debug|Any CPU
+		{39CC7D9E-F86D-45EE-8A91-9E7FBDE129CE}.osx-debug|Any CPU.ActiveCfg = osx-debug|Any CPU
+		{39CC7D9E-F86D-45EE-8A91-9E7FBDE129CE}.osx-debug|Any CPU.Build.0 = osx-debug|Any CPU
+		{39CC7D9E-F86D-45EE-8A91-9E7FBDE129CE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{39CC7D9E-F86D-45EE-8A91-9E7FBDE129CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{39CC7D9E-F86D-45EE-8A91-9E7FBDE129CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{39CC7D9E-F86D-45EE-8A91-9E7FBDE129CE}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

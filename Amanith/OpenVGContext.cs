@@ -10,7 +10,6 @@ namespace Amanith
         internal readonly IntPtr vgContext;
         internal readonly IntPtr vgSurface;
 
-        internal readonly Glfw.Monitor monitor;
         internal readonly Glfw.Window window;
 
         public OpenVGContext(int width, int height)
@@ -74,7 +73,7 @@ namespace Amanith
         extern static void vgPrivContextDestroyAM(IntPtr context);
 
         [DllImport(vg)]
-        extern static IntPtr vgPrivSurfaceCreateAM(int width, int height,uint linearColorSpace, uint alphaPremultiplied, uint alphaMask);
+        extern static IntPtr vgPrivSurfaceCreateAM(int width, int height, uint linearColorSpace, uint alphaPremultiplied, uint alphaMask);
 
         [DllImport(vg)]
         extern static void vgPrivSurfaceDestroyAM(IntPtr surface);
