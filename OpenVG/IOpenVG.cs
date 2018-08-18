@@ -166,7 +166,18 @@ namespace OpenVG
         VG_PARAM_TYPE_FORCE_SIZE = Constants.VG_MAX_ENUM
     }
 
-    public enum FillRule : uint
+    public enum MatrixMode : int
+    {
+        VG_MATRIX_PATH_USER_TO_SURFACE = 0x1400,
+        VG_MATRIX_IMAGE_USER_TO_SURFACE = 0x1401,
+        VG_MATRIX_FILL_PAINT_TO_USER = 0x1402,
+        VG_MATRIX_STROKE_PAINT_TO_USER = 0x1403,
+        VG_MATRIX_GLYPH_USER_TO_SURFACE = 0x1404,
+
+        VG_MATRIX_MODE_FORCE_SIZE = Constants.VG_MAX_ENUM
+    }
+
+    public enum FillRule : int
     {
         VG_EVEN_ODD = 0x1900,
         VG_NON_ZERO = 0x1901,

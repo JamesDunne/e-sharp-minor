@@ -38,6 +38,10 @@ namespace e_sharp_minor
         {
             Console.WriteLine("Display[0] = {0}x{1}", vg.Width, vg.Height);
 
+            vg.Seti(ParamType.VG_MATRIX_MODE, (int)MatrixMode.VG_MATRIX_PATH_USER_TO_SURFACE);
+            vg.LoadIdentity();
+            vg.Translate(0.5f, 0.5f);
+
             vg.Setfv(ParamType.VG_CLEAR_COLOR, new float[] { 0.0f, 0.0f, 0.2f, 1.0f });
 
             using (var strokePaint = new PaintColor(vg, new float[] { 1.0f, 1.0f, 1.0f, 1.0f }))
