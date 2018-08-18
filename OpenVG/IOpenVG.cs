@@ -30,6 +30,12 @@ namespace OpenVG
 
         void Clear(int x, int y, int width, int height);
 
+        void LoadIdentity();
+        void Translate(float tx, float ty);
+        void Scale(float sx, float sy);
+        void Shear(float shx, float shy);
+        void Rotate(float angle);
+
         uint CreatePath(
             int pathFormat,
             PathDatatype datatype,

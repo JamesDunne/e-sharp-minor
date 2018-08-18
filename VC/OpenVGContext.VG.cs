@@ -105,6 +105,41 @@ namespace VC
             vgClear(x, y, width, height);
         }
 
+        [DllImport(vg)]
+        extern static void vgLoadIdentity();
+        public void LoadIdentity()
+        {
+            vgLoadIdentity();
+        }
+
+        [DllImport(vg)]
+        extern static void vgTranslate(float tx, float ty);
+        public void Translate(float tx, float ty)
+        {
+            vgTranslate(tx, ty);
+        }
+
+        [DllImport(vg)]
+        extern static void vgScale(float sx, float sy);
+        public void Scale(float sx, float sy)
+        {
+            vgScale(sx, sy);
+        }
+
+        [DllImport(vg)]
+        extern static void vgShear(float shx, float shy);
+        public void Shear(float shx, float shy)
+        {
+            vgShear(shx, shy);
+        }
+
+        [DllImport(vg)]
+        extern static void vgRotate(float angle);
+        public void Rotate(float angle)
+        {
+            vgRotate(angle);
+        }
+
         [DllImport(vg, EntryPoint = "vgCreatePath")]
         extern static uint vgCreatePath(int pathFormat,
                                 PathDatatype datatype,
