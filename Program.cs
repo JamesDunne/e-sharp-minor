@@ -1,9 +1,13 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Threading;
-using VC;
 using OpenVG;
 using Shapes;
+#if RPI
+using VC;
+#elif OSX
+using Amanith;
+#endif
 
 namespace e_sharp_minor
 {
@@ -13,9 +17,13 @@ namespace e_sharp_minor
         {
             try
             {
+#if RPI
                 using (var bcmDisplay = new BcmDisplay(0))
                 using (var dispmanxDisplay = bcmDisplay.CreateDispmanXDisplay())
                 using (var vg = dispmanxDisplay.CreateOpenVGContext())
+#elif OSX
+                using (var vg = new OpenVGContext(800, 480))
+#endif
                 {
                     Draw(vg);
                 }
