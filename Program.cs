@@ -38,17 +38,13 @@ namespace e_sharp_minor
         {
             Console.WriteLine("Display[0] = {0}x{1}", vg.Width, vg.Height);
 
-            vg.Seti(ParamType.VG_MATRIX_MODE, (int)MatrixMode.VG_MATRIX_PATH_USER_TO_SURFACE);
-            vg.LoadIdentity();
-            vg.Translate(0.5f, 0.5f);
-
             vg.Setfv(ParamType.VG_CLEAR_COLOR, new float[] { 0.0f, 0.0f, 0.2f, 1.0f });
 
             using (var strokePaint = new PaintColor(vg, new float[] { 1.0f, 1.0f, 1.0f, 1.0f }))
             using (var fillPaint = new PaintColor(vg, new float[] { 0.6f, 0.6f, 0.6f, 1.0f }))
             using (var rect = new RoundRect(vg, 100, 100, vg.Width - 100 * 2, vg.Height - 100 * 2, 16, 16)
             {
-                StrokeLineWidth = 1.0f
+                StrokeLineWidth = 2.0f
                 // vgSeti(VG_STROKE_CAP_STYLE, ps->m_paths[i].m_capStyle);
                 // vgSeti(VG_STROKE_JOIN_STYLE, ps->m_paths[i].m_joinStyle);
                 // vgSetf(VG_STROKE_MITER_LIMIT, ps->m_paths[i].m_miterLimit);

@@ -72,6 +72,11 @@ namespace VC
             Debug.WriteLine("eglMakeCurrent(egldisplay, eglsurface, eglsurface, eglcontext)");
             eglMakeCurrent(egldisplay, eglsurface, eglsurface, eglcontext);
             throwIfError();
+
+            // Translate to pixel-perfect offset:
+            vgSeti(OpenVG.ParamType.VG_MATRIX_MODE, (int)OpenVG.MatrixMode.VG_MATRIX_PATH_USER_TO_SURFACE);
+            vgLoadIdentity();
+            vgTranslate(0.5f, 0.5f);
         }
 
         public void Dispose()

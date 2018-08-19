@@ -14,6 +14,10 @@ namespace Amanith
 
         public OpenVGContext(int width, int height)
         {
+            // Window coordinates (non-retina):
+            this.Width = width;
+            this.Height = height;
+
             Debug.WriteLine("glfw.Init()");
             Glfw.Init();
 
@@ -24,19 +28,24 @@ namespace Amanith
             Glfw.MakeContextCurrent(window);
 
             // Get the real framebuffer size for OpenGL pixels; should work with Retina:
-            Glfw.GetFramebufferSize(window, out width, out height);
-            this.Width = width;
-            this.Height = height;
+            int fbWidth, fbHeight;
+            Glfw.GetFramebufferSize(window, out fbWidth, out fbHeight);
 
             // create an OpenVG context
             Debug.WriteLine("vgContext = vgPrivContextCreateAM(0)");
             vgContext = vgPrivContextCreateAM(IntPtr.Zero);
 
             // create a drawing surface (sRGBA premultiplied color space)
-            vgSurface = vgPrivSurfaceCreateAM(this.Width, this.Height, 0, 1, 1);
+            vgSurface = vgPrivSurfaceCreateAM(fbWidth, fbHeight, 0, 1, 1);
 
             // bind context and surface
             vgPrivMakeCurrentAM(vgContext, vgSurface);
+
+            // Apply scale for retina display:
+            vgSeti(ParamType.VG_MATRIX_MODE, (int)MatrixMode.VG_MATRIX_PATH_USER_TO_SURFACE);
+            vgLoadIdentity();
+            vgScale((float)fbWidth / (float)width, (float)fbHeight / (float)height);
+            vgTranslate(0.5f, 0.5f);
 
             Debug.WriteLine("glfw.ShowWindow(window)");
             Glfw.ShowWindow(window);
