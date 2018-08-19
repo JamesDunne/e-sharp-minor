@@ -43,12 +43,15 @@ namespace e_sharp_minor
                 // vgSetf(VG_STROKE_MITER_LIMIT, ps->m_paths[i].m_miterLimit);
             })
             {
+#if TIMING
                 // Render at 60fps for 5 seconds:
                 var sw = new Stopwatch();
+#endif
                 for (int f = 0; f < 60 * 5; f++)
                 {
+#if TIMING
                     sw.Restart();
-
+#endif
                     // Render our pre-made paths each frame:
                     vg.Clear(0, 0, vg.Width, vg.Height);
 
@@ -59,8 +62,10 @@ namespace e_sharp_minor
                     // Swap buffers to display and vsync:
                     vg.SwapBuffers();
 
+#if TIMING
                     // usually writes "16 ms"
                     Console.WriteLine("{0} ms", sw.ElapsedMilliseconds);
+#endif
                 }
             }
 

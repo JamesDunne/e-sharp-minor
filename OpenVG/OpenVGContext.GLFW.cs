@@ -94,6 +94,10 @@ namespace OpenVG
         {
             Glfw.SwapBuffers(window);
             Glfw.PollEvents();
+
+            double cx, cy;
+            Glfw.GetCursorPos(window, out cx, out cy);
+            Console.WriteLine("{0},{1}", cx, cy);
         }
 #endif
 
