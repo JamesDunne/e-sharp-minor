@@ -33,15 +33,21 @@ namespace e_sharp_minor
 
             vg.Setfv(ParamType.VG_CLEAR_COLOR, new float[] { 0.0f, 0.0f, 0.2f, 1.0f });
 
-            using (var strokePaint = new PaintColor(vg, new float[] { 1.0f, 1.0f, 1.0f, 1.0f }))
-            using (var fillPaint = new PaintColor(vg, new float[] { 0.6f, 0.6f, 0.6f, 1.0f }))
-            using (var rect = new RoundRect(vg, 100, 100, vg.Width - 100 * 2, vg.Height - 100 * 2, 16, 16)
-            {
-                StrokeLineWidth = 1.0f
-                // vgSeti(VG_STROKE_CAP_STYLE, ps->m_paths[i].m_capStyle);
-                // vgSeti(VG_STROKE_JOIN_STYLE, ps->m_paths[i].m_joinStyle);
-                // vgSetf(VG_STROKE_MITER_LIMIT, ps->m_paths[i].m_miterLimit);
-            })
+            PaintColor strokePaint;
+            PaintColor fillPaint;
+            RoundRect rect;
+
+            using (new DisposalContainer(
+                strokePaint = new PaintColor(vg, new float[] { 1.0f, 1.0f, 1.0f, 1.0f }),
+                fillPaint = new PaintColor(vg, new float[] { 0.6f, 0.6f, 0.6f, 1.0f }),
+                rect = new RoundRect(vg, 100, 100, vg.Width - 100 * 2, vg.Height - 100 * 2, 16, 16)
+                {
+                    StrokeLineWidth = 1.0f
+                    // vgSeti(VG_STROKE_CAP_STYLE, ps->m_paths[i].m_capStyle);
+                    // vgSeti(VG_STROKE_JOIN_STYLE, ps->m_paths[i].m_joinStyle);
+                    // vgSetf(VG_STROKE_MITER_LIMIT, ps->m_paths[i].m_miterLimit);
+                }
+            ))
             {
 #if TIMING
                 // Render at 60fps for 5 seconds:
