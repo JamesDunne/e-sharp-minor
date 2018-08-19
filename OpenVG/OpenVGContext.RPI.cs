@@ -10,6 +10,8 @@ namespace OpenVG
     public partial class OpenVGContext : IDisposable
     {
 #if RPI
+        const string vg = "OpenVG";
+
         internal readonly ushort bcmDisplay;
 
         internal uint dispman_display;
