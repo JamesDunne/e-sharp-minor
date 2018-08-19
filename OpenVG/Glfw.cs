@@ -3,6 +3,9 @@ using System;
 using System.Text;
 using System.Runtime.InteropServices;
 
+// Disable Warning CS0618: 'UnmanagedType.Struct' is obsolete: 'Applying UnmanagedType.Struct is unnecessary when marshalling a struct. Support for UnmanagedType.Struct when marshalling a reference type may be unavailable in future releases.' (CS0618) (e-sharp-minor)
+#pragma warning disable CS0618
+
 public static class Glfw
 {
     const string dll = "glfw";
@@ -48,286 +51,286 @@ public static class Glfw
 
     public enum ErrorCode
     {
-        NotInitialized      = 0x00010001,
-        NoCurrentContext    = 0x00010002,
-        InvalidEnum         = 0x00010003,
-        InvalidValue        = 0x00010004,
-        OutOfMemory         = 0x00010005,
-        ApiUnavailable      = 0x00010006,
-        VersionUnavailable  = 0x00010007,
-        PlatformError       = 0x00010008,
-        FormatUnavailable   = 0x00010009
+        NotInitialized = 0x00010001,
+        NoCurrentContext = 0x00010002,
+        InvalidEnum = 0x00010003,
+        InvalidValue = 0x00010004,
+        OutOfMemory = 0x00010005,
+        ApiUnavailable = 0x00010006,
+        VersionUnavailable = 0x00010007,
+        PlatformError = 0x00010008,
+        FormatUnavailable = 0x00010009
     }
 
     public enum MonitorEvent
     {
-        Connected       = 0x00040001,
-        Disconnected    = 0x00040002
+        Connected = 0x00040001,
+        Disconnected = 0x00040002
     }
 
     public enum Hint
     {
-        Resizable               = 0x00020003,
-        Visible                 = 0x00020004,
-        Decorated               = 0x00020005,
-        Focused                 = 0x00020001,
-        AutoIconify             = 0x00020006,
-        Floating                = 0x00020007,
-        RedBits                 = 0x00021001,
-        GreenBits               = 0x00021002,
-        BlueBits                = 0x00021003,
-        AlphaBits               = 0x00021004,
-        DepthBits               = 0x00021005,
-        StencilBits             = 0x00021006,
-        AccumRedBits            = 0x00021007,
-        AccumGreenBits          = 0x00021008,
-        AccumBlueBits           = 0x00021009,
-        AccumAlphaBits          = 0x0002100A,
-        AuxBuffers              = 0x0002100B,
-        Samples                 = 0x0002100D,
-        RefreshRate             = 0x0002100F,
-        Stereo                  = 0x0002100C,
-        SrgbCapable             = 0x0002100E,
-        DoubleBuffer            = 0x00021010,
-        ClientApi               = 0x00022001,
-        ContextVersionMajor     = 0x00022002,
-        ContextVersionMinor     = 0x00022003,
-        ContextRobustness       = 0x00022005,
-        ContextReleaseBehavior  = 0x00022009,
-        OpenGLForwardCompat     = 0x00022006,
-        OpenGLDebugContext      = 0x00022007,
-        OpenGLProfile           = 0x00022008
+        Resizable = 0x00020003,
+        Visible = 0x00020004,
+        Decorated = 0x00020005,
+        Focused = 0x00020001,
+        AutoIconify = 0x00020006,
+        Floating = 0x00020007,
+        RedBits = 0x00021001,
+        GreenBits = 0x00021002,
+        BlueBits = 0x00021003,
+        AlphaBits = 0x00021004,
+        DepthBits = 0x00021005,
+        StencilBits = 0x00021006,
+        AccumRedBits = 0x00021007,
+        AccumGreenBits = 0x00021008,
+        AccumBlueBits = 0x00021009,
+        AccumAlphaBits = 0x0002100A,
+        AuxBuffers = 0x0002100B,
+        Samples = 0x0002100D,
+        RefreshRate = 0x0002100F,
+        Stereo = 0x0002100C,
+        SrgbCapable = 0x0002100E,
+        DoubleBuffer = 0x00021010,
+        ClientApi = 0x00022001,
+        ContextVersionMajor = 0x00022002,
+        ContextVersionMinor = 0x00022003,
+        ContextRobustness = 0x00022005,
+        ContextReleaseBehavior = 0x00022009,
+        OpenGLForwardCompat = 0x00022006,
+        OpenGLDebugContext = 0x00022007,
+        OpenGLProfile = 0x00022008
     }
 
     public enum ClientApi
     {
-        OpenGLApi   = 0x00030001,
+        OpenGLApi = 0x00030001,
         OpenGLESApi = 0x00030002
     }
 
     public enum ContextRobustness
     {
-        None                = 0,
+        None = 0,
         NoResetNotification = 0x00031001,
-        LoseContextOnReset  = 0x00031002
+        LoseContextOnReset = 0x00031002
     }
 
     public enum ContextReleaseBehavior
     {
-        Any     = 0,
-        Flush   = 0x00035001,
-        None    = 0x00035002
+        Any = 0,
+        Flush = 0x00035001,
+        None = 0x00035002
     }
 
     public enum OpenGLProfile
     {
-        Any     = 0,
-        Core    = 0x00032001,
-        Compat  = 0x00032002
+        Any = 0,
+        Core = 0x00032001,
+        Compat = 0x00032002
     }
 
     public enum WindowAttrib
     {
-        Focused     = 0x00020001,
-        Iconified   = 0x00020002,
-        Resizable   = 0x00020003,
-        Visible     = 0x00020004,
-        Decorated   = 0x00020005,
-        Floating    = 0x00020007
+        Focused = 0x00020001,
+        Iconified = 0x00020002,
+        Resizable = 0x00020003,
+        Visible = 0x00020004,
+        Decorated = 0x00020005,
+        Floating = 0x00020007
     }
 
     public enum CursorMode
     {
-        Normal      = 0x00034001,
-        Hidden      = 0x00034002,
-        Disabled    = 0x00034003
+        Normal = 0x00034001,
+        Hidden = 0x00034002,
+        Disabled = 0x00034003
     }
 
     public enum CursorType
     {
-        Arrow       = 0x00036001,
-        Beam        = 0x00036002,
-        Crosshair   = 0x00036003,
-        Hand        = 0x00036004,
-        ResizeX     = 0x00036005,
-        ResizeY     = 0x00036006
+        Arrow = 0x00036001,
+        Beam = 0x00036002,
+        Crosshair = 0x00036003,
+        Hand = 0x00036004,
+        ResizeX = 0x00036005,
+        ResizeY = 0x00036006
     }
 
     public enum KeyState
     {
         Release = 0,
-        Press   = 1,
-        Repeat  = 2
+        Press = 1,
+        Repeat = 2
     }
 
     public enum KeyCode
     {
-        Unknown         = -1,
-        Space           = 32,
-        Apostrophe      = 39,
-        Comma           = 44,
-        Minus           = 45,
-        Period          = 46,
-        Slash           = 47,
-        Alpha0          = 48,
-        Alpha1          = 49,
-        Alpha2          = 50,
-        Alpha3          = 51,
-        Alpha4          = 52,
-        Alpha5          = 53,
-        Alpha6          = 54,
-        Alpha7          = 55,
-        Alpha8          = 56,
-        Alpha9          = 57,
-        Semicolon       = 59,
-        Equal           = 61,
-        A               = 65,
-        B               = 66,
-        C               = 67,
-        D               = 68,
-        E               = 69,
-        F               = 70,
-        G               = 71,
-        H               = 72,
-        I               = 73,
-        J               = 74,
-        K               = 75,
-        L               = 76,
-        M               = 77,
-        N               = 78,
-        O               = 79,
-        P               = 80,
-        Q               = 81,
-        R               = 82,
-        S               = 83,
-        T               = 84,
-        U               = 85,
-        V               = 86,
-        W               = 87,
-        X               = 88,
-        Y               = 89,
-        Z               = 90,
-        LeftBracket     = 91,
-        Backslash       = 92,
-        RightBracket    = 93,
-        GraveAccent     = 96,
-        World1          = 161,
-        World2          = 162,
-        Escape          = 256,
-        Enter           = 257,
-        Tab             = 258,
-        Backspace       = 259,
-        Insert          = 260,
-        Delete          = 261,
-        Right           = 262,
-        Left            = 263,
-        Down            = 264,
-        Up              = 265,
-        PageUp          = 266,
-        PageDown        = 267,
-        Home            = 268,
-        End             = 269,
-        CapsLock        = 280,
-        ScrollLock      = 281,
-        NumLock         = 282,
-        PrintScreen     = 283,
-        Pause           = 284,
-        F1              = 290,
-        F2              = 291,
-        F3              = 292,
-        F4              = 293,
-        F5              = 294,
-        F6              = 295,
-        F7              = 296,
-        F8              = 297,
-        F9              = 298,
-        F10             = 299,
-        F11             = 300,
-        F12             = 301,
-        F13             = 302,
-        F14             = 303,
-        F15             = 304,
-        F16             = 305,
-        F17             = 306,
-        F18             = 307,
-        F19             = 308,
-        F20             = 309,
-        F21             = 310,
-        F22             = 311,
-        F23             = 312,
-        F24             = 313,
-        F25             = 314,
-        Keypad0         = 320,
-        Keypad1         = 321,
-        Keypad2         = 322,
-        Keypad3         = 323,
-        Keypad4         = 324,
-        Keypad5         = 325,
-        Keypad6         = 326,
-        Keypad7         = 327,
-        Keypad8         = 328,
-        Keypad9         = 329,
-        KeypadDecimal   = 330,
-        KeypadDivide    = 331,
-        KeypadMultiply  = 332,
-        KeypadSubtract  = 333,
-        KeypadAdd       = 334,
-        KeypadEnter     = 335,
-        KeypadEqual     = 336,
-        LeftShift       = 340,
-        LeftControl     = 341,
-        LeftAlt         = 342,
-        LeftSuper       = 343,
-        RightShift      = 344,
-        RightControl    = 345,
-        RightAlt        = 346,
-        RightSuper      = 347,
-        Menu            = 348
+        Unknown = -1,
+        Space = 32,
+        Apostrophe = 39,
+        Comma = 44,
+        Minus = 45,
+        Period = 46,
+        Slash = 47,
+        Alpha0 = 48,
+        Alpha1 = 49,
+        Alpha2 = 50,
+        Alpha3 = 51,
+        Alpha4 = 52,
+        Alpha5 = 53,
+        Alpha6 = 54,
+        Alpha7 = 55,
+        Alpha8 = 56,
+        Alpha9 = 57,
+        Semicolon = 59,
+        Equal = 61,
+        A = 65,
+        B = 66,
+        C = 67,
+        D = 68,
+        E = 69,
+        F = 70,
+        G = 71,
+        H = 72,
+        I = 73,
+        J = 74,
+        K = 75,
+        L = 76,
+        M = 77,
+        N = 78,
+        O = 79,
+        P = 80,
+        Q = 81,
+        R = 82,
+        S = 83,
+        T = 84,
+        U = 85,
+        V = 86,
+        W = 87,
+        X = 88,
+        Y = 89,
+        Z = 90,
+        LeftBracket = 91,
+        Backslash = 92,
+        RightBracket = 93,
+        GraveAccent = 96,
+        World1 = 161,
+        World2 = 162,
+        Escape = 256,
+        Enter = 257,
+        Tab = 258,
+        Backspace = 259,
+        Insert = 260,
+        Delete = 261,
+        Right = 262,
+        Left = 263,
+        Down = 264,
+        Up = 265,
+        PageUp = 266,
+        PageDown = 267,
+        Home = 268,
+        End = 269,
+        CapsLock = 280,
+        ScrollLock = 281,
+        NumLock = 282,
+        PrintScreen = 283,
+        Pause = 284,
+        F1 = 290,
+        F2 = 291,
+        F3 = 292,
+        F4 = 293,
+        F5 = 294,
+        F6 = 295,
+        F7 = 296,
+        F8 = 297,
+        F9 = 298,
+        F10 = 299,
+        F11 = 300,
+        F12 = 301,
+        F13 = 302,
+        F14 = 303,
+        F15 = 304,
+        F16 = 305,
+        F17 = 306,
+        F18 = 307,
+        F19 = 308,
+        F20 = 309,
+        F21 = 310,
+        F22 = 311,
+        F23 = 312,
+        F24 = 313,
+        F25 = 314,
+        Keypad0 = 320,
+        Keypad1 = 321,
+        Keypad2 = 322,
+        Keypad3 = 323,
+        Keypad4 = 324,
+        Keypad5 = 325,
+        Keypad6 = 326,
+        Keypad7 = 327,
+        Keypad8 = 328,
+        Keypad9 = 329,
+        KeypadDecimal = 330,
+        KeypadDivide = 331,
+        KeypadMultiply = 332,
+        KeypadSubtract = 333,
+        KeypadAdd = 334,
+        KeypadEnter = 335,
+        KeypadEqual = 336,
+        LeftShift = 340,
+        LeftControl = 341,
+        LeftAlt = 342,
+        LeftSuper = 343,
+        RightShift = 344,
+        RightControl = 345,
+        RightAlt = 346,
+        RightSuper = 347,
+        Menu = 348
     }
 
     [Flags]
     public enum KeyMods
     {
-        Shift   = 0x0001,
+        Shift = 0x0001,
         Control = 0x0002,
-        Alt     = 0x0004,
-        Super   = 0x0008
+        Alt = 0x0004,
+        Super = 0x0008
     }
 
     public enum Joystick
     {
-        Joy0    = 0,
-        Joy1    = 1,
-        Joy2    = 2,
-        Joy3    = 3,
-        Joy4    = 4,
-        Joy5    = 5,
-        Joy6    = 6,
-        Joy7    = 7,
-        Joy8    = 8,
-        Joy9    = 9,
-        Joy10   = 10,
-        Joy11   = 12,
-        Joy12   = 13,
-        Joy13   = 14,
-        Joy14   = 15,
-        Joy15   = 16
+        Joy0 = 0,
+        Joy1 = 1,
+        Joy2 = 2,
+        Joy3 = 3,
+        Joy4 = 4,
+        Joy5 = 5,
+        Joy6 = 6,
+        Joy7 = 7,
+        Joy8 = 8,
+        Joy9 = 9,
+        Joy10 = 10,
+        Joy11 = 12,
+        Joy12 = 13,
+        Joy13 = 14,
+        Joy14 = 15,
+        Joy15 = 16
     }
 
     public enum MouseButton
     {
-        Button0         = 0,
-        Button1         = 1,
-        Button2         = 2,
-        Button3         = 3,
-        Button4         = 4,
-        Button5         = 5,
-        Button6         = 6,
-        Button7         = 7,
-        Button8         = 8,
-        Left            = Button0,
-        Right           = Button1,
-        Middle          = Button2
+        Button0 = 0,
+        Button1 = 1,
+        Button2 = 2,
+        Button3 = 3,
+        Button4 = 4,
+        Button5 = 5,
+        Button6 = 6,
+        Button7 = 7,
+        Button8 = 8,
+        Left = Button0,
+        Right = Button1,
+        Middle = Button2
     }
 
     [StructLayout(LayoutKind.Sequential)]
@@ -1021,17 +1024,17 @@ public static class Glfw
     static extern IntPtr glfwSetDropCallback(IntPtr window, IntPtr callback);
     public static void SetDropCallback(Window window, DropFunc callback)
     {
-        var call = new Action<IntPtr,int,IntPtr>((w, n, p) =>
-        {
-            var files = new string[n];
-            var size = Marshal.SizeOf(typeof(IntPtr));
-            for (int i = 0; i < n; ++i)
-            {
-                var ptr = Marshal.ReadIntPtr(p, size * i);
-                files[i] = Marshal.PtrToStringAnsi(ptr);
-            }
-            callback(window, files);
-        });
+        var call = new Action<IntPtr, int, IntPtr>((w, n, p) =>
+          {
+              var files = new string[n];
+              var size = Marshal.SizeOf(typeof(IntPtr));
+              for (int i = 0; i < n; ++i)
+              {
+                  var ptr = Marshal.ReadIntPtr(p, size * i);
+                  files[i] = Marshal.PtrToStringAnsi(ptr);
+              }
+              callback(window, files);
+          });
         var callPtr = Marshal.GetFunctionPointerForDelegate(call);
         glfwSetDropCallback(window.Ptr, callPtr);
     }
@@ -1108,7 +1111,7 @@ public static class Glfw
     public static extern void MakeContextCurrent([MarshalAs(UnmanagedType.Struct)] Window window);
 
     [DllImport(dll, CallingConvention = CallingConvention.Cdecl, EntryPoint = "glfwGetCurrentContext")]
-    [return: MarshalAs(UnmanagedType.Struct)] 
+    [return: MarshalAs(UnmanagedType.Struct)]
     public static extern Window GetCurrentContext();
 
     [DllImport(dll, CallingConvention = CallingConvention.Cdecl, EntryPoint = "glfwSwapBuffers")]

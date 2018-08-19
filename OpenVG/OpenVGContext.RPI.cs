@@ -2,11 +2,19 @@ using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 
-namespace VC
+// Don't listen to any "field not assigned" warnings.
+#pragma warning disable CS0649
+
+namespace OpenVG
 {
     public partial class OpenVGContext : IDisposable
     {
-        private readonly DispmanXDisplay dispmanXDisplay;
+#if RPI
+        internal readonly ushort bcmDisplay;
+
+        internal uint dispman_display;
+        internal uint dispman_update;
+        internal uint dispman_element;
 
         public readonly int majorVersion, minorVersion;
 
@@ -16,13 +24,62 @@ namespace VC
 
         internal readonly EGL_DISPMANX_WINDOW_T window;
 
-        internal OpenVGContext(DispmanXDisplay dispmanXDisplay)
+        public OpenVGContext(int display)
         {
-            this.dispmanXDisplay = dispmanXDisplay;
+            bcmDisplay = (ushort)display;
+
+            bcm_host_init();
+
+            uint bcmWidth, bcmHeight;
+            graphics_get_display_size(bcmDisplay, out bcmWidth, out bcmHeight);
+
+            Width = (int)bcmWidth;
+            Height = (int)bcmHeight;
+
+            VC_RECT_T dst_rect;
+            VC_RECT_T src_rect;
+
+            dst_rect.x = 0;
+            dst_rect.y = 0;
+            dst_rect.width = Width;
+            dst_rect.height = Height;
+
+            src_rect.x = 0;
+            src_rect.y = 0;
+            src_rect.width = Width << 16;
+            src_rect.height = Height << 16;
+
+            // TODO: translate error codes into exceptions?
+            Debug.WriteLine("vc_dispmanx_display_open(...)");
+            dispman_display = vc_dispmanx_display_open(bcmDisplay);
+            Debug.WriteLine("dispman_display = {0}", dispman_display);
+            Debug.WriteLine("vc_dispmanx_update_start(...)");
+            dispman_update = vc_dispmanx_update_start(0 /* priority */);
+            Debug.WriteLine("dispman_update = {0}", dispman_update);
+
+            Debug.WriteLine("vc_dispmanx_element_add(...)");
+            dispman_element = vc_dispmanx_element_add(
+                dispman_update,
+                dispman_display,
+                1 /*layer*/,
+                ref dst_rect,
+                0 /*src*/,
+                ref src_rect,
+                DISPMANX_PROTECTION_T.DISPMANX_PROTECTION_NONE,
+                IntPtr.Zero /*alpha*/,
+                IntPtr.Zero /*clamp*/,
+                0 /*transform*/
+            );
+            Debug.WriteLine("dispman_element = {0}", dispman_element);
+
+            Debug.WriteLine("vc_dispmanx_update_submit_sync(dispman_update)");
+            checkError(vc_dispmanx_update_submit_sync(dispman_update));
+
+
 
             // TODO: validate this assumption that display number goes here (what other values to use besides EGL_DEFAULT_DISPLAY?)
             Debug.WriteLine("eglGetDisplay(...)");
-            this.egldisplay = eglGetDisplay(this.dispmanXDisplay.bcmDisplay.display);
+            egldisplay = eglGetDisplay(bcmDisplay);
             //this.egldisplay = eglGetDisplay(EGL_DEFAULT_DISPLAY);
             throwIfError();
             Debug.WriteLine("egldisplay = {0}", egldisplay);
@@ -57,9 +114,9 @@ namespace VC
             }
             Debug.WriteLine("eglconfig = {0}", eglconfig);
 
-            window.element = this.dispmanXDisplay.dispman_element;
-            window.width = (int)this.dispmanXDisplay.bcmDisplay.width;
-            window.height = (int)this.dispmanXDisplay.bcmDisplay.height;
+            window.element = dispman_element;
+            window.width = Width;
+            window.height = Height;
 
             Debug.WriteLine("eglCreateWindowSurface(egldisplay, ...)");
             eglsurface = eglCreateWindowSurface(egldisplay, eglconfig, ref window, null);
@@ -95,6 +152,15 @@ namespace VC
                 eglReleaseThread();
                 throwIfError();
             }
+
+
+            Debug.WriteLine("vc_dispmanx_element_remove(update, element)");
+            checkError(vc_dispmanx_element_remove(dispman_update, dispman_element));
+            Debug.WriteLine("vc_dispmanx_display_close(display)");
+            checkError(vc_dispmanx_display_close(dispman_display));
+
+
+            bcm_host_deinit();
         }
 
         private void throwIfError()
@@ -106,13 +172,62 @@ namespace VC
             }
         }
 
+        private void checkError(int ret)
+        {
+            if (ret != 0)
+            {
+                throw new Exception(String.Format("dispmanx function returned {0}", ret));
+            }
+        }
+
         public void SwapBuffers()
         {
             Debug.WriteLine("eglSwapBuffers(display, surface)");
             eglSwapBuffers(egldisplay, eglsurface);
         }
 
-        #region DllImports
+        #region DispmanX
+
+        [DllImport("bcm_host", EntryPoint = "bcm_host_init")]
+        internal extern static void bcm_host_init();
+        [DllImport("bcm_host", EntryPoint = "bcm_host_deinit")]
+        internal extern static void bcm_host_deinit();
+
+        [DllImport("bcm_host", EntryPoint = "graphics_get_display_size")]
+        internal extern static int graphics_get_display_size(ushort displayNumber, out uint width, out uint height);
+
+        [DllImport("bcm_host", EntryPoint = "vc_dispmanx_display_open")]
+        extern static uint vc_dispmanx_display_open(uint device);
+
+        [DllImport("bcm_host", EntryPoint = "vc_dispmanx_update_start")]
+        extern static uint vc_dispmanx_update_start(int priority);
+
+        [DllImport("bcm_host", EntryPoint = "vc_dispmanx_element_add")]
+        extern static uint vc_dispmanx_element_add(
+            uint update,
+            uint display,
+            int layer,
+            ref VC_RECT_T dest_rect,
+            uint src,
+            ref VC_RECT_T src_rect,
+            DISPMANX_PROTECTION_T protection,
+            IntPtr /* ref VC_DISPMANX_ALPHA_T */ alpha,
+            IntPtr /* ref DISPMANX_CLAMP_T */ clamp,
+            DISPMANX_TRANSFORM_T transform
+        );
+
+        [DllImport("bcm_host", EntryPoint = "vc_dispmanx_element_remove")]
+        extern static int vc_dispmanx_element_remove(uint update, uint element);
+
+        [DllImport("bcm_host", EntryPoint = "vc_dispmanx_update_submit_sync")]
+        extern static int vc_dispmanx_update_submit_sync(uint update);
+
+        [DllImport("bcm_host", EntryPoint = "vc_dispmanx_display_close")]
+        extern static int vc_dispmanx_display_close(uint display);
+
+        #endregion
+
+        #region EGL
 
         // This should be "EGL" but libEGL.so on raspbian is missing some symbols that are found in libGLESv2.so
         const string eglName = "GLESv2";
@@ -178,6 +293,112 @@ namespace VC
         extern static uint eglSwapBuffers(uint dpy, uint surface); // returns EGLBoolean
 
         #endregion
+#endif
+    }
+
+#if RPI
+    [StructLayout(LayoutKind.Sequential)]
+    internal struct VC_RECT_T
+    {
+        public int x;
+        public int y;
+        public int width;
+        public int height;
+    }
+
+    internal enum DISPMANX_PROTECTION_T : uint
+    {
+        DISPMANX_PROTECTION_NONE = 0,
+        DISPMANX_PROTECTION_HDCP = 11,   // Derived from the WM DRM levels, 101-300
+        DISPMANX_PROTECTION_MAX = 0x0f
+    }
+
+    internal enum DISPMANX_TRANSFORM_T : uint
+    {
+        /* Bottom 2 bits sets the orientation */
+        DISPMANX_NO_ROTATE = 0,
+        DISPMANX_ROTATE_90 = 1,
+        DISPMANX_ROTATE_180 = 2,
+        DISPMANX_ROTATE_270 = 3,
+
+        DISPMANX_FLIP_HRIZ = 1 << 16,
+        DISPMANX_FLIP_VERT = 1 << 17,
+
+        /* invert left/right images */
+        DISPMANX_STEREOSCOPIC_INVERT = 1 << 19,
+        /* extra flags for controlling 3d duplication behaviour */
+        DISPMANX_STEREOSCOPIC_NONE = 0 << 20,
+        DISPMANX_STEREOSCOPIC_MONO = 1 << 20,
+        DISPMANX_STEREOSCOPIC_SBS = 2 << 20,
+        DISPMANX_STEREOSCOPIC_TB = 3 << 20,
+        DISPMANX_STEREOSCOPIC_MASK = 15 << 20,
+
+        /* extra flags for controlling snapshot behaviour */
+        DISPMANX_SNAPSHOT_NO_YUV = 1 << 24,
+        DISPMANX_SNAPSHOT_NO_RGB = 1 << 25,
+        DISPMANX_SNAPSHOT_FILL = 1 << 26,
+        DISPMANX_SNAPSHOT_SWAP_RED_BLUE = 1 << 27,
+        DISPMANX_SNAPSHOT_PACK = 1 << 28
+    }
+
+    internal enum DISPMANX_FLAGS_ALPHA_T
+    {
+        /* Bottom 2 bits sets the alpha mode */
+        DISPMANX_FLAGS_ALPHA_FROM_SOURCE = 0,
+        DISPMANX_FLAGS_ALPHA_FIXED_ALL_PIXELS = 1,
+        DISPMANX_FLAGS_ALPHA_FIXED_NON_ZERO = 2,
+        DISPMANX_FLAGS_ALPHA_FIXED_EXCEED_0X07 = 3,
+
+        DISPMANX_FLAGS_ALPHA_PREMULT = 1 << 16,
+        DISPMANX_FLAGS_ALPHA_MIX = 1 << 17
+    }
+
+    internal struct VC_DISPMANX_ALPHA_T
+    {
+        public DISPMANX_FLAGS_ALPHA_T flags;
+        public uint opacity;
+        public uint mask;
+    }
+
+    enum DISPMANX_FLAGS_CLAMP_T : uint
+    {
+        DISPMANX_FLAGS_CLAMP_NONE = 0,
+        DISPMANX_FLAGS_CLAMP_LUMA_TRANSPARENT = 1,
+        // NOTE(jsd): Wild guess here.
+        //#if __VCCOREVER__ >= 0x04000000
+        DISPMANX_FLAGS_CLAMP_TRANSPARENT = 2,
+        DISPMANX_FLAGS_CLAMP_REPLACE = 3
+        //#else
+        //        DISPMANX_FLAGS_CLAMP_CHROMA_TRANSPARENT = 2,
+        //        DISPMANX_FLAGS_CLAMP_TRANSPARENT = 3
+        //#endif
+    }
+
+    enum DISPMANX_FLAGS_KEYMASK_T : uint
+    {
+        DISPMANX_FLAGS_KEYMASK_OVERRIDE = 1,
+        DISPMANX_FLAGS_KEYMASK_SMOOTH = 1 << 1,
+        DISPMANX_FLAGS_KEYMASK_CR_INV = 1 << 2,
+        DISPMANX_FLAGS_KEYMASK_CB_INV = 1 << 3,
+        DISPMANX_FLAGS_KEYMASK_YY_INV = 1 << 4
+    }
+
+    internal struct DISPMANX_CLAMP_KEYS_T
+    {
+        public byte red_upper;
+        public byte red_lower;
+        public byte blue_upper;
+        public byte blue_lower;
+        public byte green_upper;
+        public byte green_lower;
+    }
+
+    internal struct DISPMANX_CLAMP_T
+    {
+        public DISPMANX_FLAGS_CLAMP_T mode;
+        public DISPMANX_FLAGS_KEYMASK_T key_mask;
+        public DISPMANX_CLAMP_KEYS_T key_value;
+        public uint replace_value;
     }
 
     [StructLayout(LayoutKind.Sequential)]
@@ -245,4 +466,5 @@ namespace VC
         EGL_BAD_SURFACE = 0x300D,
         EGL_CONTEXT_LOST = 0x300E	/* EGL 1.1 - IMG_power_management */
     }
+#endif
 }
