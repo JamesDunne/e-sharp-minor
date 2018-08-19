@@ -14,9 +14,6 @@ namespace e_sharp_minor
             {
 #if RPI
                 using (var vg = new OpenVGContext(0))
-                //using (var bcmDisplay = new BcmDisplay(0))
-                //using (var dispmanxDisplay = bcmDisplay.CreateDispmanXDisplay())
-                //using (var vg = dispmanxDisplay.CreateOpenVGContext())
 #else
                 using (var vg = new OpenVGContext(800, 480))
 #endif
@@ -40,7 +37,7 @@ namespace e_sharp_minor
             using (var fillPaint = new PaintColor(vg, new float[] { 0.6f, 0.6f, 0.6f, 1.0f }))
             using (var rect = new RoundRect(vg, 100, 100, vg.Width - 100 * 2, vg.Height - 100 * 2, 16, 16)
             {
-                StrokeLineWidth = 2.0f
+                StrokeLineWidth = 1.0f
                 // vgSeti(VG_STROKE_CAP_STYLE, ps->m_paths[i].m_capStyle);
                 // vgSeti(VG_STROKE_JOIN_STYLE, ps->m_paths[i].m_joinStyle);
                 // vgSetf(VG_STROKE_MITER_LIMIT, ps->m_paths[i].m_miterLimit);
