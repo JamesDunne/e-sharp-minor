@@ -45,10 +45,10 @@ namespace e_sharp_minor
                 ))
                 {
 #if TIMING
-                    // Render at 60fps for 5 seconds:
+                    // Render at 60fps for 15 seconds:
                     var sw = new Stopwatch();
 #endif
-                    for (int f = 0; f < 60 * 5; f++)
+                    for (int f = 0; f < 60 * 15; f++)
                     {
 #if TIMING
                         sw.Restart();
@@ -56,8 +56,8 @@ namespace e_sharp_minor
                         // Render our pre-made paths each frame:
                         vg.Clear(0, 0, vg.Width, vg.Height);
 
-                        strokePaint.Activate(PaintMode.VG_STROKE_PATH);
-                        fillPaint.Activate(PaintMode.VG_FILL_PATH);
+                        vg.StrokePaint = strokePaint;
+                        vg.FillPaint = fillPaint;
                         rect.Render(PaintMode.VG_FILL_PATH | PaintMode.VG_STROKE_PATH);
 
                         // Swap buffers to display and vsync:

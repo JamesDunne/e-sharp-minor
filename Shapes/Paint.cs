@@ -6,7 +6,7 @@ namespace Shapes
     public abstract class Paint : IDisposable
     {
         private readonly IOpenVG vg;
-        protected readonly uint paint;
+        protected readonly PaintHandle paint;
 
         protected Paint(IOpenVG vg)
         {
@@ -19,9 +19,9 @@ namespace Shapes
             vg.DestroyPaint(this.paint);
         }
 
-        public void Activate(PaintMode? paintModes)
+        public static implicit operator PaintHandle(Paint paint)
         {
-            vg.SetPaint(paint, paintModes ?? this.PaintModes ?? PaintMode.VG_STROKE_PATH);
+            return paint.paint;
         }
 
         public PaintMode? PaintModes

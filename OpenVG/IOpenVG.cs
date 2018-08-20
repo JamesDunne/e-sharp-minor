@@ -1,4 +1,5 @@
 using System;
+using System.Runtime.InteropServices;
 
 namespace OpenVG
 {
@@ -38,7 +39,7 @@ namespace OpenVG
         void Shear(float shx, float shy);
         void Rotate(float angle);
 
-        uint CreatePath(
+        PathHandle CreatePath(
             int pathFormat,
             PathDatatype datatype,
             float scale, float bias,
@@ -46,30 +47,74 @@ namespace OpenVG
             int coordCapacityHint,
             PathCapabilities capabilities
         );
-        void DestroyPath(uint path);
+        void DestroyPath(PathHandle path);
 
-        void DrawPath(uint path, PaintMode paintModes);
+        void DrawPath(PathHandle path, PaintMode paintModes);
 
-        uint CreatePaint();
-        void DestroyPaint(uint paint);
-        void SetPaint(uint paint, PaintMode paintModes);
+        PaintHandle CreatePaint();
+        void DestroyPaint(PaintHandle paint);
+        PaintHandle GetPaint(PaintMode paintModes);
+        void SetPaint(PaintHandle paint, PaintMode paintModes);
+
+        #endregion
+
+        #region VG Properties
 
         float[] ClearColor { get; set; }
+
+        PaintHandle StrokePaint { get; set; }
+
+        PaintHandle FillPaint { get; set; }
 
         #endregion
 
         #region VGU
 
-        uint Line(uint path, float x0, float y0, float x1, float y1);
+        uint Line(PathHandle path, float x0, float y0, float x1, float y1);
 
-        uint RoundRect(uint path, float x, float y, float width, float height, float arcWidth, float arcHeight);
+        uint RoundRect(PathHandle path, float x, float y, float width, float height, float arcWidth, float arcHeight);
 
         #endregion
     }
 
+    [StructLayout(LayoutKind.Sequential)]
+    public struct PaintHandle
+    {
+        public uint Handle;
+
+        private PaintHandle(uint handle) => Handle = handle;
+
+        public static implicit operator uint(PaintHandle paint)
+        {
+            return paint.Handle;
+        }
+
+        public static implicit operator PaintHandle(uint handle)
+        {
+            return new PaintHandle(handle);
+        }
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct PathHandle
+    {
+        public uint Handle;
+
+        private PathHandle(uint handle) => Handle = handle;
+
+        public static implicit operator uint(PathHandle paint)
+        {
+            return paint.Handle;
+        }
+
+        public static implicit operator PathHandle(uint handle)
+        {
+            return new PathHandle(handle);
+        }
+    }
+
     static class Constants
     {
-
         internal const int VG_MAX_ENUM = 0x7FFFFFFF;
 
         public const int VG_PATH_FORMAT_STANDARD = 0;

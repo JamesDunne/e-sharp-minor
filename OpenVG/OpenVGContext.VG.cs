@@ -128,7 +128,7 @@ namespace OpenVG
                                 int segmentCapacityHint,
                                 int coordCapacityHint,
                                 PathCapabilities capabilities);
-        public uint CreatePath(
+        public PathHandle CreatePath(
             int pathFormat,
             PathDatatype datatype,
             float scale, float bias,
@@ -150,38 +150,49 @@ namespace OpenVG
 
         [DllImport(vg, EntryPoint = "vgDestroyPath")]
         extern static void vgDestroyPath(uint path);
-        public void DestroyPath(uint path)
+        public void DestroyPath(PathHandle path)
         {
             vgDestroyPath(path);
         }
 
         [DllImport(vg, EntryPoint = "vgDrawPath")]
         extern static void vgDrawPath(uint path, PaintMode paintModes);
-        public void DrawPath(uint path, PaintMode paintModes)
+        public void DrawPath(PathHandle path, PaintMode paintModes)
         {
             vgDrawPath(path, paintModes);
         }
 
         [DllImport(vg, EntryPoint = "vgCreatePaint")]
         extern static uint vgCreatePaint();
-        public uint CreatePaint()
+        public PaintHandle CreatePaint()
         {
             return vgCreatePaint();
         }
 
         [DllImport(vg, EntryPoint = "vgDestroyPaint")]
         extern static void vgDestroyPaint(uint paint);
-        public void DestroyPaint(uint paint)
+        public void DestroyPaint(PaintHandle paint)
         {
             vgDestroyPaint(paint);
         }
 
+        [DllImport(vg, EntryPoint = "vgGetPaint")]
+        extern static uint vgGetPaint(PaintMode paintModes);
+        public PaintHandle GetPaint(PaintMode paintModes)
+        {
+            return vgGetPaint(paintModes);
+        }
+
         [DllImport(vg, EntryPoint = "vgSetPaint")]
         extern static void vgSetPaint(uint paint, PaintMode paintModes);
-        public void SetPaint(uint paint, PaintMode paintModes)
+        public void SetPaint(PaintHandle paint, PaintMode paintModes)
         {
             vgSetPaint(paint, paintModes);
         }
+
+        #endregion
+
+        #region VG Properties
 
         public float[] ClearColor
         {
@@ -195,20 +206,44 @@ namespace OpenVG
             }
         }
 
+        public PaintHandle StrokePaint
+        {
+            get
+            {
+                return GetPaint(PaintMode.VG_STROKE_PATH);
+            }
+            set
+            {
+                SetPaint(value, PaintMode.VG_STROKE_PATH);
+            }
+        }
+
+        public PaintHandle FillPaint
+        {
+            get
+            {
+                return GetPaint(PaintMode.VG_FILL_PATH);
+            }
+            set
+            {
+                SetPaint(value, PaintMode.VG_FILL_PATH);
+            }
+        }
+
         #endregion
 
         #region VGU
 
         [DllImport(vg, EntryPoint = "vguLine")]
         extern static uint vgLine(uint path, float x0, float y0, float x1, float y1);
-        public uint Line(uint path, float x0, float y0, float x1, float y1)
+        public uint Line(PathHandle path, float x0, float y0, float x1, float y1)
         {
             return vgLine(path, x0, y0, x1, y1);
         }
 
         [DllImport(vg, EntryPoint = "vguRoundRect")]
         extern static uint vgRoundRect(uint path, float x, float y, float width, float height, float arcWidth, float arcHeight);
-        public uint RoundRect(uint path, float x, float y, float width, float height, float arcWidth, float arcHeight)
+        public uint RoundRect(PathHandle path, float x, float y, float width, float height, float arcWidth, float arcHeight)
         {
             return vgRoundRect(path, x, y, width, height, arcWidth, arcHeight);
         }
