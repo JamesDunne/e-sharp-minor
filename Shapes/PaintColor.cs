@@ -9,11 +9,11 @@ namespace Shapes
         {
             if (color == null)
             {
-                throw new ArgumentNullException("color");
+                throw new ArgumentNullException(nameof(color));
             }
             if (color.Length != 4)
             {
-                throw new ArgumentOutOfRangeException("color");
+                throw new ArgumentOutOfRangeException(nameof(color));
             }
 
             vg.SetParameteri(paint, (int)PaintParamType.VG_PAINT_TYPE, (int)PaintType.VG_PAINT_TYPE_COLOR);
