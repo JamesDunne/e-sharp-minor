@@ -7,7 +7,7 @@ namespace e_sharp_minor
     public class VGUI
     {
         private readonly Controller controller;
-        private readonly OpenVGContext vg;
+        private readonly IOpenVG vg;
 
         public VGUI(Controller controller)
         {
@@ -26,7 +26,7 @@ namespace e_sharp_minor
             {
                 Console.WriteLine("Display[0] = {0}x{1}", vg.Width, vg.Height);
 
-                vg.Setfv(ParamType.VG_CLEAR_COLOR, new float[] { 0.0f, 0.0f, 0.2f, 1.0f });
+                vg.ClearColor = new float[] { 0.0f, 0.0f, 0.2f, 1.0f };
 
                 PaintColor strokePaint;
                 PaintColor fillPaint;
@@ -45,13 +45,13 @@ namespace e_sharp_minor
                 ))
                 {
 #if TIMING
-                // Render at 60fps for 5 seconds:
-                var sw = new Stopwatch();
+                    // Render at 60fps for 5 seconds:
+                    var sw = new Stopwatch();
 #endif
                     for (int f = 0; f < 60 * 5; f++)
                     {
 #if TIMING
-                    sw.Restart();
+                        sw.Restart();
 #endif
                         // Render our pre-made paths each frame:
                         vg.Clear(0, 0, vg.Width, vg.Height);
@@ -64,8 +64,8 @@ namespace e_sharp_minor
                         vg.SwapBuffers();
 
 #if TIMING
-                    // usually writes "16 ms"
-                    Console.WriteLine("{0} ms", sw.ElapsedMilliseconds);
+                        // usually writes "16 ms"
+                        Console.WriteLine("{0} ms", sw.ElapsedMilliseconds);
 #endif
                     }
                 }

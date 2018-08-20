@@ -2,7 +2,7 @@ using System;
 
 namespace OpenVG
 {
-    public interface IOpenVG
+    public interface IOpenVG : IDisposable
     {
         int Width
         {
@@ -53,6 +53,8 @@ namespace OpenVG
         uint CreatePaint();
         void DestroyPaint(uint paint);
         void SetPaint(uint paint, PaintMode paintModes);
+
+        float[] ClearColor { get; set; }
 
         #endregion
 

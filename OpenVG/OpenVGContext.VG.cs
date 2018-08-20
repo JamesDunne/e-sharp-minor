@@ -183,19 +183,31 @@ namespace OpenVG
             vgSetPaint(paint, paintModes);
         }
 
+        public float[] ClearColor
+        {
+            get
+            {
+                return Getfv(ParamType.VG_CLEAR_COLOR);
+            }
+            set
+            {
+                Setfv(ParamType.VG_CLEAR_COLOR, value);
+            }
+        }
+
         #endregion
 
         #region VGU
 
         [DllImport(vg, EntryPoint = "vguLine")]
-        extern public static uint vgLine(uint path, float x0, float y0, float x1, float y1);
+        extern static uint vgLine(uint path, float x0, float y0, float x1, float y1);
         public uint Line(uint path, float x0, float y0, float x1, float y1)
         {
             return vgLine(path, x0, y0, x1, y1);
         }
 
         [DllImport(vg, EntryPoint = "vguRoundRect")]
-        extern public static uint vgRoundRect(uint path, float x, float y, float width, float height, float arcWidth, float arcHeight);
+        extern static uint vgRoundRect(uint path, float x, float y, float width, float height, float arcWidth, float arcHeight);
         public uint RoundRect(uint path, float x, float y, float width, float height, float arcWidth, float arcHeight)
         {
             return vgRoundRect(path, x, y, width, height, arcWidth, arcHeight);
