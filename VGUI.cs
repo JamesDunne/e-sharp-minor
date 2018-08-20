@@ -38,9 +38,6 @@ namespace e_sharp_minor
                     rect = new RoundRect(vg, 100, 100, vg.Width - 100 * 2, vg.Height - 100 * 2, 16, 16)
                     {
                         StrokeLineWidth = 1.0f
-                        // vgSeti(VG_STROKE_CAP_STYLE, ps->m_paths[i].m_capStyle);
-                        // vgSeti(VG_STROKE_JOIN_STYLE, ps->m_paths[i].m_joinStyle);
-                        // vgSetf(VG_STROKE_MITER_LIMIT, ps->m_paths[i].m_miterLimit);
                     }
                 ))
                 {

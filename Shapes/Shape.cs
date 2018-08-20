@@ -7,7 +7,7 @@ namespace Shapes
     public abstract class Shape : IDisposable
     {
         protected readonly IOpenVG vg;
-        protected readonly uint path;
+        protected readonly PathHandle path;
 
         protected Shape(IOpenVG vg)
         {
