@@ -12,18 +12,9 @@ namespace e_sharp_minor
     {
         static void Main(string[] args)
         {
-
-#if RPI
-            using (var vg = new OpenVGContext(0))
-#else
-            using (var vg = new OpenVGContext(800, 480))
-#endif
-            {
-                Console.WriteLine("Display[0] = {0}x{1}", vg.Width, vg.Height);
-
-                var controller = new Controller(vg);
-                controller.Run();
-            }
+            var controller = new Controller();
+            controller.LoadData();
+            new VGUI(controller).Run();
         }
     }
 }

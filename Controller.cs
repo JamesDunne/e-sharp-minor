@@ -11,12 +11,13 @@ namespace e_sharp_minor
 {
     public class Controller
     {
-        private readonly IOpenVG vg;
         private V5.AllPrograms programs;
 
-        public Controller(IOpenVG vg) => this.vg = vg;
+        public Controller()
+        {
+        }
 
-        public void Run()
+        public void LoadData()
         {
             var de = new DeserializerBuilder()
                 .WithNamingConvention(new UnderscoredNamingConvention())
@@ -31,56 +32,6 @@ namespace e_sharp_minor
 
             using (var tw = CreateText("all-programs-v6.yml"))
                 se.Serialize(tw, programs);
-
-            vg.Setfv(ParamType.VG_CLEAR_COLOR, new float[] { 0.0f, 0.0f, 0.2f, 1.0f });
-
-            PaintColor strokePaint;
-            PaintColor fillPaint;
-            RoundRect rect;
-
-            using (new DisposalContainer(
-                strokePaint = new PaintColor(vg, new float[] { 1.0f, 1.0f, 1.0f, 1.0f }),
-                fillPaint = new PaintColor(vg, new float[] { 0.6f, 0.6f, 0.6f, 1.0f }),
-                rect = new RoundRect(vg, 100, 100, vg.Width - 100 * 2, vg.Height - 100 * 2, 16, 16)
-                {
-                    StrokeLineWidth = 1.0f
-                    // vgSeti(VG_STROKE_CAP_STYLE, ps->m_paths[i].m_capStyle);
-                    // vgSeti(VG_STROKE_JOIN_STYLE, ps->m_paths[i].m_joinStyle);
-                    // vgSetf(VG_STROKE_MITER_LIMIT, ps->m_paths[i].m_miterLimit);
-                }
-            ))
-            {
-#if TIMING
-                // Render at 60fps for 5 seconds:
-                var sw = new Stopwatch();
-#endif
-                for (int f = 0; f < 60 * 5; f++)
-                {
-#if TIMING
-                    sw.Restart();
-#endif
-                    // Render our pre-made paths each frame:
-                    vg.Clear(0, 0, vg.Width, vg.Height);
-
-                    strokePaint.Activate(PaintMode.VG_STROKE_PATH);
-                    fillPaint.Activate(PaintMode.VG_FILL_PATH);
-                    rect.Render(PaintMode.VG_FILL_PATH | PaintMode.VG_STROKE_PATH);
-
-                    // Swap buffers to display and vsync:
-                    vg.SwapBuffers();
-
-#if TIMING
-                    // usually writes "16 ms"
-                    Console.WriteLine("{0} ms", sw.ElapsedMilliseconds);
-#endif
-                }
-            }
-
-            Console.WriteLine("Wait");
-
-            Thread.Sleep(5000);
-
-            Console.WriteLine("Shutdown");
         }
     }
 
