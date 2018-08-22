@@ -12,13 +12,13 @@ namespace e_sharp_minor
     {
         static void Main(string[] args)
         {
-#if true
+#if false
             var translator = new Translator();
             translator.Translate();
 #else
             var controller = new Controller();
             controller.LoadData();
-            new VGUI(controller).Run();
+            //new VGUI(controller).Run();
 #endif
         }
     }
