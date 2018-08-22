@@ -14,7 +14,7 @@ namespace e_sharp_minor
         {
             var controller = new Controller();
             controller.LoadData();
-            new VGUI(controller).Run();
+            //new VGUI(controller).Run();
         }
     }
 }
