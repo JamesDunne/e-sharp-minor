@@ -29,9 +29,166 @@ namespace e_sharp_minor
                     fx => fx,
                     fx => new V6.FXBlockOverride
                     {
-                        EnabledSwitch = true
+                        On = true
                     }
                 )
+            };
+        }
+
+        private V6.AllPrograms convertV5toV6(V5.AllPrograms programs)
+        {
+            return new V6.AllPrograms
+            {
+                MidiPrograms = (
+                    from g in (
+                        from p in programs.Programs
+                        group p by p.MidiProgram
+                    )
+                    select new V6.MidiProgram
+                    {
+                        ProgramNumber = g.Key,
+                        Amps = new List<V6.AmpDefinition>
+                        {
+                            // MG:
+                            new V6.AmpDefinition
+                            {
+                                Name = "MG",
+                                Blocks = new Dictionary<string, V6.FXBlockDefinition>
+                                {
+                                    { "amp1", new V6.FXBlockDefinition { EnabledSwitchCC = 37, XYSwitchCC = 100 } },
+                                    { "cab1", new V6.FXBlockDefinition { EnabledSwitchCC = 39, XYSwitchCC = 102 } },
+                                    { "gate1", new V6.FXBlockDefinition { EnabledSwitchCC = 60 } },
+                                    { "compressor1", new V6.FXBlockDefinition { EnabledSwitchCC = 43 } }
+                                    // TODO: add fx_layout blocks
+                                },
+                                Tones = new Dictionary<string, V6.ToneDefinition>
+                                {
+                                    { "clean", new V6.ToneDefinition {
+                                        Gain = 0x12,
+                                        Level = 0,
+                                        Blocks = new Dictionary<string, V6.FXBlock>
+                                        {
+                                            { "amp1", new V6.FXBlock { On = true, XY = V6.XYSwitch.Y } },
+                                            { "cab1", new V6.FXBlock { On = true, XY = V6.XYSwitch.X } },
+                                            { "gate1", new V6.FXBlock { On = false, XY = V6.XYSwitch.X } },
+                                            { "compressor1", new V6.FXBlock { On = true, XY = V6.XYSwitch.X } }
+                                        }
+                                    } },
+                                    { "dirty", new V6.ToneDefinition {
+                                        Gain = 0x40,
+                                        Level = 0,
+                                        Blocks = new Dictionary<string, V6.FXBlock>
+                                        {
+                                            { "amp1", new V6.FXBlock { On = true, XY = V6.XYSwitch.X } },
+                                            { "cab1", new V6.FXBlock { On = true, XY = V6.XYSwitch.X } },
+                                            { "gate1", new V6.FXBlock { On = true, XY = V6.XYSwitch.X } },
+                                            { "compressor1", new V6.FXBlock { On = true, XY = V6.XYSwitch.X } }
+                                        }
+                                    } },
+                                    { "acoustic", new V6.ToneDefinition {
+                                        Gain = 0x12,
+                                        Level = 0,
+                                        Blocks = new Dictionary<string, V6.FXBlock>
+                                        {
+                                            { "amp1", new V6.FXBlock { On = false, XY = V6.XYSwitch.Y } },
+                                            { "cab1", new V6.FXBlock { On = true, XY = V6.XYSwitch.Y } },
+                                            { "gate1", new V6.FXBlock { On = false, XY = V6.XYSwitch.X } },
+                                            { "compressor1", new V6.FXBlock { On = true, XY = V6.XYSwitch.X } }
+                                        }
+                                    } }
+                                },
+                                VolumeControllerCC = 16,
+                                GainControllerCC = 18
+                            },
+                            // JD:
+                            new V6.AmpDefinition
+                            {
+                                Name = "JD",
+                                Blocks = new Dictionary<string, V6.FXBlockDefinition>
+                                {
+                                    { "amp2", new V6.FXBlockDefinition { EnabledSwitchCC = 38, XYSwitchCC = 101 } },
+                                    { "cab2", new V6.FXBlockDefinition { EnabledSwitchCC = 40, XYSwitchCC = 103 } },
+                                    { "gate2", new V6.FXBlockDefinition { EnabledSwitchCC = 61 } },
+                                    { "compressor2", new V6.FXBlockDefinition { EnabledSwitchCC = 44 } }
+                                },
+                                Tones = new Dictionary<string, V6.ToneDefinition>
+                                {
+                                    { "clean", new V6.ToneDefinition {
+                                        Gain = 0x12,
+                                        Level = 0,
+                                        Blocks = new Dictionary<string, V6.FXBlock>
+                                        {
+                                            { "amp2", new V6.FXBlock { On = true, XY = V6.XYSwitch.Y } },
+                                            { "cab2", new V6.FXBlock { On = true, XY = V6.XYSwitch.X } },
+                                            { "gate2", new V6.FXBlock { On = false, XY = V6.XYSwitch.X } },
+                                            { "compressor2", new V6.FXBlock { On = true, XY = V6.XYSwitch.X } }
+                                        }
+                                    } },
+                                    { "dirty", new V6.ToneDefinition {
+                                        Gain = 0x40,
+                                        Level = 0,
+                                        Blocks = new Dictionary<string, V6.FXBlock>
+                                        {
+                                            { "amp2", new V6.FXBlock { On = true, XY = V6.XYSwitch.X } },
+                                            { "cab2", new V6.FXBlock { On = true, XY = V6.XYSwitch.X } },
+                                            { "gate2", new V6.FXBlock { On = true, XY = V6.XYSwitch.X } },
+                                            { "compressor2", new V6.FXBlock { On = true, XY = V6.XYSwitch.X } }
+                                        }
+                                    } },
+                                    { "acoustic", new V6.ToneDefinition {
+                                        Gain = 0x12,
+                                        Level = 0,
+                                        Blocks = new Dictionary<string, V6.FXBlock>
+                                        {
+                                            { "amp2", new V6.FXBlock { On = false, XY = V6.XYSwitch.Y } },
+                                            { "cab2", new V6.FXBlock { On = true, XY = V6.XYSwitch.Y } },
+                                            { "gate2", new V6.FXBlock { On = false, XY = V6.XYSwitch.X } },
+                                            { "compressor2", new V6.FXBlock { On = true, XY = V6.XYSwitch.X } }
+                                        }
+                                    } }
+                                },
+                                VolumeControllerCC = 17,
+                                GainControllerCC = 19
+                            }
+                        },
+                        Songs = (
+                            from p in g
+                            select new V6.Song
+                            {
+                                Name = p.Name,
+                                Tempo = p.Tempo,
+                                Amps = new List<V6.AmpOverrides>
+                                {
+                                    new V6.AmpOverrides
+                                    {
+                                        Tones = new Dictionary<string, V6.ToneOverride>
+                                        {
+                                            {
+                                                "dirty",
+                                                new V6.ToneOverride
+                                                {
+                                                    Gain = p.Gain
+                                                }
+                                            }
+                                        }
+                                    }
+                                },
+                                SceneDescriptors = (
+                                    from s in p.SceneDescriptors
+                                    select new V6.SceneDescriptor
+                                    {
+                                        Name = s.Name,
+                                        Amps = new List<V6.ToneSelection>
+                                        {
+                                            convertAmp(s.MG),
+                                            convertAmp(s.JD)
+                                        }
+                                    }
+                                ).ToList()
+                            }
+                        ).ToList()
+                    }
+                ).ToList()
             };
         }
 
@@ -44,162 +201,11 @@ namespace e_sharp_minor
             using (var tr = OpenText("all-programs-v5.yml"))
                 programs = de.Deserialize<V5.AllPrograms>(tr);
 
-            // Convert V5 into V6:
-            var newPrograms = (
-                from g in (
-                    from p in programs.Programs
-                    group p by p.MidiProgram
-                )
-                select new V6.MidiProgram
-                {
-                    ProgramNumber = g.Key,
-                    Amps = new List<V6.AmpDefinition>
-                    {
-                        // MG:
-                        new V6.AmpDefinition
-                        {
-                            Name = "MG",
-                            Blocks = new Dictionary<string, V6.FXBlockDefinition>
-                            {
-                                { "amp1", new V6.FXBlockDefinition { EnabledSwitchCC = 37, XYSwitchCC = 100 } },
-                                { "cab1", new V6.FXBlockDefinition { EnabledSwitchCC = 39, XYSwitchCC = 102 } },
-                                { "gate1", new V6.FXBlockDefinition { EnabledSwitchCC = 60 } },
-                                { "compressor1", new V6.FXBlockDefinition { EnabledSwitchCC = 43 } }
-                                // TODO: add fx_layout blocks
-                            },
-                            Tones = new Dictionary<string, V6.ToneDefinition>
-                            {
-                                { "clean", new V6.ToneDefinition {
-                                    Gain = 0x12,
-                                    Level = 0,
-                                    Blocks = new Dictionary<string, V6.FXBlock>
-                                    {
-                                        { "amp1", new V6.FXBlock { On = true, XY = V6.XYSwitch.Y } },
-                                        { "cab1", new V6.FXBlock { On = true, XY = V6.XYSwitch.X } },
-                                        { "gate1", new V6.FXBlock { On = false, XY = V6.XYSwitch.X } },
-                                        { "compressor1", new V6.FXBlock { On = true, XY = V6.XYSwitch.X } }
-                                    }
-                                } },
-                                { "dirty", new V6.ToneDefinition {
-                                    Gain = 0x40,
-                                    Level = 0,
-                                    Blocks = new Dictionary<string, V6.FXBlock>
-                                    {
-                                        { "amp1", new V6.FXBlock { On = true, XY = V6.XYSwitch.X } },
-                                        { "cab1", new V6.FXBlock { On = true, XY = V6.XYSwitch.X } },
-                                        { "gate1", new V6.FXBlock { On = true, XY = V6.XYSwitch.X } },
-                                        { "compressor1", new V6.FXBlock { On = true, XY = V6.XYSwitch.X } }
-                                    }
-                                } },
-                                { "acoustic", new V6.ToneDefinition {
-                                    Gain = 0x12,
-                                    Level = 0,
-                                    Blocks = new Dictionary<string, V6.FXBlock>
-                                    {
-                                        { "amp1", new V6.FXBlock { On = false, XY = V6.XYSwitch.Y } },
-                                        { "cab1", new V6.FXBlock { On = true, XY = V6.XYSwitch.Y } },
-                                        { "gate1", new V6.FXBlock { On = false, XY = V6.XYSwitch.X } },
-                                        { "compressor1", new V6.FXBlock { On = true, XY = V6.XYSwitch.X } }
-                                    }
-                                } }
-                            },
-                            VolumeControllerCC = 16,
-                            GainControllerCC = 18
-                        },
-                        // JD:
-                        new V6.AmpDefinition
-                        {
-                            Name = "JD",
-                            Blocks = new Dictionary<string, V6.FXBlockDefinition>
-                            {
-                                { "amp2", new V6.FXBlockDefinition { EnabledSwitchCC = 38, XYSwitchCC = 101 } },
-                                { "cab2", new V6.FXBlockDefinition { EnabledSwitchCC = 40, XYSwitchCC = 103 } },
-                                { "gate2", new V6.FXBlockDefinition { EnabledSwitchCC = 61 } },
-                                { "compressor2", new V6.FXBlockDefinition { EnabledSwitchCC = 44 } }
-                            },
-                            Tones = new Dictionary<string, V6.ToneDefinition>
-                            {
-                                { "clean", new V6.ToneDefinition {
-                                    Gain = 0x12,
-                                    Level = 0,
-                                    Blocks = new Dictionary<string, V6.FXBlock>
-                                    {
-                                        { "amp2", new V6.FXBlock { On = true, XY = V6.XYSwitch.Y } },
-                                        { "cab2", new V6.FXBlock { On = true, XY = V6.XYSwitch.X } },
-                                        { "gate2", new V6.FXBlock { On = false, XY = V6.XYSwitch.X } },
-                                        { "compressor2", new V6.FXBlock { On = true, XY = V6.XYSwitch.X } }
-                                    }
-                                } },
-                                { "dirty", new V6.ToneDefinition {
-                                    Gain = 0x40,
-                                    Level = 0,
-                                    Blocks = new Dictionary<string, V6.FXBlock>
-                                    {
-                                        { "amp2", new V6.FXBlock { On = true, XY = V6.XYSwitch.X } },
-                                        { "cab2", new V6.FXBlock { On = true, XY = V6.XYSwitch.X } },
-                                        { "gate2", new V6.FXBlock { On = true, XY = V6.XYSwitch.X } },
-                                        { "compressor2", new V6.FXBlock { On = true, XY = V6.XYSwitch.X } }
-                                    }
-                                } },
-                                { "acoustic", new V6.ToneDefinition {
-                                    Gain = 0x12,
-                                    Level = 0,
-                                    Blocks = new Dictionary<string, V6.FXBlock>
-                                    {
-                                        { "amp2", new V6.FXBlock { On = false, XY = V6.XYSwitch.Y } },
-                                        { "cab2", new V6.FXBlock { On = true, XY = V6.XYSwitch.Y } },
-                                        { "gate2", new V6.FXBlock { On = false, XY = V6.XYSwitch.X } },
-                                        { "compressor2", new V6.FXBlock { On = true, XY = V6.XYSwitch.X } }
-                                    }
-                                } }
-                            },
-                            VolumeControllerCC = 17,
-                            GainControllerCC = 19
-                        }
-                    },
-                    Songs = (
-                        from p in g
-                        select new V6.Song
-                        {
-                            Name = p.Name,
-                            Tempo = p.Tempo,
-                            Amps = new List<V6.AmpOverrides>
-                            {
-                                new V6.AmpOverrides
-                                {
-                                    Tones = new Dictionary<string, V6.ToneOverride>
-                                    {
-                                        {
-                                            "dirty",
-                                            new V6.ToneOverride
-                                            {
-                                                Gain = p.Gain
-                                            }
-                                        }
-                                    }
-                                }
-                            },
-                            SceneDescriptors = (
-                                from s in p.SceneDescriptors
-                                select new V6.SceneDescriptor
-                                {
-                                    Name = s.Name,
-                                    Amps = new List<V6.ToneSelection>
-                                    {
-                                        convertAmp(s.MG),
-                                        convertAmp(s.JD)
-                                    }
-                                }
-                            ).ToList()
-                        }
-                    ).ToList()
-                }
-            ).ToList();
+            var newPrograms = convertV5toV6(programs);
 
             var se = new SerializerBuilder()
                 .WithNamingConvention(new UnderscoredNamingConvention())
                 .EmitDefaults()
-                //.EnsureRoundtrip()
                 .Build();
 
             using (var tw = CreateText("all-programs-v6.yml"))
@@ -319,7 +325,7 @@ namespace e_sharp_minor
         public class FXBlock
         {
             public bool On { get; set; }
-            [YamlMember(Alias = "xy")]
+            [YamlMember(Alias = "Xy")]
             public XYSwitch? XY { get; set; }
         }
 
@@ -333,8 +339,9 @@ namespace e_sharp_minor
 
         public class FXBlockOverride
         {
-            public bool? EnabledSwitch { get; set; }
-            public bool? XYSwitch { get; set; }
+            public bool? On { get; set; }
+            [YamlMember(Alias = "Xy")]
+            public bool? XY { get; set; }
         }
 
         public class ToneOverride
