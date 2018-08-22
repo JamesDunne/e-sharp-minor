@@ -80,8 +80,12 @@ namespace e_sharp_minor
                                     { "amp1", new V6.FXBlockDefinition { EnabledSwitchCC = 37, XYSwitchCC = 100 } },
                                     { "cab1", new V6.FXBlockDefinition { EnabledSwitchCC = 39, XYSwitchCC = 102 } },
                                     { "gate1", new V6.FXBlockDefinition { EnabledSwitchCC = 60 } },
-                                    { "compressor1", new V6.FXBlockDefinition { EnabledSwitchCC = 43 } }
-                                    // TODO: add fx_layout blocks
+                                    { "compressor1", new V6.FXBlockDefinition { EnabledSwitchCC = 43 } },
+                                    { "pit1", new V6.FXBlockDefinition { EnabledSwitchCC = 77 } },
+                                    { "rtr1", new V6.FXBlockDefinition { EnabledSwitchCC = 86 } },
+                                    { "phr1", new V6.FXBlockDefinition { EnabledSwitchCC = 75 } },
+                                    { "cho1", new V6.FXBlockDefinition { EnabledSwitchCC = 41 } },
+                                    { "dly1", new V6.FXBlockDefinition { EnabledSwitchCC = 47 } }
                                 },
                                 Tones = new Dictionary<string, V6.ToneDefinition>
                                 {
@@ -131,7 +135,12 @@ namespace e_sharp_minor
                                     { "amp2", new V6.FXBlockDefinition { EnabledSwitchCC = 38, XYSwitchCC = 101 } },
                                     { "cab2", new V6.FXBlockDefinition { EnabledSwitchCC = 40, XYSwitchCC = 103 } },
                                     { "gate2", new V6.FXBlockDefinition { EnabledSwitchCC = 61 } },
-                                    { "compressor2", new V6.FXBlockDefinition { EnabledSwitchCC = 44 } }
+                                    { "compressor2", new V6.FXBlockDefinition { EnabledSwitchCC = 44 } },
+                                    { "pit2", new V6.FXBlockDefinition { EnabledSwitchCC = 78 } },
+                                    { "rtr2", new V6.FXBlockDefinition { EnabledSwitchCC = 87 } },
+                                    { "phr2", new V6.FXBlockDefinition { EnabledSwitchCC = 76 } },
+                                    { "cho2", new V6.FXBlockDefinition { EnabledSwitchCC = 42 } },
+                                    { "dly2", new V6.FXBlockDefinition { EnabledSwitchCC = 48 } }
                                 },
                                 Tones = new Dictionary<string, V6.ToneDefinition>
                                 {
