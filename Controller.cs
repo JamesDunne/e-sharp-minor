@@ -100,7 +100,7 @@ namespace e_sharp_minor
 
         public class FXBlock
         {
-            public bool On { get; set; }
+            public bool? On { get; set; }
             [YamlMember(Alias = "Xy")]
             public XYSwitch? XY { get; set; }
         }

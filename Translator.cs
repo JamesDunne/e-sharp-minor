@@ -30,7 +30,6 @@ namespace e_sharp_minor
 
             var se = new SerializerBuilder()
                 .WithNamingConvention(new UnderscoredNamingConvention())
-                .EmitDefaults()
                 .Build();
 
             using (var tw = CreateText("all-programs-v6.yml"))
