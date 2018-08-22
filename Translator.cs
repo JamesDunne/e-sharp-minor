@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using static System.IO.File;
+using static System.Math;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 using System.Linq;
+using e_sharp_minor.V5;
+using e_sharp_minor.V6;
 
 namespace e_sharp_minor
 {
@@ -34,12 +37,18 @@ namespace e_sharp_minor
                 se.Serialize(tw, v6programs);
         }
 
+        private int logTaper(int b)
+        {
+            // 127 * (ln(x+1)^2) / (ln(127+1)^2)
+            return (int)(127.0 * Pow(Math.Log((double)(b) + 1.0), 2) / Pow(Log(127.0 + 1.0), 2));
+        }
+
         private V6.ToneSelection convertAmp(V5.Amp amp)
         {
             return new V6.ToneSelection
             {
                 Tone = amp.Channel,
-                Gain = amp.Gain == 0 ? (int?)null : amp.Gain,
+                Gain = amp.Gain == 0 ? (amp.GainLog == 0 ? (int?)null : logTaper(amp.GainLog)) : amp.Gain,
                 Level = amp.Level == 0 ? (double?)null : amp.Level,
                 Blocks = amp.FX?.ToDictionary(
                     fx => fx,
@@ -175,19 +184,8 @@ namespace e_sharp_minor
                                 Tempo = p.Tempo,
                                 Amps = new List<V6.AmpOverrides>
                                 {
-                                    new V6.AmpOverrides
-                                    {
-                                        Tones = new Dictionary<string, V6.ToneOverride>
-                                        {
-                                            {
-                                                "dirty",
-                                                new V6.ToneOverride
-                                                {
-                                                    Gain = p.Gain
-                                                }
-                                            }
-                                        }
-                                    }
+                                    defaultAmp(p),
+                                    defaultAmp(p)
                                 },
                                 SceneDescriptors = (
                                     from s in p.SceneDescriptors
@@ -205,6 +203,26 @@ namespace e_sharp_minor
                         ).ToList()
                     }
                 ).ToList()
+            };
+        }
+
+        private AmpOverrides defaultAmp(Program p)
+        {
+            int? g = p.Gain == 0 ? (p.GainLog == 0 ? (int?)null : logTaper(p.GainLog)) : p.Gain;
+            if (!g.HasValue) return new V6.AmpOverrides();
+
+            return new V6.AmpOverrides
+            {
+                Tones = new Dictionary<string, ToneOverride>
+                {
+                    {
+                        "dirty",
+                        new V6.ToneOverride
+                        {
+                            Gain = g
+                        }
+                    }
+                }
             };
         }
     }
