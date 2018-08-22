@@ -5,8 +5,6 @@ using static System.Math;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 using System.Linq;
-using e_sharp_minor.V5;
-using e_sharp_minor.V6;
 
 namespace e_sharp_minor
 {
@@ -181,11 +179,7 @@ namespace e_sharp_minor
                             {
                                 Name = p.Name,
                                 Tempo = p.Tempo,
-                                Amps = new List<V6.AmpOverrides>
-                                {
-                                    defaultAmp(p),
-                                    defaultAmp(p)
-                                },
+                                Amps = defaultAmps(p),
                                 SceneDescriptors = (
                                     from s in p.SceneDescriptors
                                     select new V6.SceneDescriptor
@@ -205,20 +199,37 @@ namespace e_sharp_minor
             };
         }
 
-        private AmpOverrides defaultAmp(Program p)
+        private List<V6.AmpOverrides> defaultAmps(V5.Program p)
         {
             int? g = p.Gain == 0 ? (p.GainLog == 0 ? (int?)null : logTaper(p.GainLog)) : p.Gain;
-            if (!g.HasValue) return new V6.AmpOverrides();
+            if (!g.HasValue) return null;
 
-            return new V6.AmpOverrides
+            // These instances must be separate to avoid YAML serializer aliasing:
+            return new List<V6.AmpOverrides>
             {
-                Tones = new Dictionary<string, ToneOverride>
+                new V6.AmpOverrides
                 {
+                    Tones = new Dictionary<string, V6.ToneOverride>
                     {
-                        "dirty",
-                        new V6.ToneOverride
                         {
-                            Gain = g
+                            "dirty",
+                            new V6.ToneOverride
+                            {
+                                Gain = g
+                            }
+                        }
+                    }
+                },
+                new V6.AmpOverrides
+                {
+                    Tones = new Dictionary<string, V6.ToneOverride>
+                    {
+                        {
+                            "dirty",
+                            new V6.ToneOverride
+                            {
+                                Gain = g
+                            }
                         }
                     }
                 }
