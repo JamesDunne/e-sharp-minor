@@ -16,8 +16,14 @@ namespace e_sharp_minor
             var translator = new Translator();
             translator.Translate();
 #else
-            var controller = new Controller();
+            IMIDI midi;
+            midi = new MidiConsoleOut();
+            midi = new MidiState(midi);
+
+            var controller = new Controller(midi, 2);
+
             controller.LoadData();
+
             //new VGUI(controller).Run();
 #endif
         }

@@ -10,11 +10,19 @@ namespace e_sharp_minor
 {
     public class Controller
     {
+        private readonly IMIDI midi;
+        private readonly int channel;
+
         private AllPrograms programs;
         private List<Song> songsSorted;
 
-        public Controller()
+        private Song currentSong;
+
+        public Controller(IMIDI midi, int channel)
         {
+            this.midi = midi;
+            this.channel = channel;
+            this.currentSong = null;
         }
 
         public void LoadData()
@@ -26,6 +34,20 @@ namespace e_sharp_minor
             using (var tr = OpenText("all-programs-v6.yml"))
                 programs = de.Deserialize<V6.AllPrograms>(tr);
 
+            // Set back-references since we can't really deserialize these:
+            foreach (var midiProgram in programs.MidiPrograms)
+            {
+                foreach (var ampDefinition in midiProgram.Amps)
+                {
+                    ampDefinition.MidiProgram = midiProgram;
+                }
+                foreach (var song in midiProgram.Songs)
+                {
+                    song.MidiProgram = midiProgram;
+                }
+            }
+
+            // Sort songs alphabetically across all MIDI programs:
             songsSorted = programs
                             .MidiPrograms
                             .SelectMany(m => m.Songs)
@@ -33,7 +55,8 @@ namespace e_sharp_minor
                             .ToList();
 
 #if true
-            foreach (var song in songsSorted) {
+            foreach (var song in songsSorted)
+            {
                 Console.WriteLine("{0}", song.Name);
             }
 #else
@@ -45,6 +68,24 @@ namespace e_sharp_minor
                 }
             }
 #endif
+
+            // Activate the first song:
+            ActivateSong(songsSorted[0]);
+        }
+
+        public void ActivateSong(Song newSong)
+        {
+            if (currentSong != null)
+            {
+                // TODO
+            }
+
+            midi.SetProgram(channel, newSong.MidiProgram.ProgramNumber);
+
+            // TODO
+            //midi.SetController(channel, );
+
+            this.currentSong = newSong;
         }
     }
 
@@ -67,6 +108,9 @@ namespace e_sharp_minor
 
         public class Song
         {
+            [YamlIgnore]
+            public MidiProgram MidiProgram { get; set; }
+
             public string Name { get; set; }
             public int Tempo { get; set; }
 
@@ -78,6 +122,9 @@ namespace e_sharp_minor
 
         public class AmpDefinition
         {
+            [YamlIgnore]
+            public MidiProgram MidiProgram { get; set; }
+
             public string Name { get; set; }
 
             // Available FX blocks for this amp in this MIDI program, including amp, cab, gate, etc.:
@@ -127,7 +174,7 @@ namespace e_sharp_minor
         {
             public bool? On { get; set; }
             [YamlMember(Alias = "Xy")]
-            public bool? XY { get; set; }
+            public XYSwitch? XY { get; set; }
         }
 
         public class ToneOverride
