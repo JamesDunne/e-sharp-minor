@@ -33,6 +33,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="YamlDotNet" Version="5.0.1" />
+    <PackageReference Include="SharpYaml" Version="1.6.4" />
   </ItemGroup>
 </Project>
