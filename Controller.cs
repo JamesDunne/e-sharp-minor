@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using e_sharp_minor.V6;
-using OpenVG;
-using Shapes;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 using static System.IO.File;
@@ -14,6 +11,7 @@ namespace e_sharp_minor
     public class Controller
     {
         private AllPrograms programs;
+        private List<Song> songsSorted;
 
         public Controller()
         {
@@ -28,6 +26,17 @@ namespace e_sharp_minor
             using (var tr = OpenText("all-programs-v6.yml"))
                 programs = de.Deserialize<V6.AllPrograms>(tr);
 
+            songsSorted = programs
+                            .MidiPrograms
+                            .SelectMany(m => m.Songs)
+                            .OrderBy(s => s.Name)
+                            .ToList();
+
+#if true
+            foreach (var song in songsSorted) {
+                Console.WriteLine("{0}", song.Name);
+            }
+#else
             foreach (var midiProgram in programs.MidiPrograms)
             {
                 Console.WriteLine("midi: {0}", midiProgram.ProgramNumber);
@@ -35,6 +44,7 @@ namespace e_sharp_minor
                     Console.WriteLine("  song: {0}", song.Name);
                 }
             }
+#endif
         }
     }
 
