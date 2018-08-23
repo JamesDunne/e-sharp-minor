@@ -50,6 +50,8 @@ namespace e_sharp_minor
         {
             if (!Enabled || channels[channel].programValue != program)
             {
+                // Forget all sent data now that we're switching programs:
+                Reset();
                 midi.SetProgram(channel, program);
                 channels[channel].programValue = program;
             }
