@@ -67,6 +67,13 @@ namespace e_sharp_minor
                         for (int i = 0; i < song.Amps.Count; i++)
                         {
                             song.Amps[i].AmpDefinition = midiProgram.Amps[i];
+                            foreach (var toneKey in song.Amps[i].Tones.Keys)
+                            {
+                                if (!midiProgram.Amps[i].Tones.ContainsKey(toneKey))
+                                {
+                                    throw new Exception(String.Format("Song '{0}' amp {1} tone '{2}' must exist in MIDI program amp definition!", song.Name, i + 1, toneKey));
+                                }
+                            }
                         }
                     }
 
@@ -131,7 +138,7 @@ namespace e_sharp_minor
 
             if (currentSong != null)
             {
-                // TODO
+                // TODO: do we need to disable any blocks that are not in the new song?
             }
 
             Console.WriteLine("Change MIDI program {0}", newSong.MidiProgram.ProgramNumber);
