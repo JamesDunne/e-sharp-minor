@@ -20,6 +20,21 @@ namespace e_sharp_minor
             this.Enabled = true;
         }
 
+        /// <summary>
+        /// Resets the state tracker to assume no data has been sent.
+        /// </summary>
+        public void Reset()
+        {
+            for (int i = 0; i < 16; i++)
+            {
+                this.channels[i].Reset();
+            }
+        }
+
+        /// <summary>
+        /// Set to false to temporarily disable the state tracker and force sending MIDI commands 
+        /// </summary>
+        /// <value><c>true</c> if enabled; otherwise, <c>false</c>.</value>
         public bool Enabled { get; set; }
 
         public void SetController(int channel, int controller, int value)
@@ -47,8 +62,13 @@ namespace e_sharp_minor
 
             public ChannelState()
             {
-                programValue = -1;
                 controllerValues = new int[256];
+                Reset();
+            }
+
+            public void Reset()
+            {
+                programValue = -1;
                 for (int i = 0; i < 256; i++)
                 {
                     controllerValues[i] = -1;
