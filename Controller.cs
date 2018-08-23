@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using e_sharp_minor.V6;
 using YamlDotNet.Serialization;
@@ -30,6 +29,8 @@ namespace e_sharp_minor
             this.currentScene = 0;
         }
 
+        public AllPrograms AllPrograms { get; private set; }
+
         public void LoadData()
         {
             var de = new DeserializerBuilder()
@@ -38,6 +39,8 @@ namespace e_sharp_minor
 
             using (var tr = OpenText("all-programs-v6.yml"))
                 programs = de.Deserialize<V6.AllPrograms>(tr);
+
+            this.AllPrograms = programs;
 
             // Set back-references since we can't really deserialize these:
             foreach (var midiProgram in programs.MidiPrograms)
@@ -106,7 +109,7 @@ namespace e_sharp_minor
             }
 
             // Sort songs alphabetically across all MIDI programs:
-            songsSorted = programs
+            songsSorted = AllPrograms
                             .MidiPrograms
                             .SelectMany(m => m.Songs)
                             .OrderBy(s => s.Name)
@@ -226,7 +229,7 @@ namespace e_sharp_minor
                         Console.WriteLine("Amp[{0}]: {1} = {2}", i + 1, blockName, enabled.Value ? "on" : "off");
                         midi.SetController(channel, enabledCC, enabled.Value ? 0x7F : 0x00);
                     }
-                    if (xy.HasValue && xySwitchCC.HasValue) 
+                    if (xy.HasValue && xySwitchCC.HasValue)
                     {
                         Console.WriteLine("Amp[{0}]: {1} to {2}", i + 1, blockName, enabled.Value ? "X" : "Y");
                         midi.SetController(channel, xySwitchCC.Value, xy.Value == XYSwitch.X ? 0x7F : 0x00);

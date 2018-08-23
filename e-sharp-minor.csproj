@@ -35,4 +35,7 @@
   <ItemGroup>
     <PackageReference Include="YamlDotNet" Version="5.0.1" />
   </ItemGroup>
+  <ItemGroup>
+    <None Remove="bcm_vg_init_example.o" />
+  </ItemGroup>
 </Project>
