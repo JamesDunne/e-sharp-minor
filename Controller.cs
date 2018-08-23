@@ -38,13 +38,39 @@ namespace e_sharp_minor
             // Set back-references since we can't really deserialize these:
             foreach (var midiProgram in programs.MidiPrograms)
             {
+                if (midiProgram.Amps.Count == 0)
+                {
+                    throw new Exception("Midi program must define at least one amp!");
+                }
+
                 foreach (var ampDefinition in midiProgram.Amps)
                 {
                     ampDefinition.MidiProgram = midiProgram;
+
+                    foreach (var tone in ampDefinition.Tones.Values)
+                    {
+                        tone.AmpDefinition = ampDefinition;
+                    }
                 }
+
                 foreach (var song in midiProgram.Songs)
                 {
                     song.MidiProgram = midiProgram;
+                    if (song.Amps != null)
+                    {
+                        for (int i = 0; i < song.Amps.Count; i++)
+                        {
+                            song.Amps[i].AmpDefinition = midiProgram.Amps[i];
+                        }
+                    }
+
+                    foreach (var scene in song.SceneDescriptors)
+                    {
+                        for (int i = 0; i < scene.Amps.Count; i++)
+                        {
+                            scene.Amps[i].ToneDefinition = midiProgram.Amps[i].Tones[scene.Amps[i].Tone];
+                        }
+                    }
                 }
             }
 
@@ -76,6 +102,8 @@ namespace e_sharp_minor
 
         public void ActivateSong(Song newSong)
         {
+            int scene = 0;
+
             if (currentSong != null)
             {
                 // TODO
@@ -85,6 +113,9 @@ namespace e_sharp_minor
 
             // TODO
             //midi.SetController(channel, );
+            //newSong.MidiProgram.Amps[0];
+            //newSong.Amps[0];
+            //newSong.SceneDescriptors[scene].Amps[0].Tone;
 
             this.currentSong = newSong;
         }
@@ -165,6 +196,9 @@ namespace e_sharp_minor
 
         public class ToneDefinition
         {
+            [YamlIgnore]
+            public AmpDefinition AmpDefinition { get; set; }
+
             public int Gain { get; set; }
             public double Level { get; set; }
 
@@ -180,6 +214,9 @@ namespace e_sharp_minor
 
         public class ToneOverride
         {
+            [YamlIgnore]
+            public ToneDefinition ToneDefinition { get; set; }
+
             public int? Gain { get; set; }
             public double? Level { get; set; }
 
@@ -188,6 +225,9 @@ namespace e_sharp_minor
 
         public class AmpOverrides
         {
+            [YamlIgnore]
+            public AmpDefinition AmpDefinition { get; set; }
+
             public Dictionary<string, ToneOverride> Tones { get; set; }
         }
 
