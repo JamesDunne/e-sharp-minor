@@ -16,10 +16,7 @@ namespace e_sharp_minor
             var translator = new Translator();
             translator.Translate();
 #else
-            IMIDI midi;
-            midi = new MidiConsoleOut();
-            midi = new MidiState(midi);
-
+            IMIDI midi = new MidiConsoleOut();
             var controller = new Controller(midi, 2);
 
             controller.LoadData();
