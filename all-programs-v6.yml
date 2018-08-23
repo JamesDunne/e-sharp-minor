@@ -173,7 +173,7 @@ midi_programs:
       amps:
       - tone: dirty
       - tone: dirty
-        level: 6
+        volume: 6
         blocks:
           dly2:
             on: true
@@ -187,7 +187,7 @@ midi_programs:
       amps:
       - tone: dirty
       - tone: dirty
-        level: 6
+        volume: 6
         blocks:
           dly2:
             on: true
@@ -201,7 +201,7 @@ midi_programs:
       amps:
       - tone: dirty
       - tone: dirty
-        level: 6
+        volume: 6
         blocks:
           dly2:
             on: true
@@ -220,7 +220,7 @@ midi_programs:
       amps:
       - tone: dirty
       - tone: dirty
-        level: 6
+        volume: 6
         blocks:
           dly2:
             on: true
@@ -249,7 +249,7 @@ midi_programs:
       amps:
       - tone: dirty
       - tone: dirty
-        level: 6
+        volume: 6
         blocks:
           dly2:
             on: true
@@ -264,7 +264,7 @@ midi_programs:
       amps:
       - tone: dirty
       - tone: dirty
-        level: 6
+        volume: 6
         blocks:
           dly2:
             on: true
@@ -276,7 +276,7 @@ midi_programs:
       amps:
       - tone: dirty
       - tone: dirty
-        level: 6
+        volume: 6
         blocks:
           dly2:
             on: true
@@ -288,7 +288,7 @@ midi_programs:
       amps:
       - tone: dirty
       - tone: dirty
-        level: 6
+        volume: 6
         blocks:
           dly2:
             on: true
@@ -310,12 +310,12 @@ midi_programs:
       amps:
       - tone: clean
       - tone: clean
-        level: -1
+        volume: -1
     - name: Intro
       amps:
       - tone: dirty
       - tone: dirty
-        level: -3
+        volume: -3
     - name: Verse
       amps:
       - tone: dirty
@@ -325,7 +325,7 @@ midi_programs:
       - tone: dirty
       - tone: dirty
         gain: 112
-        level: 6
+        volume: 6
         blocks:
           dly2:
             on: true
@@ -334,7 +334,7 @@ midi_programs:
       - tone: clean
       - tone: dirty
         gain: 112
-        level: 2
+        volume: 2
         blocks:
           dly2:
             on: true
@@ -355,7 +355,7 @@ midi_programs:
       - tone: dirty
       - tone: dirty
         gain: 112
-        level: 6
+        volume: 6
         blocks:
           dly2:
             on: true
@@ -367,7 +367,7 @@ midi_programs:
       - tone: dirty
       - tone: dirty
         gain: 65
-        level: -1.5
+        volume: -1.5
         blocks:
           phr2:
             on: true
@@ -382,7 +382,7 @@ midi_programs:
       - tone: dirty
       - tone: dirty
         gain: 65
-        level: -1.5
+        volume: -1.5
         blocks:
           phr2:
             on: true
@@ -397,7 +397,7 @@ midi_programs:
       - tone: dirty
       - tone: dirty
         gain: 65
-        level: -1.5
+        volume: -1.5
         blocks:
           phr2:
             on: true
@@ -412,7 +412,7 @@ midi_programs:
       - tone: dirty
       - tone: dirty
         gain: 65
-        level: -1.5
+        volume: -1.5
         blocks:
           phr2:
             on: true
@@ -509,7 +509,7 @@ midi_programs:
       amps:
       - tone: dirty
       - tone: dirty
-        level: 6
+        volume: 6
         blocks:
           dly2:
             on: true
@@ -533,7 +533,7 @@ midi_programs:
       amps:
       - tone: dirty
       - tone: dirty
-        level: 6
+        volume: 6
         blocks:
           dly2:
             on: true
@@ -548,7 +548,7 @@ midi_programs:
       amps:
       - tone: dirty
       - tone: dirty
-        level: 6
+        volume: 6
     - name: JD dirty;MG dirty
       amps:
       - tone: dirty
@@ -564,7 +564,7 @@ midi_programs:
       amps:
       - tone: dirty
       - tone: dirty
-        level: 6
+        volume: 6
         blocks:
           dly2:
             on: true
@@ -603,7 +603,7 @@ midi_programs:
     - name: JD dirty;MG lead
       amps:
       - tone: dirty
-        level: 6
+        volume: 6
         blocks:
           dly1:
             on: true
@@ -666,7 +666,7 @@ midi_programs:
       - tone: dirty
         gain: 48
       - tone: dirty
-        level: 6
+        volume: 6
         blocks:
           dly2:
             on: true
@@ -701,7 +701,7 @@ midi_programs:
     - name: JD dirty;MG lead
       amps:
       - tone: dirty
-        level: 6
+        volume: 6
         blocks:
           dly1:
             on: true
@@ -709,7 +709,7 @@ midi_programs:
     - name: JD clean;MG lead
       amps:
       - tone: dirty
-        level: 6
+        volume: 6
         blocks:
           dly1:
             on: true
@@ -725,7 +725,7 @@ midi_programs:
     - name: JD dirty;MG lead
       amps:
       - tone: dirty
-        level: 6
+        volume: 6
         blocks:
           dly1:
             on: true
@@ -763,12 +763,12 @@ midi_programs:
       - tone: dirty
       - tone: dirty
         gain: 100
-        level: 6
+        volume: 6
     - name: JD lead;MG dirty
       amps:
       - tone: dirty
       - tone: dirty
-        level: -1
+        volume: -1
         blocks:
           phr2:
             on: true
@@ -797,7 +797,7 @@ midi_programs:
       amps:
       - tone: clean
       - tone: dirty
-        level: -3
+        volume: -3
         blocks:
           dly2:
             on: true
@@ -817,7 +817,7 @@ midi_programs:
       amps:
       - tone: dirty
       - tone: dirty
-        level: 4
+        volume: 4
         blocks:
           cho2:
             on: true
@@ -839,7 +839,7 @@ midi_programs:
       amps:
       - tone: dirty
       - tone: dirty
-        level: 6
+        volume: 6
         blocks:
           dly2:
             on: true
@@ -854,17 +854,17 @@ midi_programs:
       amps:
       - tone: dirty
       - tone: dirty
-        level: 3
+        volume: 3
     - name: JD lead;MG dirty
       amps:
       - tone: dirty
       - tone: dirty
-        level: 6
+        volume: 6
     - name: JD lead;MG dirty
       amps:
       - tone: dirty
       - tone: dirty
-        level: 3
+        volume: 3
         blocks:
           dly2:
             on: true
@@ -902,7 +902,7 @@ midi_programs:
       amps:
       - tone: dirty
       - tone: dirty
-        level: 4
+        volume: 4
     - name: JD dirty;MG dirty
       amps:
       - tone: dirty
@@ -930,7 +930,7 @@ midi_programs:
       - tone: dirty
       - tone: dirty
         gain: 125
-        level: 6
+        volume: 6
     - name: JD dirty;MG dirty
       amps:
       - tone: dirty
@@ -965,7 +965,7 @@ midi_programs:
       amps:
       - tone: dirty
       - tone: dirty
-        level: 6
+        volume: 6
         blocks:
           dly2:
             on: true
@@ -977,7 +977,7 @@ midi_programs:
       amps:
       - tone: dirty
       - tone: dirty
-        level: 6
+        volume: 6
         blocks:
           dly2:
             on: true
@@ -1000,7 +1000,7 @@ midi_programs:
       - tone: dirty
       - tone: dirty
         gain: 104
-        level: 6
+        volume: 6
     - name: Rhythm
       amps:
       - tone: dirty
@@ -1023,7 +1023,7 @@ midi_programs:
       amps:
       - tone: dirty
       - tone: dirty
-        level: 6
+        volume: 6
     - name: Rhythm
       amps:
       - tone: dirty
@@ -1069,7 +1069,7 @@ midi_programs:
       - tone: dirty
       - tone: dirty
         gain: 94
-        level: 6
+        volume: 6
         blocks:
           dly2:
             on: true
@@ -1107,10 +1107,10 @@ midi_programs:
       amps:
       - tone: dirty
         gain: 65
-        level: -2
+        volume: -2
       - tone: dirty
         gain: 65
-        level: -2
+        volume: -2
     - name: Chorus
       amps:
       - tone: dirty
@@ -1119,10 +1119,10 @@ midi_programs:
       amps:
       - tone: dirty
         gain: 65
-        level: -2
+        volume: -2
       - tone: dirty
         gain: 65
-        level: -2
+        volume: -2
     - name: Chorus
       amps:
       - tone: dirty
@@ -1131,10 +1131,10 @@ midi_programs:
       amps:
       - tone: dirty
         gain: 65
-        level: -2
+        volume: -2
       - tone: dirty
         gain: 65
-        level: -2
+        volume: -2
     - name: Chorus
       amps:
       - tone: dirty
@@ -1143,10 +1143,10 @@ midi_programs:
       amps:
       - tone: dirty
         gain: 65
-        level: -2
+        volume: -2
       - tone: dirty
         gain: 65
-        level: -2
+        volume: -2
   - name: Slayer
     tempo: 130
     scenes:
@@ -1168,7 +1168,7 @@ midi_programs:
       amps:
       - tone: dirty
       - tone: dirty
-        level: 6
+        volume: 6
         blocks:
           dly2:
             on: true
@@ -1206,7 +1206,7 @@ midi_programs:
           cho1:
             on: true
       - tone: dirty
-        level: -2
+        volume: -2
     - name: Verse
       amps:
       - tone: clean
@@ -1224,7 +1224,7 @@ midi_programs:
           cho1:
             on: true
       - tone: dirty
-        level: -2
+        volume: -2
     - name: Breakdown
       amps:
       - tone: clean
@@ -1233,7 +1233,7 @@ midi_programs:
             on: true
       - tone: dirty
         gain: 24
-        level: -2
+        volume: -2
     - name: Chorus
       amps:
       - tone: clean
@@ -1241,7 +1241,7 @@ midi_programs:
           cho1:
             on: true
       - tone: dirty
-        level: -2
+        volume: -2
         blocks:
           dly2:
             on: true
@@ -1253,7 +1253,7 @@ midi_programs:
             on: true
       - tone: dirty
         gain: 65
-        level: -1
+        volume: -1
         blocks:
           dly2:
             on: true
@@ -1278,7 +1278,7 @@ midi_programs:
       amps:
       - tone: dirty
       - tone: dirty
-        level: 4
+        volume: 4
     - name: Verse
       amps:
       - tone: dirty
@@ -1294,7 +1294,7 @@ midi_programs:
       amps:
       - tone: acoustic
       - tone: dirty
-        level: 6
+        volume: 6
     - name: Verse
       amps:
       - tone: acoustic
@@ -1303,7 +1303,7 @@ midi_programs:
       amps:
       - tone: acoustic
       - tone: dirty
-        level: 6
+        volume: 6
     - name: Verse
       amps:
       - tone: acoustic
@@ -1319,7 +1319,7 @@ midi_programs:
       amps:
       - tone: dirty
       - tone: dirty
-        level: 3
+        volume: 3
     - name: Rhythm
       amps:
       - tone: dirty
@@ -1328,7 +1328,7 @@ midi_programs:
       amps:
       - tone: dirty
       - tone: dirty
-        level: 3
+        volume: 3
     - name: Rhythm
       amps:
       - tone: dirty
@@ -1337,7 +1337,7 @@ midi_programs:
       amps:
       - tone: dirty
       - tone: dirty
-        level: 4.5
+        volume: 4.5
     - name: Rhythm
       amps:
       - tone: dirty
@@ -1420,7 +1420,7 @@ midi_programs:
       amps:
       - tone: dirty
       - tone: dirty
-        level: 3
+        volume: 3
     - name: Rhythm
       amps:
       - tone: dirty
@@ -1438,9 +1438,9 @@ midi_programs:
     - name: Rhythm
       amps:
       - tone: dirty
-        level: -1.5
+        volume: -1.5
       - tone: dirty
-        level: -1.5
+        volume: -1.5
   - name: Comedown
     tempo: 110
     amps:
@@ -1459,7 +1459,7 @@ midi_programs:
       amps:
       - tone: dirty
       - tone: dirty
-        level: 3
+        volume: 3
     - name: Rhythm
       amps:
       - tone: dirty
@@ -1624,7 +1624,7 @@ midi_programs:
     - name: MG Lead
       amps:
       - tone: dirty
-        level: 3
+        volume: 3
         blocks:
           rtr1:
             on: true
@@ -1646,7 +1646,7 @@ midi_programs:
       amps:
       - tone: acoustic
       - tone: acoustic
-        level: 6
+        volume: 6
     - name: JD clean;MG clean
       amps:
       - tone: acoustic
@@ -1655,7 +1655,7 @@ midi_programs:
       amps:
       - tone: acoustic
       - tone: acoustic
-        level: 6
+        volume: 6
     - name: JD clean;MG clean
       amps:
       - tone: acoustic
@@ -1820,24 +1820,24 @@ midi_programs:
     - name: Breakdown clean
       amps:
       - tone: clean
-        level: 3
+        volume: 3
         blocks:
           cho1:
             on: true
       - tone: dirty
-        level: 1
+        volume: 1
         blocks:
           dly2:
             on: true
     - name: Breakdown harm
       amps:
       - tone: clean
-        level: 3
+        volume: 3
         blocks:
           cho1:
             on: true
       - tone: dirty
-        level: 1
+        volume: 1
         blocks:
           dly2:
             on: true
@@ -1846,24 +1846,24 @@ midi_programs:
     - name: Breakdown lead
       amps:
       - tone: clean
-        level: 3
+        volume: 3
         blocks:
           cho1:
             on: true
       - tone: dirty
-        level: 6
+        volume: 6
         blocks:
           dly2:
             on: true
     - name: Breakdown harm
       amps:
       - tone: clean
-        level: 3
+        volume: 3
         blocks:
           cho1:
             on: true
       - tone: dirty
-        level: 1
+        volume: 1
         blocks:
           dly2:
             on: true
@@ -1878,7 +1878,7 @@ midi_programs:
       - tone: dirty
       - tone: dirty
         gain: 120
-        level: 6
+        volume: 6
         blocks:
           dly2:
             on: true
@@ -1891,7 +1891,7 @@ midi_programs:
       - tone: dirty
       - tone: dirty
         gain: 120
-        level: 2
+        volume: 2
         blocks:
           dly2:
             on: true

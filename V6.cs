@@ -35,6 +35,12 @@ namespace e_sharp_minor
             public List<SceneDescriptor> SceneDescriptors { get; set; }
         }
 
+        public class SceneDescriptor
+        {
+            public string Name { get; set; }
+            public List<ToneSelection> Amps { get; set; }
+        }
+
         public class AmpDefinition
         {
             [YamlIgnore]
@@ -47,10 +53,10 @@ namespace e_sharp_minor
 
             // MIDI CC of external controller that is mapped to gain:
             [YamlMember(Alias = "GainControllerCc")]
-            public int? GainControllerCC { get; set; }
+            public int GainControllerCC { get; set; }
             // MIDI CC of external controller that is mapped to volume:
             [YamlMember(Alias = "VolumeControllerCc")]
-            public int? VolumeControllerCC { get; set; }
+            public int VolumeControllerCC { get; set; }
 
             // Available general tones for this amp and their block settings, e.g. clean, dirty, acoustic:
             public Dictionary<string, ToneDefinition> Tones { get; set; }
@@ -83,7 +89,7 @@ namespace e_sharp_minor
             public AmpDefinition AmpDefinition { get; set; }
 
             public int Gain { get; set; }
-            public double Level { get; set; }
+            public double Volume { get; set; }
 
             public Dictionary<string, FXBlock> Blocks { get; set; }
         }
@@ -101,7 +107,7 @@ namespace e_sharp_minor
             public ToneDefinition ToneDefinition { get; set; }
 
             public int? Gain { get; set; }
-            public double? Level { get; set; }
+            public double? Volume { get; set; }
 
             public Dictionary<string, FXBlockOverride> Blocks { get; set; }
         }
@@ -117,12 +123,6 @@ namespace e_sharp_minor
         public class ToneSelection : ToneOverride
         {
             public string Tone { get; set; }
-        }
-
-        public class SceneDescriptor
-        {
-            public string Name { get; set; }
-            public List<ToneSelection> Amps { get; set; }
         }
     }
 }
