@@ -40,7 +40,7 @@ namespace e_sharp_minor
             {
                 if (midiProgram.Amps.Count == 0)
                 {
-                    throw new Exception("Midi program must define at least one amp!");
+                    throw new Exception("MIDI program must define at least one amp!");
                 }
 
                 foreach (var ampDefinition in midiProgram.Amps)
@@ -58,6 +58,10 @@ namespace e_sharp_minor
                     song.MidiProgram = midiProgram;
                     if (song.Amps != null)
                     {
+                        if (song.Amps.Count != midiProgram.Amps.Count)
+                        {
+                            throw new Exception(String.Format("Song '{0}' amp count must match MIDI program amp count!", song.Name));
+                        }
                         for (int i = 0; i < song.Amps.Count; i++)
                         {
                             song.Amps[i].AmpDefinition = midiProgram.Amps[i];
@@ -66,8 +70,16 @@ namespace e_sharp_minor
 
                     foreach (var scene in song.SceneDescriptors)
                     {
+                        if (scene.Amps.Count != midiProgram.Amps.Count)
+                        {
+                            throw new Exception(String.Format("Song '{0}' scene '{1}' amp count must match MIDI program amp count!", song.Name, scene.Name));
+                        }
                         for (int i = 0; i < scene.Amps.Count; i++)
                         {
+                            if (!midiProgram.Amps[i].Tones.ContainsKey(scene.Amps[i].Tone))
+                            {
+                                throw new Exception(String.Format("Song '{0}' scene '{1}' amp {2} tone '{3}' must exist in MIDI program amp definition!", song.Name, scene.Name, i + 1, scene.Amps[i].Tone));
+                            }
                             scene.Amps[i].ToneDefinition = midiProgram.Amps[i].Tones[scene.Amps[i].Tone];
                         }
                     }
