@@ -10,7 +10,7 @@ namespace e_sharp_minor
 {
     public class Controller
     {
-        private readonly IMIDI midi;
+        private readonly MidiState midi;
         private readonly int channel;
 
         private AllPrograms programs;
@@ -20,7 +20,8 @@ namespace e_sharp_minor
 
         public Controller(IMIDI midi, int channel)
         {
-            this.midi = midi;
+            // Wrap the MIDI output device in a state-tracker:
+            this.midi = (midi is MidiState) ? (MidiState)midi : new MidiState(midi);
             this.channel = channel;
             this.currentSong = null;
         }
