@@ -37,14 +37,21 @@ namespace e_sharp_minor
 
         public class SceneDescriptor
         {
+            [YamlIgnore]
+            public Song Song { get; set; }
+            [YamlIgnore]
+            public int SceneNumber { get; set; }
+
             public string Name { get; set; }
-            public List<ToneSelection> Amps { get; set; }
+            public List<AmpToneSelection> Amps { get; set; }
         }
 
         public class AmpDefinition
         {
             [YamlIgnore]
             public MidiProgram MidiProgram { get; set; }
+            [YamlIgnore]
+            public int AmpNumber { get; set; }
 
             public string Name { get; set; }
 
@@ -59,7 +66,7 @@ namespace e_sharp_minor
             public int VolumeControllerCC { get; set; }
 
             // Available general tones for this amp and their block settings, e.g. clean, dirty, acoustic:
-            public Dictionary<string, ToneDefinition> Tones { get; set; }
+            public Dictionary<string, AmpToneDefinition> Tones { get; set; }
         }
 
         public class FXBlockDefinition
@@ -83,7 +90,7 @@ namespace e_sharp_minor
             public XYSwitch? XY { get; set; }
         }
 
-        public class ToneDefinition
+        public class AmpToneDefinition
         {
             [YamlIgnore]
             public AmpDefinition AmpDefinition { get; set; }
@@ -101,10 +108,10 @@ namespace e_sharp_minor
             public XYSwitch? XY { get; set; }
         }
 
-        public class ToneOverride
+        public class AmpToneOverride
         {
             [YamlIgnore]
-            public ToneDefinition ToneDefinition { get; set; }
+            public AmpToneDefinition AmpToneDefinition { get; set; }
 
             public int? Gain { get; set; }
             public double? Volume { get; set; }
@@ -116,12 +123,17 @@ namespace e_sharp_minor
         {
             [YamlIgnore]
             public AmpDefinition AmpDefinition { get; set; }
+            [YamlIgnore]
+            public int AmpNumber { get; set; }
 
-            public Dictionary<string, ToneOverride> Tones { get; set; }
+            public Dictionary<string, AmpToneOverride> Tones { get; set; }
         }
 
-        public class ToneSelection : ToneOverride
+        public class AmpToneSelection : AmpToneOverride
         {
+            [YamlIgnore]
+            public int AmpNumber { get; set; }
+
             public string Tone { get; set; }
         }
     }

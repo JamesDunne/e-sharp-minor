@@ -40,9 +40,9 @@ namespace e_sharp_minor
             return (int)(127.0 * Pow(Math.Log((double)(b) + 1.0), 2) / Pow(Log(127.0 + 1.0), 2));
         }
 
-        private V6.ToneSelection convertAmp(V5.Amp amp)
+        private V6.AmpToneSelection convertAmp(V5.Amp amp)
         {
-            return new V6.ToneSelection
+            return new V6.AmpToneSelection
             {
                 Tone = amp.Channel,
                 Gain = amp.Gain == 0 ? (amp.GainLog == 0 ? (int?)null : logTaper(amp.GainLog)) : amp.Gain,
@@ -87,9 +87,9 @@ namespace e_sharp_minor
                                     { "cho1", new V6.FXBlockDefinition { EnabledSwitchCC = 41 } },
                                     { "dly1", new V6.FXBlockDefinition { EnabledSwitchCC = 47 } }
                                 },
-                                Tones = new Dictionary<string, V6.ToneDefinition>
+                                Tones = new Dictionary<string, V6.AmpToneDefinition>
                                 {
-                                    { "clean", new V6.ToneDefinition {
+                                    { "clean", new V6.AmpToneDefinition {
                                         Gain = 0x12,
                                         Volume = 0,
                                         Blocks = new Dictionary<string, V6.FXBlock>
@@ -100,7 +100,7 @@ namespace e_sharp_minor
                                             { "compressor1", new V6.FXBlock { On = true, XY = V6.XYSwitch.X } }
                                         }
                                     } },
-                                    { "dirty", new V6.ToneDefinition {
+                                    { "dirty", new V6.AmpToneDefinition {
                                         Gain = 0x40,
                                         Volume = 0,
                                         Blocks = new Dictionary<string, V6.FXBlock>
@@ -111,7 +111,7 @@ namespace e_sharp_minor
                                             { "compressor1", new V6.FXBlock { On = true, XY = V6.XYSwitch.X } }
                                         }
                                     } },
-                                    { "acoustic", new V6.ToneDefinition {
+                                    { "acoustic", new V6.AmpToneDefinition {
                                         Gain = 0x12,
                                         Volume = 0,
                                         Blocks = new Dictionary<string, V6.FXBlock>
@@ -142,9 +142,9 @@ namespace e_sharp_minor
                                     { "cho2", new V6.FXBlockDefinition { EnabledSwitchCC = 42 } },
                                     { "dly2", new V6.FXBlockDefinition { EnabledSwitchCC = 48 } }
                                 },
-                                Tones = new Dictionary<string, V6.ToneDefinition>
+                                Tones = new Dictionary<string, V6.AmpToneDefinition>
                                 {
-                                    { "clean", new V6.ToneDefinition {
+                                    { "clean", new V6.AmpToneDefinition {
                                         Gain = 0x12,
                                         Volume = 0,
                                         Blocks = new Dictionary<string, V6.FXBlock>
@@ -155,7 +155,7 @@ namespace e_sharp_minor
                                             { "compressor2", new V6.FXBlock { On = true, XY = V6.XYSwitch.X } }
                                         }
                                     } },
-                                    { "dirty", new V6.ToneDefinition {
+                                    { "dirty", new V6.AmpToneDefinition {
                                         Gain = 0x40,
                                         Volume = 0,
                                         Blocks = new Dictionary<string, V6.FXBlock>
@@ -166,7 +166,7 @@ namespace e_sharp_minor
                                             { "compressor2", new V6.FXBlock { On = true, XY = V6.XYSwitch.X } }
                                         }
                                     } },
-                                    { "acoustic", new V6.ToneDefinition {
+                                    { "acoustic", new V6.AmpToneDefinition {
                                         Gain = 0x12,
                                         Volume = 0,
                                         Blocks = new Dictionary<string, V6.FXBlock>
@@ -194,7 +194,7 @@ namespace e_sharp_minor
                                     select new V6.SceneDescriptor
                                     {
                                         Name = s.Name,
-                                        Amps = new List<V6.ToneSelection>
+                                        Amps = new List<V6.AmpToneSelection>
                                         {
                                             convertAmp(s.MG),
                                             convertAmp(s.JD)
@@ -218,11 +218,11 @@ namespace e_sharp_minor
             {
                 new V6.AmpOverrides
                 {
-                    Tones = new Dictionary<string, V6.ToneOverride>
+                    Tones = new Dictionary<string, V6.AmpToneOverride>
                     {
                         {
                             "dirty",
-                            new V6.ToneOverride
+                            new V6.AmpToneOverride
                             {
                                 Gain = g
                             }
@@ -231,11 +231,11 @@ namespace e_sharp_minor
                 },
                 new V6.AmpOverrides
                 {
-                    Tones = new Dictionary<string, V6.ToneOverride>
+                    Tones = new Dictionary<string, V6.AmpToneOverride>
                     {
                         {
                             "dirty",
-                            new V6.ToneOverride
+                            new V6.AmpToneOverride
                             {
                                 Gain = g
                             }

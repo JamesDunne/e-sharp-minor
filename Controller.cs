@@ -18,6 +18,7 @@ namespace e_sharp_minor
         private AllPrograms programs;
         private List<Song> songsSorted;
 
+        private int currentScene;
         private Song currentSong;
 
         public Controller(IMIDI midi, int channel)
@@ -26,6 +27,7 @@ namespace e_sharp_minor
             this.midi = (midi is MidiState) ? (MidiState)midi : new MidiState(midi);
             this.channel = channel;
             this.currentSong = null;
+            this.currentScene = 0;
         }
 
         public void LoadData()
@@ -45,8 +47,10 @@ namespace e_sharp_minor
                     throw new Exception("MIDI program must define at least one amp!");
                 }
 
-                foreach (var ampDefinition in midiProgram.Amps)
+                for (int i = 0; i < midiProgram.Amps.Count; i++)
                 {
+                    var ampDefinition = midiProgram.Amps[i];
+                    ampDefinition.AmpNumber = i;
                     ampDefinition.MidiProgram = midiProgram;
 
                     foreach (var tone in ampDefinition.Tones.Values)
@@ -64,9 +68,12 @@ namespace e_sharp_minor
                         {
                             throw new Exception(String.Format("Song '{0}' amp count must match MIDI program amp count!", song.Name));
                         }
+
                         for (int i = 0; i < song.Amps.Count; i++)
                         {
+                            song.Amps[i].AmpNumber = i;
                             song.Amps[i].AmpDefinition = midiProgram.Amps[i];
+
                             foreach (var toneKey in song.Amps[i].Tones.Keys)
                             {
                                 if (!midiProgram.Amps[i].Tones.ContainsKey(toneKey))
@@ -83,13 +90,16 @@ namespace e_sharp_minor
                         {
                             throw new Exception(String.Format("Song '{0}' scene '{1}' amp count must match MIDI program amp count!", song.Name, scene.Name));
                         }
+
                         for (int i = 0; i < scene.Amps.Count; i++)
                         {
                             if (!midiProgram.Amps[i].Tones.ContainsKey(scene.Amps[i].Tone))
                             {
                                 throw new Exception(String.Format("Song '{0}' scene '{1}' amp {2} tone '{3}' must exist in MIDI program amp definition!", song.Name, scene.Name, i + 1, scene.Amps[i].Tone));
                             }
-                            scene.Amps[i].ToneDefinition = midiProgram.Amps[i].Tones[scene.Amps[i].Tone];
+
+                            scene.Amps[i].AmpNumber = i;
+                            scene.Amps[i].AmpToneDefinition = midiProgram.Amps[i].Tones[scene.Amps[i].Tone];
                         }
                     }
                 }
@@ -119,6 +129,11 @@ namespace e_sharp_minor
 
             // Activate the first song:
             ActivateSong(songsSorted[0]);
+
+            ActivateScene();
+
+            // Activate a new midi program's song:
+            ActivateSong(programs.MidiPrograms[1].Songs[0]);
         }
 
         int DBtoMIDI(double db)
@@ -144,22 +159,36 @@ namespace e_sharp_minor
             Console.WriteLine("Change MIDI program {0}", newSong.MidiProgram.ProgramNumber);
             midi.SetProgram(channel, newSong.MidiProgram.ProgramNumber);
 
-            for (int i = 0; i < newSong.MidiProgram.Amps.Count; i++)
+            this.currentSong = newSong;
+            this.currentScene = scene;
+            ActivateScene();
+        }
+
+        public void ActivateScene()
+        {
+            Console.WriteLine("Activate song '{0}' scene {1}", currentSong.Name, currentScene);
+
+            if (currentScene >= currentSong.SceneDescriptors.Count)
             {
-                SceneDescriptor sceneDescriptor = newSong.SceneDescriptors[scene];
-                ToneSelection toneSelection = sceneDescriptor.Amps[i];
-                ToneDefinition toneDefinition = toneSelection.ToneDefinition;
+                throw new Exception("Invalid scene number!");
+            }
+
+            for (int i = 0; i < currentSong.MidiProgram.Amps.Count; i++)
+            {
+                SceneDescriptor sceneDescriptor = currentSong.SceneDescriptors[currentScene];
+                AmpToneSelection toneSelection = sceneDescriptor.Amps[i];
+                AmpToneDefinition toneDefinition = toneSelection.AmpToneDefinition;
                 AmpDefinition ampDefinition = toneDefinition.AmpDefinition;
 
                 // Figure out the song-specific override of tone:
-                ToneOverride toneOverride = null;
-                if (newSong.Amps != null)
+                AmpToneOverride toneOverride = null;
+                if (currentSong.Amps != null)
                 {
-                    toneOverride = newSong.Amps[i].Tones[toneSelection.Tone];
+                    toneOverride = currentSong.Amps[i].Tones.GetValueOrDefault(toneSelection.Tone);
                 }
-                else
+                if (toneOverride == null)
                 {
-                    toneOverride = new ToneOverride
+                    toneOverride = new AmpToneOverride
                     {
                         Blocks = new Dictionary<string, FXBlockOverride>()
                     };
@@ -194,10 +223,10 @@ namespace e_sharp_minor
 
                     if (enabled.HasValue)
                     {
-                        Console.WriteLine("Amp[{0}]: {1} = {2}", i+1, blockName, enabled.Value ? "on" : "off");
+                        Console.WriteLine("Amp[{0}]: {1} = {2}", i + 1, blockName, enabled.Value ? "on" : "off");
                         midi.SetController(channel, enabledCC, enabled.Value ? 0x7F : 0x00);
                     }
-                    if (xy.HasValue && xySwitchCC.HasValue)
+                    if (xy.HasValue && xySwitchCC.HasValue) 
                     {
                         Console.WriteLine("Amp[{0}]: {1} to {2}", i + 1, blockName, enabled.Value ? "X" : "Y");
                         midi.SetController(channel, xySwitchCC.Value, xy.Value == XYSwitch.X ? 0x7F : 0x00);
@@ -217,7 +246,7 @@ namespace e_sharp_minor
                 midi.SetController(channel, toneDefinition.AmpDefinition.VolumeControllerCC, volumeMIDI);
             }
 
-            this.currentSong = newSong;
+            // TODO: send tempo SysEx message.
         }
     }
 }
