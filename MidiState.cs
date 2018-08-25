@@ -57,6 +57,11 @@ namespace e_sharp_minor
             }
         }
 
+        public void Dispose()
+        {
+            this.midi.Dispose();
+        }
+
         class ChannelState
         {
             public readonly int[] controllerValues;
