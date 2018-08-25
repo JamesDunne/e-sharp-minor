@@ -55,19 +55,15 @@ namespace e_sharp_minor
 #if RPI
                 using (var fsw = new FootSwitchInput())
                 {
+                    fsw.FootSwitchAction += (action) =>
+                    {
+                        Console.WriteLine("{0} {1}", action.FootSwitch, action.WhatAction);
+                    };
+
                     bool quit = false;
                     do
                     {
-                        bool? left, right;
-                        if (fsw.PollFootSwitches(out left, out right))
-                        {
-                            if (left.HasValue) Console.WriteLine("left button {0}", left.Value ? "pressed" : "released");
-                            if (right.HasValue) Console.WriteLine("right button {0}", right.Value ? "pressed" : "released");
-                        }
-                        else
-                        {
-                            Console.WriteLine("No button events");
-                        }
+                        fsw.PollFootSwitches();
                     } while (!quit);
                 }
 #endif

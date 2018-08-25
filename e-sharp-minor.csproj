@@ -19,6 +19,7 @@
     <!--<RuntimeIdentifier>linux-arm</RuntimeIdentifier>-->
 
     <DefineConstants>RPI</DefineConstants>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 
   </PropertyGroup>
 
