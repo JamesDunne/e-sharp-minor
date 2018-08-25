@@ -52,19 +52,18 @@ namespace e_sharp_minor
                 // Activate a new midi program's song:
                 controller.ActivateSong(controller.MidiPrograms[1].Songs[0], 0);
 
-                Console.ReadKey();
 #if RPI
-                using (var fsw = new FootSwitchInput())
+                using (var fsw = new FootSwitchInputEvdev())
                 {
-                    fsw.FootSwitchAction += (action) =>
+                    fsw.EventListener += (ev) =>
                     {
-                        Console.WriteLine("{0} {1}", action.FootSwitch, action.WhatAction);
+                        Console.WriteLine("{0} {1}", ev.FootSwitch, ev.WhatAction);
                     };
 
                     bool quit = false;
                     do
                     {
-                        fsw.PollFootSwitches();
+                        fsw.PollEvents();
                     } while (!quit);
                 }
 #endif
