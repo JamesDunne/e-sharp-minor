@@ -8,6 +8,16 @@ using Shapes;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 
+// Select appropriate device implementation classes depending on build configuration
+// Use 'pi-debug' configuration to enable RPI.
+#if RPI
+using MidiOut = e_sharp_minor.MidiAlsaOut;
+using FootSwitchInput = e_sharp_minor.FootSwitchInputEvdev;
+#else
+using MidiOut = e_sharp_minor.MidiConsoleOut;
+using FootSwitchInput = e_sharp_minor.FootSwitchInputConsole;
+#endif
+
 namespace e_sharp_minor
 {
     class MainClass
@@ -17,14 +27,10 @@ namespace e_sharp_minor
 #if false
             var translator = new Translator();
             translator.Translate();
-#else
+#endif
 
             // Initialize MIDI OUT device:
-#if RPI
-            using (IMIDI midi = new MidiAlsaOut())
-#else
-            using (IMIDI midi = new MidiConsoleOut())
-#endif
+            using (IMIDI midi = new MidiOut())
             {
                 var controller = new Controller(midi, 2);
                 controller.LoadData();
@@ -76,11 +82,7 @@ namespace e_sharp_minor
                 // Activate the first song in the setlist:
                 controller.ActivateSong(setlist.Songs[0], 0);
 
-#if RPI
-                using (var fsw = new FootSwitchInputEvdev())
-#else
-                using (var fsw = new FootSwitchInputConsole())
-#endif
+                using (var fsw = new FootSwitchInput())
                 {
                     fsw.EventListener += (ev) =>
                     {
@@ -107,7 +109,6 @@ namespace e_sharp_minor
 
                 //new VGUI(controller).Run();
             }
-#endif
         }
     }
 }
