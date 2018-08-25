@@ -28,7 +28,6 @@ namespace e_sharp_minor
 
         public List<MidiProgram> MidiPrograms { get; private set; }
         public List<Setlist> Setlists { get; private set; }
-        public List<SongName> SongNames { get; private set; }
         public List<Song> Songs { get; private set; }
 
         public void LoadData()
@@ -48,12 +47,6 @@ namespace e_sharp_minor
                 setlists = de.Deserialize<Setlists>(tr);
 
             this.Setlists = setlists.Sets;
-
-            SongNames songNames;
-            using (var tr = OpenText("song-names.yml"))
-                songNames = de.Deserialize<SongNames>(tr);
-
-            this.SongNames = songNames.Songs;
 
             // Set back-references since we can't really deserialize these:
             foreach (var midiProgram in MidiPrograms)
@@ -78,6 +71,7 @@ namespace e_sharp_minor
                 foreach (var song in midiProgram.Songs)
                 {
                     song.MidiProgram = midiProgram;
+
                     if (song.Amps != null)
                     {
                         if (song.Amps.Count != midiProgram.Amps.Count)

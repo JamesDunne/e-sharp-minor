@@ -14,17 +14,22 @@ namespace e_sharp_minor
         {
         }
 
+        private SongNames songNames;
+        private V5.AllPrograms v5programs;
+
         public void Translate()
         {
             var de = new DeserializerBuilder()
                 .WithNamingConvention(new UnderscoredNamingConvention())
                 .Build();
 
-            V5.AllPrograms v5programs;
             using (var tr = OpenText("all-programs-v5.yml"))
                 v5programs = de.Deserialize<V5.AllPrograms>(tr);
 
-            var v6programs = convertV5toV6(v5programs);
+            using (var tr = OpenText("song-names.yml"))
+                songNames = de.Deserialize<SongNames>(tr);
+
+            var v6programs = convertV5toV6();
 
             var se = new SerializerBuilder()
                 .WithNamingConvention(new UnderscoredNamingConvention())
@@ -57,13 +62,13 @@ namespace e_sharp_minor
             };
         }
 
-        private V6.AllPrograms convertV5toV6(V5.AllPrograms programs)
+        private V6.AllPrograms convertV5toV6()
         {
             return new V6.AllPrograms
             {
                 MidiPrograms = (
                     from g in (
-                        from p in programs.Programs
+                        from p in v5programs.Programs
                         group p by p.MidiProgram
                     )
                     select new V6.MidiProgram
@@ -184,9 +189,17 @@ namespace e_sharp_minor
                         },
                         Songs = (
                             from p in g
+                            let alternateNames = (
+                                from sn in songNames.Songs
+                                where sn.Names.Any(name => String.Compare(p.Name, name, true) == 0) || String.Compare(p.Name, sn.ShortName) == 0
+                                select sn
+                            ).Single()
                             select new V6.Song
                             {
                                 Name = p.Name,
+                                ShortName = alternateNames.ShortName,
+                                AlternateNames = alternateNames.Names,
+                                WhoStarts = alternateNames.Starts,
                                 Tempo = p.Tempo,
                                 Amps = defaultAmps(p),
                                 SceneDescriptors = (

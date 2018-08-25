@@ -27,6 +27,10 @@ namespace e_sharp_minor
             public MidiProgram MidiProgram { get; set; }
 
             public string Name { get; set; }
+            public string ShortName { get; internal set; }
+            public List<string> AlternateNames { get; internal set; }
+            public string WhoStarts { get; internal set; }
+
             public int Tempo { get; set; }
 
             public List<AmpOverrides> Amps { get; set; }
