@@ -190,7 +190,7 @@ namespace e_sharp_minor
                 AmpDefinition ampDefinition = toneDefinition.AmpDefinition;
 
                 // Figure out the song-specific override of tone:
-                AmpToneOverride toneOverride = currentSong.Amps?[i].Tones.GetValueOrDefault(toneSelection.Tone);
+                AmpToneOverride toneOverride = currentSong.Amps?[i].Tones?.GetValueOrDefault(toneSelection.Tone);
 
                 // Set all the controller values for the selected tone:
                 foreach (var pair in toneDefinition.Blocks)
