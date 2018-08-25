@@ -30,6 +30,10 @@ namespace e_sharp_minor
         public List<Setlist> Setlists { get; private set; }
         public List<Song> Songs { get; private set; }
 
+        public Song CurrentSong { get { return currentSong; } }
+        public int CurrentScene { get { return currentScene; } }
+        public int LastScene { get { return currentSong.SceneDescriptors.Count - 1; } }
+
         public void LoadData()
         {
             var de = new DeserializerBuilder()
@@ -120,29 +124,6 @@ namespace e_sharp_minor
                 .SelectMany(m => m.Songs)
                 .OrderBy(s => s.Name)
                 .ToList();
-
-#if true
-            foreach (var song in Songs)
-            {
-                Console.WriteLine("{0}", song.Name);
-            }
-#else
-            foreach (var midiProgram in programs.MidiPrograms)
-            {
-                Console.WriteLine("midi: {0}", midiProgram.ProgramNumber);
-                foreach (var song in midiProgram.Songs) {
-                    Console.WriteLine("  song: {0}", song.Name);
-                }
-            }
-#endif
-
-            // Activate the first song:
-            ActivateSong(Songs[0]);
-
-            ActivateScene();
-
-            // Activate a new midi program's song:
-            ActivateSong(MidiPrograms[1].Songs[0]);
         }
 
         int DBtoMIDI(double db)
@@ -154,27 +135,20 @@ namespace e_sharp_minor
             return (int)(Round(plog));
         }
 
-        public void ActivateSong(Song newSong)
+        public void ActivateSong(Song newSong, int scene)
         {
             Console.WriteLine("Activate song '{0}'", newSong.Name);
-
-            int scene = 0;
-
-            if (currentSong != null)
-            {
-                // TODO: do we need to disable any blocks that are not in the new song?
-            }
 
             Console.WriteLine("Change MIDI program {0}", newSong.MidiProgram.ProgramNumber);
             midi.SetProgram(channel, newSong.MidiProgram.ProgramNumber);
 
             this.currentSong = newSong;
-            this.currentScene = scene;
-            ActivateScene();
+            ActivateScene(scene);
         }
 
-        public void ActivateScene()
+        public void ActivateScene(int scene)
         {
+            this.currentScene = scene;
             Console.WriteLine("Activate song '{0}' scene {1}", currentSong.Name, currentScene);
 
             if (currentScene >= currentSong.SceneDescriptors.Count)
