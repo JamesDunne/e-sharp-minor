@@ -190,18 +190,7 @@ namespace e_sharp_minor
                 AmpDefinition ampDefinition = toneDefinition.AmpDefinition;
 
                 // Figure out the song-specific override of tone:
-                AmpToneOverride toneOverride = null;
-                if (currentSong.Amps != null)
-                {
-                    toneOverride = currentSong.Amps[i].Tones.GetValueOrDefault(toneSelection.Tone);
-                }
-                if (toneOverride == null)
-                {
-                    toneOverride = new AmpToneOverride
-                    {
-                        Blocks = new Dictionary<string, FXBlockOverride>()
-                    };
-                }
+                AmpToneOverride toneOverride = currentSong.Amps?[i].Tones.GetValueOrDefault(toneSelection.Tone);
 
                 // Set all the controller values for the selected tone:
                 foreach (var pair in toneDefinition.Blocks)
@@ -213,22 +202,13 @@ namespace e_sharp_minor
                     int enabledCC = blockDefinition.EnabledSwitchCC;
                     int? xySwitchCC = blockDefinition.XYSwitchCC;
 
-                    FXBlockOverride songBlockOverride = null;
-                    if (toneOverride != null)
-                    {
-                        songBlockOverride = toneOverride.Blocks.GetValueOrDefault(blockName);
-                    }
-                    if (songBlockOverride == null)
-                    {
-                        songBlockOverride = new FXBlockOverride();
-                    }
+                    FXBlockOverride songBlockOverride = toneOverride?.Blocks?.GetValueOrDefault(blockName);
 
                     // Follow inheritance chain to determine enabled and X/Y switch values:
-                    Dictionary<string, FXBlockOverride> toneSelectionBlocks = toneSelection.Blocks ?? new Dictionary<string, FXBlockOverride>();
-                    var sceneBlockOverride = toneSelectionBlocks.GetValueOrDefault(blockName) ?? new FXBlockOverride();
+                    var sceneBlockOverride = toneSelection.Blocks?.GetValueOrDefault(blockName);
 
-                    var enabled = sceneBlockOverride.On ?? songBlockOverride.On ?? blockDefault.On;
-                    var xy = sceneBlockOverride.XY ?? songBlockOverride.XY ?? blockDefault.XY;
+                    var enabled = sceneBlockOverride?.On ?? songBlockOverride?.On ?? blockDefault.On;
+                    var xy = sceneBlockOverride?.XY ?? songBlockOverride?.XY ?? blockDefault.XY;
 
                     if (enabled.HasValue)
                     {
@@ -243,8 +223,8 @@ namespace e_sharp_minor
                 }
 
                 // Set the gain and volume:
-                var gain = toneSelection.Gain ?? toneOverride.Gain ?? toneDefinition.Gain;
-                var volume = toneSelection.Volume ?? toneOverride.Volume ?? toneDefinition.Volume;
+                var gain = toneSelection.Gain ?? toneOverride?.Gain ?? toneDefinition.Gain;
+                var volume = toneSelection.Volume ?? toneOverride?.Volume ?? toneDefinition.Volume;
 
                 // Convert volume to MIDI value:
                 var volumeMIDI = DBtoMIDI(volume);
