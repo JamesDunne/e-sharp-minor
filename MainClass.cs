@@ -29,8 +29,9 @@ namespace e_sharp_minor
             translator.Translate();
 #endif
 
-            // Initialize MIDI OUT device:
+            // Initialize devices:
             using (IMIDI midi = new MidiOut())
+            using (IFootSwitchInput fsw = new FootSwitchInput())
             {
                 var controller = new Controller(midi, 2);
                 controller.LoadData();
@@ -82,32 +83,40 @@ namespace e_sharp_minor
                 // Activate the first song in the setlist:
                 controller.ActivateSong(setlist.Songs[0], 0);
 
-                using (var fsw = new FootSwitchInput())
+                // Set up footswitch event listener:
+                fsw.EventListener += (ev) =>
                 {
-                    fsw.EventListener += (ev) =>
+                    Console.WriteLine("{0} {1}", ev.FootSwitch, ev.WhatAction);
+
+                    if (ev.FootSwitch == FootSwitch.Left)
                     {
-                        Console.WriteLine("{0} {1}", ev.FootSwitch, ev.WhatAction);
-                        if (ev.FootSwitch == FootSwitch.Left)
-                        {
-                            if (controller.CurrentScene == 0)
-                            {
-
-                            }
-                        }
-                        else if (ev.FootSwitch == FootSwitch.Right)
+                        if (controller.CurrentScene == 0)
                         {
 
                         }
-                    };
+                    }
+                    else if (ev.FootSwitch == FootSwitch.Right)
+                    {
 
+                    }
+                };
+
+                // Initialize UI:
+                using (var ui = new VGUI(controller))
+                {
                     bool quit = false;
                     do
                     {
+                        // TODO: switch to blocking wait for all events.
                         fsw.PollEvents();
+
+                        // Render UI screen:
+                        ui.Render();
+
+                        // Check with the GUI if user indicated app should quit:
+                        quit |= ui.ShouldQuit();
                     } while (!quit);
                 }
-
-                //new VGUI(controller).Run();
             }
         }
     }

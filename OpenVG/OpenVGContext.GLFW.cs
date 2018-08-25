@@ -75,6 +75,15 @@ namespace OpenVG
             Glfw.Terminate();
         }
 
+        /// <summary>
+        /// Determines if GUI user indicated application should quit.
+        /// </summary>
+        /// <returns><c>true</c>, if should quit, <c>false</c> otherwise.</returns>
+        public bool ShouldQuit()
+        {
+            return Glfw.WindowShouldClose(window);
+        }
+
         [DllImport(vg)]
         extern static IntPtr vgPrivContextCreateAM(IntPtr sharedContext);
 
