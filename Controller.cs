@@ -14,9 +14,6 @@ namespace e_sharp_minor
         private readonly MidiState midi;
         private readonly int channel;
 
-        private AllPrograms programs;
-        private List<Song> songsSorted;
-
         private int currentScene;
         private Song currentSong;
 
@@ -29,7 +26,10 @@ namespace e_sharp_minor
             this.currentScene = 0;
         }
 
-        public AllPrograms AllPrograms { get; private set; }
+        public List<MidiProgram> MidiPrograms { get; private set; }
+        public List<Setlist> Setlists { get; private set; }
+        public List<SongName> SongNames { get; private set; }
+        public List<Song> Songs { get; private set; }
 
         public void LoadData()
         {
@@ -37,13 +37,26 @@ namespace e_sharp_minor
                 .WithNamingConvention(new UnderscoredNamingConvention())
                 .Build();
 
+            AllPrograms allPrograms;
             using (var tr = OpenText("all-programs-v6.yml"))
-                programs = de.Deserialize<V6.AllPrograms>(tr);
+                allPrograms = de.Deserialize<V6.AllPrograms>(tr);
 
-            this.AllPrograms = programs;
+            this.MidiPrograms = allPrograms.MidiPrograms;
+
+            Setlists setlists;
+            using (var tr = OpenText("setlists.yml"))
+                setlists = de.Deserialize<Setlists>(tr);
+
+            this.Setlists = setlists.Sets;
+
+            SongNames songNames;
+            using (var tr = OpenText("song-names.yml"))
+                songNames = de.Deserialize<SongNames>(tr);
+
+            this.SongNames = songNames.Songs;
 
             // Set back-references since we can't really deserialize these:
-            foreach (var midiProgram in programs.MidiPrograms)
+            foreach (var midiProgram in MidiPrograms)
             {
                 if (midiProgram.Amps.Count == 0)
                 {
@@ -109,14 +122,13 @@ namespace e_sharp_minor
             }
 
             // Sort songs alphabetically across all MIDI programs:
-            songsSorted = AllPrograms
-                            .MidiPrograms
-                            .SelectMany(m => m.Songs)
-                            .OrderBy(s => s.Name)
-                            .ToList();
+            Songs = MidiPrograms
+                .SelectMany(m => m.Songs)
+                .OrderBy(s => s.Name)
+                .ToList();
 
 #if true
-            foreach (var song in songsSorted)
+            foreach (var song in Songs)
             {
                 Console.WriteLine("{0}", song.Name);
             }
@@ -131,12 +143,12 @@ namespace e_sharp_minor
 #endif
 
             // Activate the first song:
-            ActivateSong(songsSorted[0]);
+            ActivateSong(Songs[0]);
 
             ActivateScene();
 
             // Activate a new midi program's song:
-            ActivateSong(programs.MidiPrograms[1].Songs[0]);
+            ActivateSong(MidiPrograms[1].Songs[0]);
         }
 
         int DBtoMIDI(double db)
