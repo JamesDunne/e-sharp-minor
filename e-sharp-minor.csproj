@@ -37,5 +37,19 @@
   </ItemGroup>
   <ItemGroup>
     <None Remove="bcm_vg_init_example.o" />
+    <None Remove="all-programs-v6.yml" />
+    <None Remove="setlists.yml" />
+    <None Remove="song-names.yml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="all-programs-v6.yml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="setlists.yml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="song-names.yml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 </Project>
