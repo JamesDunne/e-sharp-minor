@@ -56,7 +56,7 @@ namespace e_sharp_minor
 #endif
 
             // Render our pre-made paths each frame:
-            vg.Clear(0, 0, vg.Width, vg.Height);
+            vg.Clear(0, 0, vg.FramebufferWidth, vg.FramebufferHeight);
 
             vg.StrokePaint = strokePaint;
             vg.FillPaint = fillPaint;

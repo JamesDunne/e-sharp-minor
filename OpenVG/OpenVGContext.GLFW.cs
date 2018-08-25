@@ -33,6 +33,10 @@ namespace OpenVG
             int fbWidth, fbHeight;
             Glfw.GetFramebufferSize(window, out fbWidth, out fbHeight);
 
+            // These are needed for vgClear since it works in framebuffer pixels.
+            FramebufferWidth = fbWidth;
+            FramebufferHeight = fbHeight;
+
             // create an OpenVG context
             Debug.WriteLine("vgContext = vgPrivContextCreateAM(0)");
             vgContext = vgPrivContextCreateAM(IntPtr.Zero);
@@ -110,14 +114,10 @@ namespace OpenVG
         }
 #endif
 
-        public int Width
-        {
-            get;
-        }
+        public int Width { get; }
+        public int Height { get; }
 
-        public int Height
-        {
-            get;
-        }
+        public int FramebufferWidth { get; }
+        public int FramebufferHeight { get; }
     }
 }
