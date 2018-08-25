@@ -52,6 +52,26 @@ namespace e_sharp_minor
                 // Activate a new midi program's song:
                 controller.ActivateSong(controller.MidiPrograms[1].Songs[0], 0);
 
+#if RPI
+                using (var fsw = new FootSwitchInput())
+                {
+                    bool quit = false;
+                    do
+                    {
+                        bool? left, right;
+                        if (fsw.PollFootSwitches(out left, out right))
+                        {
+                            if (left.HasValue) Console.WriteLine("left button {0}", left.Value ? "pressed" : "released");
+                            if (right.HasValue) Console.WriteLine("right button {0}", right.Value ? "pressed" : "released");
+                        }
+                        else
+                        {
+                            Console.WriteLine("No button events");
+                        }
+                    } while (!quit);
+                }
+#endif
+
                 //new VGUI(controller).Run();
             }
 #endif
