@@ -96,12 +96,12 @@ namespace e_sharp_minor
                     Console.WriteLine("{0} {1} {2}", type, code, value);
                     FootSwitchAction(new Action
                     {
-                        FootSwitch = (code == 0x1E) ? FootSwitch.Left : (code == 0x2E) ? FootSwitch.Right : FootSwitch.None,
+                        FootSwitch = (code == 0x1E) ? FootSwitch.Left : (code == 0x30) ? FootSwitch.Right : FootSwitch.None,
                         WhatAction = translateValue(value)
                     });
 
                     //if (code == 0x1E) left = value != 0;
-                    //if (code == 0x2E) right = value != 0;
+                    //if (code == 0x30) right = value != 0;
                     //wasRead = true;
                 }
             }
