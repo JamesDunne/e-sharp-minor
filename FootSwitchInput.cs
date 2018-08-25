@@ -99,10 +99,6 @@ namespace e_sharp_minor
                         FootSwitch = (code == 0x1E) ? FootSwitch.Left : (code == 0x30) ? FootSwitch.Right : FootSwitch.None,
                         WhatAction = translateValue(value)
                     });
-
-                    //if (code == 0x1E) left = value != 0;
-                    //if (code == 0x30) right = value != 0;
-                    //wasRead = true;
                 }
             }
         }
