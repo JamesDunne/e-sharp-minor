@@ -14,7 +14,7 @@ namespace e_sharp_minor
         {
         }
 
-        private SongNames songNames;
+        private V5.SongNames songNames;
         private V5.AllPrograms v5programs;
 
         public void Translate()
@@ -27,7 +27,7 @@ namespace e_sharp_minor
                 v5programs = de.Deserialize<V5.AllPrograms>(tr);
 
             using (var tr = OpenText("song-names.yml"))
-                songNames = de.Deserialize<SongNames>(tr);
+                songNames = de.Deserialize<V5.SongNames>(tr);
 
             var v6programs = convertV5toV6();
 
@@ -305,6 +305,18 @@ namespace e_sharp_minor
             public double Level { get; set; } // `yaml:"level"`    // pre-delay volume in dB (-inf to +6dB)
             [YamlMember(Alias = "fx", ApplyNamingConventions = false)]
             public List<string> FX { get; set; } // `yaml:"fx,flow"`  // any combo of "delay", "pitch", or "chorus"
+        }
+
+        public class SongName
+        {
+            public List<string> Names { get; set; }
+            public string ShortName { get; set; }
+            public string Starts { get; set; }
+        }
+
+        public class SongNames
+        {
+            public List<SongName> Songs { get; set; }
         }
     }
 }

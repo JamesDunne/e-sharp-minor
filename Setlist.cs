@@ -16,15 +16,4 @@ namespace e_sharp_minor
     {
         public List<Setlist> Sets { get; set; }
     }
-
-    public class SongName
-    {
-        public List<string> Names { get; set; }
-        public string ShortName { get; set; }
-        public string Starts { get; set; }
-    }
-
-    public class SongNames {
-        public List<SongName> Songs { get; set; }
-    }
 }
