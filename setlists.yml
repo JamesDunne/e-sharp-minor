@@ -1203,8 +1203,6 @@ sets:
 
   - date: "2018-03-31"
     venue: Spot on 66
-    active: true
-    print: true
     songs:
       - 'BREAK: SET 1'
 
@@ -1261,3 +1259,116 @@ sets:
       - 'BREAK: ENCORE'
 
       - Puppets
+
+  - date: "2018-06-02"
+    venue: Chubby Bullfrog
+    songs:
+      - 'BREAK: SET 1'
+
+      - Dammit
+      - Trippin’
+      - Holiday
+
+      - 'BREAK: HELLO'
+
+      - Hey Jealousy
+      - Hash Pipe
+      - Beautiful Disaster
+      - December
+      - Story of a Girl
+      - Brain Stew
+
+      - 'BREAK: TUNING'
+
+      - The Middle
+      - Monkey Wrench
+      - Shine
+      - Lump
+
+      - 'BREAK: TUNING'
+
+      - Buddy Holly
+      - Creep
+      - Machinehead
+      - Enter Sandman
+
+      - 'BREAK: SET 2'
+
+      - Go My Way
+      - Song 2
+      - My Own Worst Enemy
+      - My Hero
+      - Undone
+      - Kids
+      - Everything Zen
+      - Cumbersome
+      - Small Things
+      - Low
+      - Fuel
+      - Say It Ain’t So
+      - Basket Case
+      - Counting Blue Cars
+      - Zero
+
+      - 'BREAK: GOODBYE'
+
+      - When I Come Around
+
+      - 'BREAK: ENCORE'
+
+      - Bells
+
+  - date: "2018-08-25"
+    venue: Spot On 66
+    active: true
+    print: true
+    songs:
+      - 'BREAK: SET 1'
+
+      - Dammit
+      - Buddy Holly
+      - Zero
+      - Brain Stew
+      - Kids
+      - Machinehead
+      - Say It Ain’t So
+      - Bouncin’
+      - Interstate
+      - December
+      - Small Things
+      - What I Got
+      - Crawling
+
+      - 'BREAK: DOWNTUNE'
+
+      - Shine
+      - The Middle
+
+      - 'BREAK: UPTUNE'
+
+      - Plush
+      - Puppets
+
+      - 'BREAK: SET 2'
+
+      - Go My Way
+      - Song 2
+      - Low
+      - Kryptonite
+      - Sex Type Thing
+      - Story of a Girl
+      - Comedown
+      - Fuel
+      - Undone
+      - My Hero
+      - Trippin’
+      - Creep
+      - Hash Pipe
+      - Closing Time
+      - Bullet
+      - My Own Worst Enemy
+
+      - 'BREAK: ENCORE'
+
+      - Basket Case
+      - Sandman
