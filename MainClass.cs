@@ -54,6 +54,9 @@ namespace e_sharp_minor
 
 #if RPI
                 using (var fsw = new FootSwitchInputEvdev())
+#else
+                using (var fsw = new FootSwitchInputConsole())
+#endif
                 {
                     fsw.EventListener += (ev) =>
                     {
@@ -66,7 +69,6 @@ namespace e_sharp_minor
                         fsw.PollEvents();
                     } while (!quit);
                 }
-#endif
 
                 //new VGUI(controller).Run();
             }
