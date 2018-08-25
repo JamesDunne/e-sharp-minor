@@ -27,20 +27,22 @@ namespace e_sharp_minor
                 var controller = new Controller(midi, 2);
                 controller.LoadData();
 
-#if true
+                Console.WriteLine("alphabetical:");
                 foreach (var song in controller.Songs)
                 {
-                    Console.WriteLine("{0}", song.Name);
+                    Console.WriteLine("  {0}", song.Name);
                 }
-#else
-                foreach (var midiProgram in programs.MidiPrograms)
+
+                Console.WriteLine();
+                foreach (var midiProgram in controller.MidiPrograms)
                 {
                     Console.WriteLine("midi: {0}", midiProgram.ProgramNumber);
-                    foreach (var song in midiProgram.Songs) {
+                    foreach (var song in midiProgram.Songs)
+                    {
                         Console.WriteLine("  song: {0}", song.Name);
                     }
                 }
-#endif
+                Console.WriteLine();
 
                 // Activate the first song:
                 controller.ActivateSong(controller.Songs[0], 0);
