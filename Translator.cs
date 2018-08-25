@@ -191,7 +191,7 @@ namespace e_sharp_minor
                             from p in g
                             let alternateNames = (
                                 from sn in songNames.Songs
-                                where sn.Names.Any(name => String.Compare(p.Name, name, true) == 0) || String.Compare(p.Name, sn.ShortName) == 0
+                                where sn.Names.Any(name => String.Compare(p.Name, name, true) == 0) || String.Compare(p.Name, sn.ShortName, true) == 0
                                 select sn
                             ).Single()
                             select new V6.Song

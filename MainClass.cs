@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading;
 using OpenVG;
 using Shapes;
@@ -27,7 +29,7 @@ namespace e_sharp_minor
                 var controller = new Controller(midi, 2);
                 controller.LoadData();
 
-                Console.WriteLine("alphabetical:");
+                Console.WriteLine("all songs alphabetical:");
                 foreach (var song in controller.Songs)
                 {
                     Console.WriteLine("  {0}", song.Name);
@@ -44,13 +46,35 @@ namespace e_sharp_minor
                 }
                 Console.WriteLine();
 
-                // Activate the first song:
-                controller.ActivateSong(controller.Songs[0], 0);
+                var setlist = (
+                    from sl in controller.Setlists
+                    where sl.Active
+                    select sl
+                ).Last();
 
-                controller.ActivateScene(0);
+                // Match song names with songs:
+                setlist.Songs = new List<V6.Song>(setlist.SongNames.Count);
+                for (int i = 0; i < setlist.SongNames.Count; i++)
+                {
+                    var setlistSongName = setlist.SongNames[i];
+                    if (setlistSongName.StartsWith("BREAK:", StringComparison.OrdinalIgnoreCase)) continue;
 
-                // Activate a new midi program's song:
-                controller.ActivateSong(controller.MidiPrograms[1].Songs[0], 0);
+                    setlist.Songs.Add((
+                        from song in controller.Songs
+                        where song.MatchesName(setlistSongName)
+                        select song
+                    ).Single());
+                }
+
+                Console.WriteLine("Setlist for {0} on {1}", setlist.Venue, setlist.Date);
+                Console.WriteLine("{0} songs", setlist.Songs.Count);
+                foreach (var song in setlist.Songs)
+                {
+                    Console.WriteLine("  {0}", song.Name);
+                }
+
+                // Activate the first song in the setlist:
+                controller.ActivateSong(setlist.Songs[0], 0);
 
 #if RPI
                 using (var fsw = new FootSwitchInputEvdev())
@@ -61,6 +85,17 @@ namespace e_sharp_minor
                     fsw.EventListener += (ev) =>
                     {
                         Console.WriteLine("{0} {1}", ev.FootSwitch, ev.WhatAction);
+                        if (ev.FootSwitch == FootSwitch.Left)
+                        {
+                            if (controller.CurrentScene == 0)
+                            {
+
+                            }
+                        }
+                        else if (ev.FootSwitch == FootSwitch.Right)
+                        {
+
+                        }
                     };
 
                     bool quit = false;

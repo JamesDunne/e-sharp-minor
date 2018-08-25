@@ -1,11 +1,30 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using YamlDotNet.Serialization;
 
 namespace e_sharp_minor
 {
     namespace V6
     {
+        public class Setlist
+        {
+            public string Date { get; set; }
+            public string Venue { get; set; }
+            public bool Active { get; set; }
+            public bool Print { get; set; }
+            [YamlMember(Alias = "Songs")]
+            public List<string> SongNames { get; set; }
+
+            [YamlIgnore]
+            public List<V6.Song> Songs { get; set; }
+        }
+
+        public class Setlists
+        {
+            public List<Setlist> Sets { get; set; }
+        }
+
         public class AllPrograms
         {
             public List<MidiProgram> MidiPrograms { get; set; }
@@ -37,6 +56,13 @@ namespace e_sharp_minor
 
             [YamlMember(Alias = "scenes", ApplyNamingConventions = false)]
             public List<SceneDescriptor> SceneDescriptors { get; set; }
+
+            public bool MatchesName(string match)
+            {
+                return String.Compare(match, Name, true) == 0
+                    || String.Compare(match, ShortName, true) == 0
+                    || AlternateNames.Any(name => String.Compare(match, name, true) == 0);
+            }
         }
 
         public class SceneDescriptor
