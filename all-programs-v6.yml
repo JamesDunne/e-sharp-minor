@@ -142,6 +142,11 @@ midi_programs:
             xy: X
   songs:
   - name: Monkey Wrench
+    short_name: Monkey Wrench
+    alternate_names:
+    - Monkey Wrench
+    - Monkeywrench
+    who_starts: Bremer 4 ct
     tempo: 175
     amps:
     - tones:
@@ -156,6 +161,10 @@ midi_programs:
       - tone: dirty
       - tone: dirty
   - name: Zero
+    short_name: Zero
+    alternate_names:
+    - Zero
+    who_starts: Jim
     tempo: 129
     amps:
     - tones:
@@ -210,6 +219,10 @@ midi_programs:
       - tone: dirty
       - tone: dirty
   - name: Buddy Holly
+    short_name: Buddy Holly
+    alternate_names:
+    - Buddy Holly
+    who_starts: Glaz+Bremer
     tempo: 121
     scenes:
     - name: JD dirty;MG dirty
@@ -229,6 +242,10 @@ midi_programs:
       - tone: dirty
       - tone: dirty
   - name: Plush
+    short_name: Plush
+    alternate_names:
+    - Plush
+    who_starts: Bremer 2 ct
     tempo: 145
     scenes:
     - name: JD lead;MG dirty
@@ -239,6 +256,10 @@ midi_programs:
           cho2:
             on: true
   - name: When I Come Around
+    short_name: Come Around
+    alternate_names:
+    - When I Come Around
+    who_starts: Jim
     tempo: 98
     scenes:
     - name: JD dirty;MG dirty
@@ -258,6 +279,11 @@ midi_programs:
       - tone: dirty
       - tone: dirty
   - name: Everything Zen
+    short_name: Zen
+    alternate_names:
+    - Everything Zen
+    - Zen
+    who_starts: Glaz
     tempo: 135
     scenes:
     - name: JD lead;MG dirty
@@ -304,6 +330,11 @@ midi_programs:
       - tone: dirty
       - tone: dirty
   - name: Enter Sandman
+    short_name: Sandman
+    alternate_names:
+    - Enter Sandman
+    - Sandman
+    who_starts: Glaz
     tempo: 124
     scenes:
     - name: Clean intro
@@ -360,6 +391,11 @@ midi_programs:
           dly2:
             on: true
   - name: Crawling in the Dark
+    short_name: Crawling
+    alternate_names:
+    - Crawling in the Dark
+    - Crawling
+    who_starts: Jim
     tempo: 94
     scenes:
     - name: JD lead;MG dirty
@@ -423,6 +459,10 @@ midi_programs:
       - tone: dirty
       - tone: dirty
   - name: Song 2
+    short_name: Song 2
+    alternate_names:
+    - Song 2
+    who_starts: Bremer
     tempo: 130
     amps:
     - tones:
@@ -457,6 +497,10 @@ midi_programs:
       - tone: dirty
       - tone: dirty
   - name: Sex Type Thing
+    short_name: Sex Type Thing
+    alternate_names:
+    - Sex Type Thing
+    who_starts: Bremer 4 ct
     tempo: 135
     scenes:
     - name: JD dirty;MG dirty
@@ -464,6 +508,11 @@ midi_programs:
       - tone: dirty
       - tone: dirty
   - name: Counting Blue Cars
+    short_name: Blue Cars
+    alternate_names:
+    - Counting Blue Cars
+    - Blue Cars
+    who_starts: Bremer 4 ct
     tempo: 101
     scenes:
     - name: JD lead;MG dirty
@@ -538,6 +587,10 @@ midi_programs:
           dly2:
             on: true
   - name: In Bloom
+    short_name: In Bloom
+    alternate_names:
+    - In Bloom
+    who_starts: Bremer 4 ct
     tempo: 80
     scenes:
     - name: JD dirty;MG dirty
@@ -554,6 +607,11 @@ midi_programs:
       - tone: dirty
       - tone: dirty
   - name: Hash Pipe
+    short_name: Hash Pipe
+    alternate_names:
+    - Hash Pipe
+    - Hashpipe
+    who_starts: Bremer+Adam
     tempo: 126
     scenes:
     - name: JD dirty;MG dirty
@@ -573,6 +631,10 @@ midi_programs:
       - tone: dirty
       - tone: dirty
   - name: My Hero
+    short_name: My Hero
+    alternate_names:
+    - My Hero
+    who_starts: Bremer+Adam
     tempo: 154
     scenes:
     - name: JD dirty;MG dirty
@@ -580,6 +642,11 @@ midi_programs:
       - tone: dirty
       - tone: dirty
   - name: Machinehead
+    short_name: Machinehead
+    alternate_names:
+    - Machinehead
+    - Machine Head
+    who_starts: Jim
     tempo: 110
     amps:
     - tones:
@@ -594,6 +661,10 @@ midi_programs:
       - tone: dirty
       - tone: dirty
   - name: Holiday
+    short_name: Holiday
+    alternate_names:
+    - Holiday
+    who_starts: Jim
     tempo: 168
     scenes:
     - name: JD dirty;MG dirty
@@ -613,6 +684,11 @@ midi_programs:
       - tone: dirty
       - tone: dirty
   - name: Brain Stew
+    short_name: Brain Stew
+    alternate_names:
+    - Brain Stew
+    - Brainstew
+    who_starts: Jim
     tempo: 76
     scenes:
     - name: JD dirty;MG dirty
@@ -620,6 +696,10 @@ midi_programs:
       - tone: dirty
       - tone: dirty
   - name: Bound for the Floor
+    short_name: Bound
+    alternate_names:
+    - Bound for the Floor
+    who_starts: Jim
     tempo: 120
     scenes:
     - name: JD dirty;MG dirty
@@ -640,6 +720,10 @@ midi_programs:
       - tone: dirty
       - tone: dirty
   - name: Cumbersome
+    short_name: Cumbersome
+    alternate_names:
+    - Cumbersome
+    who_starts: Jim
     tempo: 81
     scenes:
     - name: JD dirty;MG dirty
@@ -647,6 +731,10 @@ midi_programs:
       - tone: dirty
       - tone: dirty
   - name: Lump
+    short_name: Lump
+    alternate_names:
+    - Lump
+    who_starts: Bremer+Glaz
     tempo: 143
     scenes:
     - name: JD dirty;MG dirty
@@ -654,6 +742,10 @@ midi_programs:
       - tone: dirty
       - tone: dirty
   - name: Hey Jealousy
+    short_name: Hey Jealousy
+    alternate_names:
+    - Hey Jealousy
+    who_starts: Bremer 4 ct
     tempo: 154
     scenes:
     - name: JD dirty;MG dirty
@@ -676,6 +768,10 @@ midi_programs:
         gain: 48
       - tone: dirty
   - name: Kryptonite
+    short_name: Kryptonite
+    alternate_names:
+    - Kryptonite
+    who_starts: Glaz
     tempo: 100
     scenes:
     - name: JD clean;MG clean
@@ -731,6 +827,12 @@ midi_programs:
             on: true
       - tone: dirty
   - name: Dammit
+    short_name: Dammit
+    alternate_names:
+    - Dammit
+    - Damnit
+    - Damn It
+    who_starts: Jim
     tempo: 110
     scenes:
     - name: JD dirty;MG dirty
@@ -738,6 +840,10 @@ midi_programs:
       - tone: dirty
       - tone: dirty
   - name: My Own Worst Enemy
+    short_name: My Own Worst Enemy
+    alternate_names:
+    - My Own Worst Enemy
+    who_starts: Jim
     tempo: 104
     scenes:
     - name: JD dirty;MG dirty
@@ -745,6 +851,11 @@ midi_programs:
       - tone: dirty
       - tone: dirty
   - name: The Middle
+    short_name: The Middle
+    alternate_names:
+    - The Middle
+    - Middle
+    who_starts: Glaz
     tempo: 162
     amps:
     - tones:
@@ -779,6 +890,11 @@ midi_programs:
       - tone: dirty
       - tone: dirty
   - name: Bullet With Butterfly Wings
+    short_name: Bullet
+    alternate_names:
+    - Bullet With Butterfly Wings
+    - Bullet
+    who_starts: Glaz
     tempo: 122
     scenes:
     - name: JD clean;MG clean
@@ -822,6 +938,10 @@ midi_programs:
           cho2:
             on: true
   - name: Beautiful Disaster
+    short_name: Beautiful Disaster
+    alternate_names:
+    - Beautiful Disaster
+    who_starts: Jim
     tempo: 169
     scenes:
     - name: JD dirty;MG dirty
@@ -829,6 +949,11 @@ midi_programs:
       - tone: dirty
       - tone: dirty
   - name: Bells
+    short_name: Bells
+    alternate_names:
+    - For Whom The Bell Tolls
+    - Bells
+    who_starts: Bremer
     tempo: 118
     scenes:
     - name: JD dirty;MG dirty
@@ -844,6 +969,10 @@ midi_programs:
           dly2:
             on: true
   - name: Fuel
+    short_name: Fuel
+    alternate_names:
+    - Fuel
+    who_starts: Glaz
     tempo: 107
     scenes:
     - name: JD dirty;MG dirty
@@ -880,6 +1009,12 @@ midi_programs:
           dly2:
             on: true
   - name: Say It Aint So
+    short_name: Say It Aint So
+    alternate_names:
+    - Say It Aint So
+    - Say It Ain't So
+    - Say It Ain’t So
+    who_starts: Jim
     tempo: 77
     scenes:
     - name: JD clean;MG clean
@@ -912,6 +1047,10 @@ midi_programs:
       - tone: dirty
       - tone: clean
   - name: Shine
+    short_name: Shine
+    alternate_names:
+    - Shine
+    who_starts: Jim
     tempo: 151
     amps:
     - tones:
@@ -936,6 +1075,11 @@ midi_programs:
       - tone: dirty
       - tone: dirty
   - name: Basketcase
+    short_name: Basketcase
+    alternate_names:
+    - Basketcase
+    - Basket Case
+    who_starts: Glaz
     tempo: 86
     scenes:
     - name: JD dirty;MG dirty
@@ -943,6 +1087,12 @@ midi_programs:
       - tone: dirty
       - tone: dirty
   - name: Undone
+    short_name: Undone
+    alternate_names:
+    - Undone
+    - Sweater Song
+    - The Sweater Song
+    who_starts: Bremer
     tempo: 81
     scenes:
     - name: JD clean;MG clean
@@ -982,6 +1132,11 @@ midi_programs:
           dly2:
             on: true
   - name: Story of a Girl
+    short_name: Story of a Girl
+    alternate_names:
+    - Story of a Girl
+    - Absolutely
+    who_starts: Glaz
     tempo: 97
     amps:
     - tones:
@@ -1006,6 +1161,17 @@ midi_programs:
       - tone: dirty
       - tone: dirty
   - name: Trippin
+    short_name: Trippin
+    alternate_names:
+    - Trippin
+    - Trippin’
+    - Trippin'
+    - Trippin on a Hole in a Paper Heart
+    - Trippin on a Hole
+    - Tripping
+    - Tripping on a Hole in a Paper Heart
+    - Tripping on a Hole
+    who_starts: Bremer
     tempo: 107
     amps:
     - tones:
@@ -1029,6 +1195,10 @@ midi_programs:
       - tone: dirty
       - tone: dirty
   - name: Low
+    short_name: Low
+    alternate_names:
+    - Low
+    who_starts: Bremer
     tempo: 86
     amps:
     - tones:
@@ -1094,6 +1264,10 @@ midi_programs:
           dly2:
             on: true
   - name: Closing Time
+    short_name: Closing Time
+    alternate_names:
+    - Closing Time
+    who_starts: Glaz
     tempo: 120
     amps:
     - tones:
@@ -1148,6 +1322,11 @@ midi_programs:
         gain: 65
         volume: -2
   - name: Slayer
+    short_name: Slayer
+    alternate_names:
+    - Slayer
+    - Raining Blood
+    who_starts: Bremer
     tempo: 130
     scenes:
     - name: Intro
@@ -1173,6 +1352,10 @@ midi_programs:
           dly2:
             on: true
   - name: Happy Birthday
+    short_name: Birthday
+    alternate_names:
+    - Happy Birthday
+    who_starts: Glaz
     tempo: 130
     scenes:
     - name: Rhythm
@@ -1180,6 +1363,10 @@ midi_programs:
       - tone: dirty
       - tone: dirty
   - name: December
+    short_name: December
+    alternate_names:
+    - December
+    who_starts: Jim
     tempo: 122
     amps:
     - tones:
@@ -1268,6 +1455,15 @@ midi_programs:
           cho2:
             on: true
   - name: Bouncing off the Walls
+    short_name: Bouncing
+    alternate_names:
+    - Bouncing off the Walls
+    - Bouncin off the Walls
+    - Bouncin
+    - Bouncing
+    - Bouncin'
+    - Bouncin’
+    who_starts: Jim
     tempo: 150
     scenes:
     - name: Intro
@@ -1284,6 +1480,12 @@ midi_programs:
       - tone: dirty
       - tone: dirty
   - name: Satan Song
+    short_name: Satan Song
+    alternate_names:
+    - Satan Song
+    - Satan
+    - The Satan Song
+    who_starts: Bremer
     tempo: 140
     scenes:
     - name: Verse
@@ -1309,6 +1511,14 @@ midi_programs:
       - tone: acoustic
       - tone: dirty
   - name: Kids
+    short_name: Kids
+    alternate_names:
+    - Kids
+    - Kids Arent Alright
+    - Kids Aren't Alright
+    - The Kids Aren't Alright
+    - Kids Aren’t Alright
+    who_starts: Glaz
     tempo: 130
     scenes:
     - name: Rhythm
@@ -1343,6 +1553,11 @@ midi_programs:
       - tone: dirty
       - tone: dirty
   - name: Small Things
+    short_name: Small Things
+    alternate_names:
+    - Small Things
+    - All The Small Things
+    who_starts: Bremer fill
     tempo: 130
     scenes:
     - name: Rhythm
@@ -1359,6 +1574,10 @@ midi_programs:
       - tone: dirty
       - tone: dirty
   - name: Creep
+    short_name: Creep
+    alternate_names:
+    - Creep
+    who_starts: Bremer 4 ct
     tempo: 82
     amps:
     - tones:
@@ -1403,6 +1622,12 @@ midi_programs:
           cho2:
             on: true
   - name: Go My Way
+    short_name: Go My Way
+    alternate_names:
+    - Go My Way
+    - Are You Gonna Go My Way
+    - Gonna Go My Way
+    who_starts: Bremer snare
     tempo: 130
     amps:
     - tones:
@@ -1426,6 +1651,12 @@ midi_programs:
       - tone: dirty
       - tone: dirty
   - name: Interstate
+    short_name: Interstate
+    alternate_names:
+    - Interstate Love Song
+    - Interstate
+    - ILS
+    who_starts: Bremer 4 ct
     tempo: 110
     amps:
     - tones:
@@ -1442,6 +1673,11 @@ midi_programs:
       - tone: dirty
         volume: -1.5
   - name: Comedown
+    short_name: Comedown
+    alternate_names:
+    - Comedown
+    - Come Down
+    who_starts: Bremer 4 ct
     tempo: 110
     amps:
     - tones:
@@ -1608,6 +1844,10 @@ midi_programs:
             xy: X
   songs:
   - name: Drive
+    short_name: Drive
+    alternate_names:
+    - Drive
+    who_starts: Jim
     tempo: 91
     amps:
     - tones:
@@ -1636,6 +1876,10 @@ midi_programs:
       - tone: clean
       - tone: acoustic
   - name: What I Got
+    short_name: What I Got
+    alternate_names:
+    - What I Got
+    who_starts: Bremer
     tempo: 96
     scenes:
     - name: JD clean;MG clean
@@ -1804,6 +2048,11 @@ midi_programs:
             xy: X
   songs:
   - name: Puppets
+    short_name: Puppets
+    alternate_names:
+    - Master of Puppets
+    - Puppets
+    who_starts: Bremer
     tempo: 106
     amps:
     - tones:
