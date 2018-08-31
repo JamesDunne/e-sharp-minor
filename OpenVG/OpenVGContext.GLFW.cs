@@ -20,6 +20,9 @@ namespace OpenVG
             this.Width = width;
             this.Height = height;
 
+            // Handle Glfw errors:
+            Glfw.SetErrorCallback((code, desc) => throw new Exception(String.Format("GLFW error code {0}: {1}", code, desc)));
+
             Debug.WriteLine("glfw.Init()");
             Glfw.Init();
 
