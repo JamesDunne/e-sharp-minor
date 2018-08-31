@@ -10,6 +10,8 @@
 
     <RootNamespace>e_sharp_minor</RootNamespace>
 
+    <Platforms>AnyCPU;x86</Platforms>
+
   </PropertyGroup>
 
 
@@ -33,12 +35,33 @@
 
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="YamlDotNet" Version="5.0.1" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="bcm_vg_init_example.o" />
     <None Remove="all-programs-v6.yml" />
+    <None Remove="lib\glfw.dll" />
     <None Remove="setlists.yml" />
     <None Remove="song-names.yml" />
   </ItemGroup>
@@ -46,6 +69,14 @@
     <Content Include="all-programs-v6.yml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <ContentWithTargetPath Include="lib\glfw3.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <TargetPath>glfw.dll</TargetPath>
+    </ContentWithTargetPath>
+    <ContentWithTargetPath Include="lib\libAmanithVG.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <TargetPath>AmanithVG.dll</TargetPath>
+    </ContentWithTargetPath>
     <Content Include="setlists.yml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
