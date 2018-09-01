@@ -92,6 +92,8 @@ namespace e_sharp_minor
             cursorX = (int)x;
             cursorY = (Height - 1) - (int)y;
 
+            // NOTE: x,y can go outside window boundaries.
+
             if (cursorPressed)
             {
                 InputEvent(new InputEvent
