@@ -8,16 +8,6 @@ using Shapes;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 
-// Select appropriate device implementation classes depending on build configuration
-// Use 'pi-debug' configuration to enable RPI.
-#if RPI
-using MidiOut = e_sharp_minor.MidiAlsaOut;
-using FootSwitchInput = e_sharp_minor.FootSwitchInputEvdev;
-#else
-using MidiOut = e_sharp_minor.MidiConsoleOut;
-using FootSwitchInput = e_sharp_minor.FootSwitchInputConsole;
-#endif
-
 namespace e_sharp_minor
 {
     class MainClass
@@ -29,11 +19,15 @@ namespace e_sharp_minor
             translator.Translate();
 #endif
 
-            // Initialize devices:
-            using (IMIDI midi = new MidiOut())
-            using (IFootSwitchInput fsw = new FootSwitchInput())
+            // Select appropriate device implementation classes depending on build configuration
+            // Use 'pi-debug' configuration to enable RPI.
+#if RPI
+            using (IPlatform platform = new RpiPlatform(0))
+#else
+            using (IPlatform platform = new GlfwPlatform(800, 480))
+#endif
             {
-                var controller = new Controller(midi, 2);
+                var controller = new Controller(platform.MIDI, 2);
                 controller.LoadData();
 
                 Console.WriteLine("all songs alphabetical:");
@@ -84,37 +78,41 @@ namespace e_sharp_minor
                 controller.ActivateSong(setlist.Songs[0], 0);
 
                 // Set up footswitch event listener:
-                fsw.EventListener += (ev) =>
+                platform.InputEvent += (ev) =>
                 {
-                    Console.WriteLine("{0} {1}", ev.FootSwitch, ev.WhatAction);
-
-                    if (ev.FootSwitch == FootSwitch.Left)
+                    if (ev.FootSwitchEvent.HasValue)
                     {
-                        if (controller.CurrentScene == 0)
+                        FootSwitchEvent fsw = ev.FootSwitchEvent.Value;
+                        Console.WriteLine("{0} {1}", fsw.FootSwitch, fsw.WhatAction);
+
+                        if (fsw.FootSwitch == FootSwitch.Left)
+                        {
+                            if (controller.CurrentScene == 0)
+                            {
+
+                            }
+                        }
+                        else if (fsw.FootSwitch == FootSwitch.Right)
                         {
 
                         }
                     }
-                    else if (ev.FootSwitch == FootSwitch.Right)
-                    {
-
-                    }
                 };
 
                 // Initialize UI:
-                using (var ui = new VGUI(controller))
+                using (var ui = new VGUI(platform, controller))
                 {
                     bool quit = false;
                     do
                     {
                         // TODO: switch to blocking wait for all events.
-                        fsw.PollEvents();
+                        //fsw.PollEvents();
 
                         // Render UI screen:
                         ui.Render();
 
                         // Check with the GUI if user indicated app should quit:
-                        quit |= ui.ShouldQuit();
+                        quit |= platform.ShouldQuit();
                     } while (!quit);
                 }
             }

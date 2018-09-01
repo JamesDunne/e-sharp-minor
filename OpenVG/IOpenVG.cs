@@ -3,20 +3,8 @@ using System.Runtime.InteropServices;
 
 namespace OpenVG
 {
-    public interface IOpenVG : IDisposable
+    public interface IOpenVG
     {
-        int Width
-        {
-            get;
-        }
-
-        int Height
-        {
-            get;
-        }
-
-        void SwapBuffers();
-
         #region VG
 
         int Geti(ParamType type);

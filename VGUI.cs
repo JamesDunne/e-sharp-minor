@@ -7,30 +7,27 @@ namespace e_sharp_minor
     public class VGUI : IDisposable
     {
         private readonly Controller controller;
-        private readonly OpenVGContext vg;
+        private readonly IPlatform platform;
+        private readonly IOpenVG vg;
         private readonly DisposalContainer disposalContainer;
         private readonly PaintColor strokePaint;
         private readonly PaintColor fillPaint;
         private readonly RoundRect rect;
 
-        public VGUI(Controller controller)
+        public VGUI(IPlatform platform, Controller controller)
         {
             this.controller = controller;
+            this.platform = platform;
+            this.vg = platform.VG;
 
-#if RPI
-            this.vg = new OpenVGContext(0);
-#else
-            this.vg = new OpenVGContext(800, 480);
-#endif
-
-            Console.WriteLine("Display[0] = {0}x{1}", vg.Width, vg.Height);
+            Console.WriteLine("Display[0] = {0}x{1}", platform.Width, platform.Height);
 
             vg.ClearColor = new float[] { 0.0f, 0.0f, 0.2f, 1.0f };
 
             this.disposalContainer = new DisposalContainer(
                 strokePaint = new PaintColor(vg, new float[] { 1.0f, 1.0f, 1.0f, 1.0f }),
                 fillPaint = new PaintColor(vg, new float[] { 0.6f, 0.6f, 0.6f, 1.0f }),
-                rect = new RoundRect(vg, 100, 100, vg.Width - 100 * 2, vg.Height - 100 * 2, 16, 16)
+                rect = new RoundRect(vg, 100, 100, platform.Width - 100 * 2, platform.Height - 100 * 2, 16, 16)
                 {
                     StrokeLineWidth = 1.0f
                 }
@@ -40,12 +37,6 @@ namespace e_sharp_minor
         public void Dispose()
         {
             this.disposalContainer.Dispose();
-            this.vg.Dispose();
-        }
-
-        public bool ShouldQuit()
-        {
-            return vg.ShouldQuit();
         }
 
         public void Render()
@@ -56,14 +47,14 @@ namespace e_sharp_minor
 #endif
 
             // Render our pre-made paths each frame:
-            vg.Clear(0, 0, vg.FramebufferWidth, vg.FramebufferHeight);
+            vg.Clear(0, 0, platform.FramebufferWidth, platform.FramebufferHeight);
 
             vg.StrokePaint = strokePaint;
             vg.FillPaint = fillPaint;
             rect.Render(PaintMode.VG_FILL_PATH | PaintMode.VG_STROKE_PATH);
 
             // Swap buffers to display and vsync:
-            vg.SwapBuffers();
+            platform.SwapBuffers();
 
 #if TIMING
             // usually writes "16 ms"

@@ -4,9 +4,15 @@ using System.Runtime.InteropServices;
 
 namespace OpenVG
 {
-    public partial class OpenVGContext : IOpenVG
+    public class OpenVGContext : IOpenVG
     {
+        internal OpenVGContext()
+        {
+        }
+
         #region VG
+
+        const string vg = "OpenVG";
 
         [DllImport(vg, EntryPoint = "vgSeti")]
         extern static void vgSeti(ParamType paramType, int value);

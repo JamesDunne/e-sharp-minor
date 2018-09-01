@@ -73,9 +73,13 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <TargetPath>glfw.dll</TargetPath>
     </ContentWithTargetPath>
-    <ContentWithTargetPath Include="lib\libAmanithVG.dll">
+    <ContentWithTargetPath Include="lib\OpenVG.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <TargetPath>AmanithVG.dll</TargetPath>
+      <TargetPath>OpenVG.dll</TargetPath>
+    </ContentWithTargetPath>
+    <ContentWithTargetPath Include="lib\libOpenVG.dylib">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <TargetPath>libOpenVG.dylib</TargetPath>
     </ContentWithTargetPath>
     <Content Include="setlists.yml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

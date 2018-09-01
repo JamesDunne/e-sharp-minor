@@ -1,16 +1,17 @@
 using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using OpenVG;
 
 // Don't listen to any "field not assigned" warnings.
 #pragma warning disable CS0649
 
-namespace OpenVG
+namespace e_sharp_minor
 {
-    public partial class OpenVGContext : IDisposable
+    public class RpiPlatform : IPlatform
     {
-#if RPI
-        const string vg = "OpenVG";
+        private readonly MidiAlsaOut midi;
+        private readonly OpenVGContext vg;
 
         internal readonly ushort bcmDisplay;
 
@@ -26,8 +27,10 @@ namespace OpenVG
 
         internal readonly EGL_DISPMANX_WINDOW_T window;
 
-        public OpenVGContext(int display)
+        public RpiPlatform(int display)
         {
+            midi = new MidiAlsaOut();
+
             bcmDisplay = (ushort)display;
 
             bcm_host_init();
@@ -132,10 +135,13 @@ namespace OpenVG
             eglMakeCurrent(egldisplay, eglsurface, eglsurface, eglcontext);
             throwIfError();
 
+            // Create OpenVGContext:
+            vg = new OpenVGContext();
+
             // Translate to pixel-perfect offset:
-            vgSeti(OpenVG.ParamType.VG_MATRIX_MODE, (int)OpenVG.MatrixMode.VG_MATRIX_PATH_USER_TO_SURFACE);
-            vgLoadIdentity();
-            vgTranslate(0.5f, 0.5f);
+            vg.Seti(OpenVG.ParamType.VG_MATRIX_MODE, (int)OpenVG.MatrixMode.VG_MATRIX_PATH_USER_TO_SURFACE);
+            vg.LoadIdentity();
+            vg.Translate(0.5f, 0.5f);
         }
 
         public void Dispose()
@@ -163,6 +169,8 @@ namespace OpenVG
 
 
             bcm_host_deinit();
+
+            midi.Dispose();
         }
 
         private void throwIfError()
@@ -182,10 +190,27 @@ namespace OpenVG
             }
         }
 
+        public event InputEventDelegate InputEvent;
+
+        public IOpenVG VG => vg;
+
+        public IMIDI MIDI => MIDI;
+
+        public int Width { get; }
+        public int Height { get; }
+
+        public int FramebufferWidth { get; }
+        public int FramebufferHeight { get; }
+
         public void SwapBuffers()
         {
             Debug.WriteLine("eglSwapBuffers(display, surface)");
             eglSwapBuffers(egldisplay, eglsurface);
+        }
+
+        public bool ShouldQuit()
+        {
+            return false;
         }
 
         #region DispmanX
@@ -295,10 +320,8 @@ namespace OpenVG
         extern static uint eglSwapBuffers(uint dpy, uint surface); // returns EGLBoolean
 
         #endregion
-#endif
     }
 
-#if RPI
     [StructLayout(LayoutKind.Sequential)]
     internal struct VC_RECT_T
     {
@@ -468,5 +491,4 @@ namespace OpenVG
         EGL_BAD_SURFACE = 0x300D,
         EGL_CONTEXT_LOST = 0x300E	/* EGL 1.1 - IMG_power_management */
     }
-#endif
 }
