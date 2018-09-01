@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Runtime.InteropServices;
 using OpenVG;
 
@@ -12,6 +14,9 @@ namespace e_sharp_minor
     {
         private readonly MidiAlsaOut midi;
         private readonly OpenVGContext vg;
+
+        private readonly LinuxEventDevice fsw;
+        private readonly LinuxEventDevice touchScreen;
 
         internal readonly ushort bcmDisplay;
 
@@ -30,6 +35,11 @@ namespace e_sharp_minor
         public RpiPlatform(int display)
         {
             midi = new MidiAlsaOut();
+            fsw = new LinuxEventDevice("/dev/input/by-id/usb-413d_2107-event-mouse");
+            touchScreen = new LinuxEventDevice("/dev/input/event1");
+
+            fsw.EventListener += Fsw_EventListener;
+            touchScreen.EventListener += TouchScreen_EventListener;
 
             bcmDisplay = (ushort)display;
 
@@ -38,8 +48,8 @@ namespace e_sharp_minor
             uint bcmWidth, bcmHeight;
             graphics_get_display_size(bcmDisplay, out bcmWidth, out bcmHeight);
 
-            Width = (int)bcmWidth;
-            Height = (int)bcmHeight;
+            FramebufferWidth = Width = (int)bcmWidth;
+            FramebufferHeight = Height = (int)bcmHeight;
 
             VC_RECT_T dst_rect;
             VC_RECT_T src_rect;
@@ -144,6 +154,71 @@ namespace e_sharp_minor
             vg.Translate(0.5f, 0.5f);
         }
 
+        const int ABS_MT_SLOT = 0x2f;
+        const int ABS_MT_POSITION_X = 0x35;
+        const int ABS_MT_POSITION_Y = 0x36;
+        const int ABS_MT_TRACKING_ID = 0x39;
+
+        void TouchScreen_EventListener(List<LinuxEventDevice.Event> events)
+        {
+            bool changed = false;
+            bool touching = false;
+            int x = 0;
+            int y = 0;
+
+            foreach (var ev in events)
+            {
+                if (ev.Type != LinuxEventDevice.EV_ABS) continue;
+
+                if (ev.Code == ABS_MT_POSITION_X)
+                {
+                    x = ev.Value;
+                    changed = true;
+                }
+                else if (ev.Code == ABS_MT_POSITION_Y)
+                {
+                    y = (Height - 1) - ev.Value;
+                    changed = true;
+                }
+                else if (ev.Code == ABS_MT_TRACKING_ID)
+                {
+                    touching = ev.Value != -1;
+                    changed = true;
+                }
+            }
+
+            if (!changed) return;
+
+            // Fire touch input event:
+            InputEvent(new InputEvent
+            {
+                TouchEvent = new TouchEvent
+                {
+                    X = x,
+                    Y = y,
+                    Pressed = touching
+                }
+            });
+        }
+
+        void Fsw_EventListener(List<LinuxEventDevice.Event> events)
+        {
+            foreach (var ev in events)
+            {
+                if (ev.Type != LinuxEventDevice.EV_KEY) continue;
+
+                // Fire footswitch input event:
+                InputEvent(new InputEvent
+                {
+                    FootSwitchEvent = new FootSwitchEvent
+                    {
+                        FootSwitch = (ev.Code == 0x1E) ? FootSwitch.Left : (ev.Code == 0x30) ? FootSwitch.Right : FootSwitch.None,
+                        WhatAction = (FootSwitchAction)ev.Value
+                    }
+                });
+            }
+        }
+
         public void Dispose()
         {
             Debug.WriteLine("eglMakeCurrent(display, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT)");
@@ -170,6 +245,8 @@ namespace e_sharp_minor
 
             bcm_host_deinit();
 
+            touchScreen.Dispose();
+            fsw.Dispose();
             midi.Dispose();
         }
 
@@ -215,10 +292,124 @@ namespace e_sharp_minor
 
         public void WaitEvents()
         {
-            // TODO
+            // Wait for events from our input files:
+            var ready = LinuxEventDevice.WaitEvents(fsw, touchScreen);
+
+            if (ready.Contains(fsw))
+            {
+                fsw.PollEvents();
+            }
+            if (ready.Contains(touchScreen))
+            {
+                touchScreen.PollEvents();
+            }
         }
 
         #region DispmanX
+
+        [StructLayout(LayoutKind.Sequential)]
+        internal struct VC_RECT_T
+        {
+            public int x;
+            public int y;
+            public int width;
+            public int height;
+        }
+
+        internal enum DISPMANX_PROTECTION_T : uint
+        {
+            DISPMANX_PROTECTION_NONE = 0,
+            DISPMANX_PROTECTION_HDCP = 11,   // Derived from the WM DRM levels, 101-300
+            DISPMANX_PROTECTION_MAX = 0x0f
+        }
+
+        internal enum DISPMANX_TRANSFORM_T : uint
+        {
+            /* Bottom 2 bits sets the orientation */
+            DISPMANX_NO_ROTATE = 0,
+            DISPMANX_ROTATE_90 = 1,
+            DISPMANX_ROTATE_180 = 2,
+            DISPMANX_ROTATE_270 = 3,
+
+            DISPMANX_FLIP_HRIZ = 1 << 16,
+            DISPMANX_FLIP_VERT = 1 << 17,
+
+            /* invert left/right images */
+            DISPMANX_STEREOSCOPIC_INVERT = 1 << 19,
+            /* extra flags for controlling 3d duplication behaviour */
+            DISPMANX_STEREOSCOPIC_NONE = 0 << 20,
+            DISPMANX_STEREOSCOPIC_MONO = 1 << 20,
+            DISPMANX_STEREOSCOPIC_SBS = 2 << 20,
+            DISPMANX_STEREOSCOPIC_TB = 3 << 20,
+            DISPMANX_STEREOSCOPIC_MASK = 15 << 20,
+
+            /* extra flags for controlling snapshot behaviour */
+            DISPMANX_SNAPSHOT_NO_YUV = 1 << 24,
+            DISPMANX_SNAPSHOT_NO_RGB = 1 << 25,
+            DISPMANX_SNAPSHOT_FILL = 1 << 26,
+            DISPMANX_SNAPSHOT_SWAP_RED_BLUE = 1 << 27,
+            DISPMANX_SNAPSHOT_PACK = 1 << 28
+        }
+
+        internal enum DISPMANX_FLAGS_ALPHA_T
+        {
+            /* Bottom 2 bits sets the alpha mode */
+            DISPMANX_FLAGS_ALPHA_FROM_SOURCE = 0,
+            DISPMANX_FLAGS_ALPHA_FIXED_ALL_PIXELS = 1,
+            DISPMANX_FLAGS_ALPHA_FIXED_NON_ZERO = 2,
+            DISPMANX_FLAGS_ALPHA_FIXED_EXCEED_0X07 = 3,
+
+            DISPMANX_FLAGS_ALPHA_PREMULT = 1 << 16,
+            DISPMANX_FLAGS_ALPHA_MIX = 1 << 17
+        }
+
+        internal struct VC_DISPMANX_ALPHA_T
+        {
+            public DISPMANX_FLAGS_ALPHA_T flags;
+            public uint opacity;
+            public uint mask;
+        }
+
+        internal enum DISPMANX_FLAGS_CLAMP_T : uint
+        {
+            DISPMANX_FLAGS_CLAMP_NONE = 0,
+            DISPMANX_FLAGS_CLAMP_LUMA_TRANSPARENT = 1,
+            // NOTE(jsd): Wild guess here.
+            //#if __VCCOREVER__ >= 0x04000000
+            DISPMANX_FLAGS_CLAMP_TRANSPARENT = 2,
+            DISPMANX_FLAGS_CLAMP_REPLACE = 3
+            //#else
+            //        DISPMANX_FLAGS_CLAMP_CHROMA_TRANSPARENT = 2,
+            //        DISPMANX_FLAGS_CLAMP_TRANSPARENT = 3
+            //#endif
+        }
+
+        internal enum DISPMANX_FLAGS_KEYMASK_T : uint
+        {
+            DISPMANX_FLAGS_KEYMASK_OVERRIDE = 1,
+            DISPMANX_FLAGS_KEYMASK_SMOOTH = 1 << 1,
+            DISPMANX_FLAGS_KEYMASK_CR_INV = 1 << 2,
+            DISPMANX_FLAGS_KEYMASK_CB_INV = 1 << 3,
+            DISPMANX_FLAGS_KEYMASK_YY_INV = 1 << 4
+        }
+
+        internal struct DISPMANX_CLAMP_KEYS_T
+        {
+            public byte red_upper;
+            public byte red_lower;
+            public byte blue_upper;
+            public byte blue_lower;
+            public byte green_upper;
+            public byte green_lower;
+        }
+
+        internal struct DISPMANX_CLAMP_T
+        {
+            public DISPMANX_FLAGS_CLAMP_T mode;
+            public DISPMANX_FLAGS_KEYMASK_T key_mask;
+            public DISPMANX_CLAMP_KEYS_T key_value;
+            public uint replace_value;
+        }
 
         [DllImport("bcm_host", EntryPoint = "bcm_host_init")]
         internal extern static void bcm_host_init();
@@ -261,6 +452,71 @@ namespace e_sharp_minor
 
         #region EGL
 
+        [StructLayout(LayoutKind.Sequential)]
+        internal struct EGL_DISPMANX_WINDOW_T
+        {
+            public uint element;
+            public int width;   /* This is necessary because dispmanx elements are not queriable. */
+            public int height;
+        }
+
+        internal enum EGL : uint
+        {
+            EGL_NO_SURFACE = 0,
+            EGL_NO_CONTEXT = 0,
+            EGL_NO_DISPLAY = 0,
+
+            EGL_RGB_BUFFER = 0x308E,    /* EGL_COLOR_BUFFER_TYPE value */
+            EGL_LUMINANCE_BUFFER = 0x308F,  /* EGL_COLOR_BUFFER_TYPE value */
+
+            EGL_OPENGL_ES_API = 0x30A0,
+            EGL_OPENVG_API = 0x30A1,
+            EGL_OPENGL_API = 0x30A2
+        }
+
+        internal enum EGL_ATTRIBUTES : int
+        {
+            EGL_DONT_CARE = -1,
+
+            /* Config attributes */
+            EGL_ALPHA_SIZE = 0x3021,
+            EGL_BLUE_SIZE = 0x3022,
+            EGL_GREEN_SIZE = 0x3023,
+            EGL_RED_SIZE = 0x3024,
+            EGL_SAMPLES = 0x3031,
+            EGL_SURFACE_TYPE = 0x3033,
+            EGL_NONE = 0x3038,   /* Attrib list terminator */
+            EGL_LUMINANCE_SIZE = 0x303D,
+            EGL_COLOR_BUFFER_TYPE = 0x303F,
+
+            /* Config attribute mask bits */
+            EGL_PBUFFER_BIT = 0x0001,   /* EGL_SURFACE_TYPE mask bits */
+            EGL_PIXMAP_BIT = 0x0002,   /* EGL_SURFACE_TYPE mask bits */
+            EGL_WINDOW_BIT = 0x0004,   /* EGL_SURFACE_TYPE mask bits */
+            EGL_VG_COLORSPACE_LINEAR_BIT = 0x0020,   /* EGL_SURFACE_TYPE mask bits */
+            EGL_VG_ALPHA_FORMAT_PRE_BIT = 0x0040,   /* EGL_SURFACE_TYPE mask bits */
+            EGL_MULTISAMPLE_RESOLVE_BOX_BIT = 0x0200,  /* EGL_SURFACE_TYPE mask bits */
+            EGL_SWAP_BEHAVIOR_PRESERVED_BIT = 0x0400  /* EGL_SURFACE_TYPE mask bits */
+        }
+
+        internal enum EGL_ERROR : uint
+        {
+            EGL_SUCCESS = 0x3000,
+            EGL_NOT_INITIALIZED = 0x3001,
+            EGL_BAD_ACCESS = 0x3002,
+            EGL_BAD_ALLOC = 0x3003,
+            EGL_BAD_ATTRIBUTE = 0x3004,
+            EGL_BAD_CONFIG = 0x3005,
+            EGL_BAD_CONTEXT = 0x3006,
+            EGL_BAD_CURRENT_SURFACE = 0x3007,
+            EGL_BAD_DISPLAY = 0x3008,
+            EGL_BAD_MATCH = 0x3009,
+            EGL_BAD_NATIVE_PIXMAP = 0x300A,
+            EGL_BAD_NATIVE_WINDOW = 0x300B,
+            EGL_BAD_PARAMETER = 0x300C,
+            EGL_BAD_SURFACE = 0x300D,
+            EGL_CONTEXT_LOST = 0x300E   /* EGL 1.1 - IMG_power_management */
+        }
         // This should be "EGL" but libEGL.so on raspbian is missing some symbols that are found in libGLESv2.so
         const string eglName = "GLESv2";
 
@@ -325,175 +581,5 @@ namespace e_sharp_minor
         extern static uint eglSwapBuffers(uint dpy, uint surface); // returns EGLBoolean
 
         #endregion
-    }
-
-    [StructLayout(LayoutKind.Sequential)]
-    internal struct VC_RECT_T
-    {
-        public int x;
-        public int y;
-        public int width;
-        public int height;
-    }
-
-    internal enum DISPMANX_PROTECTION_T : uint
-    {
-        DISPMANX_PROTECTION_NONE = 0,
-        DISPMANX_PROTECTION_HDCP = 11,   // Derived from the WM DRM levels, 101-300
-        DISPMANX_PROTECTION_MAX = 0x0f
-    }
-
-    internal enum DISPMANX_TRANSFORM_T : uint
-    {
-        /* Bottom 2 bits sets the orientation */
-        DISPMANX_NO_ROTATE = 0,
-        DISPMANX_ROTATE_90 = 1,
-        DISPMANX_ROTATE_180 = 2,
-        DISPMANX_ROTATE_270 = 3,
-
-        DISPMANX_FLIP_HRIZ = 1 << 16,
-        DISPMANX_FLIP_VERT = 1 << 17,
-
-        /* invert left/right images */
-        DISPMANX_STEREOSCOPIC_INVERT = 1 << 19,
-        /* extra flags for controlling 3d duplication behaviour */
-        DISPMANX_STEREOSCOPIC_NONE = 0 << 20,
-        DISPMANX_STEREOSCOPIC_MONO = 1 << 20,
-        DISPMANX_STEREOSCOPIC_SBS = 2 << 20,
-        DISPMANX_STEREOSCOPIC_TB = 3 << 20,
-        DISPMANX_STEREOSCOPIC_MASK = 15 << 20,
-
-        /* extra flags for controlling snapshot behaviour */
-        DISPMANX_SNAPSHOT_NO_YUV = 1 << 24,
-        DISPMANX_SNAPSHOT_NO_RGB = 1 << 25,
-        DISPMANX_SNAPSHOT_FILL = 1 << 26,
-        DISPMANX_SNAPSHOT_SWAP_RED_BLUE = 1 << 27,
-        DISPMANX_SNAPSHOT_PACK = 1 << 28
-    }
-
-    internal enum DISPMANX_FLAGS_ALPHA_T
-    {
-        /* Bottom 2 bits sets the alpha mode */
-        DISPMANX_FLAGS_ALPHA_FROM_SOURCE = 0,
-        DISPMANX_FLAGS_ALPHA_FIXED_ALL_PIXELS = 1,
-        DISPMANX_FLAGS_ALPHA_FIXED_NON_ZERO = 2,
-        DISPMANX_FLAGS_ALPHA_FIXED_EXCEED_0X07 = 3,
-
-        DISPMANX_FLAGS_ALPHA_PREMULT = 1 << 16,
-        DISPMANX_FLAGS_ALPHA_MIX = 1 << 17
-    }
-
-    internal struct VC_DISPMANX_ALPHA_T
-    {
-        public DISPMANX_FLAGS_ALPHA_T flags;
-        public uint opacity;
-        public uint mask;
-    }
-
-    enum DISPMANX_FLAGS_CLAMP_T : uint
-    {
-        DISPMANX_FLAGS_CLAMP_NONE = 0,
-        DISPMANX_FLAGS_CLAMP_LUMA_TRANSPARENT = 1,
-        // NOTE(jsd): Wild guess here.
-        //#if __VCCOREVER__ >= 0x04000000
-        DISPMANX_FLAGS_CLAMP_TRANSPARENT = 2,
-        DISPMANX_FLAGS_CLAMP_REPLACE = 3
-        //#else
-        //        DISPMANX_FLAGS_CLAMP_CHROMA_TRANSPARENT = 2,
-        //        DISPMANX_FLAGS_CLAMP_TRANSPARENT = 3
-        //#endif
-    }
-
-    enum DISPMANX_FLAGS_KEYMASK_T : uint
-    {
-        DISPMANX_FLAGS_KEYMASK_OVERRIDE = 1,
-        DISPMANX_FLAGS_KEYMASK_SMOOTH = 1 << 1,
-        DISPMANX_FLAGS_KEYMASK_CR_INV = 1 << 2,
-        DISPMANX_FLAGS_KEYMASK_CB_INV = 1 << 3,
-        DISPMANX_FLAGS_KEYMASK_YY_INV = 1 << 4
-    }
-
-    internal struct DISPMANX_CLAMP_KEYS_T
-    {
-        public byte red_upper;
-        public byte red_lower;
-        public byte blue_upper;
-        public byte blue_lower;
-        public byte green_upper;
-        public byte green_lower;
-    }
-
-    internal struct DISPMANX_CLAMP_T
-    {
-        public DISPMANX_FLAGS_CLAMP_T mode;
-        public DISPMANX_FLAGS_KEYMASK_T key_mask;
-        public DISPMANX_CLAMP_KEYS_T key_value;
-        public uint replace_value;
-    }
-
-    [StructLayout(LayoutKind.Sequential)]
-    internal struct EGL_DISPMANX_WINDOW_T
-    {
-        public uint element;
-        public int width;   /* This is necessary because dispmanx elements are not queriable. */
-        public int height;
-    }
-
-    internal enum EGL : uint
-    {
-        EGL_NO_SURFACE = 0,
-        EGL_NO_CONTEXT = 0,
-        EGL_NO_DISPLAY = 0,
-
-        EGL_RGB_BUFFER = 0x308E,    /* EGL_COLOR_BUFFER_TYPE value */
-        EGL_LUMINANCE_BUFFER = 0x308F,	/* EGL_COLOR_BUFFER_TYPE value */
-
-        EGL_OPENGL_ES_API = 0x30A0,
-        EGL_OPENVG_API = 0x30A1,
-        EGL_OPENGL_API = 0x30A2
-    }
-
-    internal enum EGL_ATTRIBUTES : int
-    {
-        EGL_DONT_CARE = -1,
-
-        /* Config attributes */
-        EGL_ALPHA_SIZE = 0x3021,
-        EGL_BLUE_SIZE = 0x3022,
-        EGL_GREEN_SIZE = 0x3023,
-        EGL_RED_SIZE = 0x3024,
-        EGL_SAMPLES = 0x3031,
-        EGL_SURFACE_TYPE = 0x3033,
-        EGL_NONE = 0x3038,   /* Attrib list terminator */
-        EGL_LUMINANCE_SIZE = 0x303D,
-        EGL_COLOR_BUFFER_TYPE = 0x303F,
-
-        /* Config attribute mask bits */
-        EGL_PBUFFER_BIT = 0x0001,   /* EGL_SURFACE_TYPE mask bits */
-        EGL_PIXMAP_BIT = 0x0002,   /* EGL_SURFACE_TYPE mask bits */
-        EGL_WINDOW_BIT = 0x0004,   /* EGL_SURFACE_TYPE mask bits */
-        EGL_VG_COLORSPACE_LINEAR_BIT = 0x0020,   /* EGL_SURFACE_TYPE mask bits */
-        EGL_VG_ALPHA_FORMAT_PRE_BIT = 0x0040,   /* EGL_SURFACE_TYPE mask bits */
-        EGL_MULTISAMPLE_RESOLVE_BOX_BIT = 0x0200,  /* EGL_SURFACE_TYPE mask bits */
-        EGL_SWAP_BEHAVIOR_PRESERVED_BIT = 0x0400  /* EGL_SURFACE_TYPE mask bits */
-    }
-
-    internal enum EGL_ERROR : uint
-    {
-        EGL_SUCCESS = 0x3000,
-        EGL_NOT_INITIALIZED = 0x3001,
-        EGL_BAD_ACCESS = 0x3002,
-        EGL_BAD_ALLOC = 0x3003,
-        EGL_BAD_ATTRIBUTE = 0x3004,
-        EGL_BAD_CONFIG = 0x3005,
-        EGL_BAD_CONTEXT = 0x3006,
-        EGL_BAD_CURRENT_SURFACE = 0x3007,
-        EGL_BAD_DISPLAY = 0x3008,
-        EGL_BAD_MATCH = 0x3009,
-        EGL_BAD_NATIVE_PIXMAP = 0x300A,
-        EGL_BAD_NATIVE_WINDOW = 0x300B,
-        EGL_BAD_PARAMETER = 0x300C,
-        EGL_BAD_SURFACE = 0x300D,
-        EGL_CONTEXT_LOST = 0x300E	/* EGL 1.1 - IMG_power_management */
     }
 }
