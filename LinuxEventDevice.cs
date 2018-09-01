@@ -24,6 +24,16 @@ namespace e_sharp_minor
             close(fd);
         }
 
+        /// <summary>
+        /// Implicitly convert to int file descriptor.
+        /// </summary>
+        /// <returns>The implicit.</returns>
+        /// <param name="eventDevice">Event device.</param>
+        public static implicit operator int(LinuxEventDevice eventDevice)
+        {
+            return eventDevice.fd;
+        }
+
         public const ushort EV_SYN = 0x00;
         public const ushort EV_KEY = 0x01;
         public const ushort EV_ABS = 0x03;
@@ -42,6 +52,54 @@ namespace e_sharp_minor
         public void PollEvents()
         {
             pollEvents();
+        }
+
+        public static byte BitCount(ulong value)
+        {
+            ulong result = value - ((value >> 1) & 0x5555555555555555UL);
+            result = (result & 0x3333333333333333UL) + ((result >> 2) & 0x3333333333333333UL);
+            return (byte)(unchecked(((result + (result >> 4)) & 0xF0F0F0F0F0F0F0FUL) * 0x101010101010101UL) >> 56);
+        }
+
+        public static LinuxEventDevice[] WaitEvents(params LinuxEventDevice[] fds)
+        {
+            unsafe
+            {
+                // Build up fd_set for read:
+                const int fd_size = 1024 / (8 * 8);
+                ulong* fd_ptr = stackalloc ulong[fd_size];
+                foreach (var dev in fds)
+                {
+                    int fd = dev;
+                    fd_ptr[(fd / fd_size)] |= (1UL << (fd % fd_size));
+                }
+
+                // Await for read readiness:
+                select(1, fd_ptr, null, null, IntPtr.Zero);
+
+                // Count number of fds ready:
+                int numReady = 0;
+                for (int i = 0; i < fd_size; i++)
+                {
+                    numReady += BitCount(fd_ptr[i]);
+                }
+
+                // Build set of fds that are ready:
+                var ready = new LinuxEventDevice[numReady];
+                int n = 0;
+                foreach (var dev in fds)
+                {
+                    int fd = dev;
+                    ulong mask = (1UL << (fd % fd_size));
+                    if ((fd_ptr[(fd / fd_size)] & mask) == mask)
+                    {
+                        ready[n] = dev;
+                        n++;
+                    }
+                }
+
+                return ready;
+            }
         }
 
         private unsafe void pollEvents()
@@ -98,11 +156,23 @@ namespace e_sharp_minor
         [DllImport(lib)]
         unsafe private static extern IntPtr read(int fd, void* buffer, UIntPtr count);
 
+        [DllImport(lib)]
+        unsafe private static extern IntPtr select(int nfds, ulong* readfds, ulong* writefds, ulong* exceptfds, IntPtr timeout);
+
         private enum EvdevIoctl : uint
         {
             Id = (2u << 30) | ((byte)'E' << 8) | (0x02u << 0) | (8u << 16), //EVIOCGID = _IOR('E', 0x02, struct input_id)
             Name128 = (2u << 30) | ((byte)'E' << 8) | (0x06u << 0) | (128u << 16), //EVIOCGNAME(len) = _IOC(_IOC_READ, 'E', 0x06, len)
         }
+
+#if false
+        [StructLayout(LayoutKind.Sequential)]
+        private struct fd_set
+        {
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 1024 / (8 * 8))]
+            public ulong[] fds_bits;
+        }
+#endif
 
         [Flags]
         private enum OpenFlags
@@ -130,6 +200,6 @@ namespace e_sharp_minor
             public IntPtr MicroSeconds;
         }
 
-        #endregion
+#endregion
     }
 }
