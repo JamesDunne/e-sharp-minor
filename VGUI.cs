@@ -1,4 +1,5 @@
 ﻿using System;
+using UI;
 using OpenVG;
 using Shapes;
 
@@ -12,7 +13,8 @@ namespace e_sharp_minor
         private readonly DisposalContainer disposalContainer;
         private readonly PaintColor strokePaint;
         private readonly PaintColor fillPaint;
-        private readonly RoundRect rect;
+        private readonly Button btn;
+        private readonly Component root;
 
         public VGUI(IPlatform platform, Controller controller)
         {
@@ -25,13 +27,24 @@ namespace e_sharp_minor
             vg.ClearColor = new float[] { 0.0f, 0.0f, 0.2f, 1.0f };
 
             this.disposalContainer = new DisposalContainer(
+                root = new Panel(platform, 0, 0, platform.Width, platform.Height),
                 strokePaint = new PaintColor(vg, new float[] { 1.0f, 1.0f, 1.0f, 1.0f }),
                 fillPaint = new PaintColor(vg, new float[] { 0.6f, 0.6f, 0.6f, 1.0f }),
-                rect = new RoundRect(vg, 100, 100, platform.Width - 100 * 2, platform.Height - 100 * 2, 16, 16)
+                btn = new Button(platform, 100, 100, platform.Width - 100 * 2, platform.Height - 100 * 2)
                 {
-                    StrokeLineWidth = 1.0f
+                    Stroke = strokePaint,
+                    Fill = fillPaint
                 }
             );
+
+            platform.InputEvent += Platform_InputEvent;
+        }
+
+        void Platform_InputEvent(InputEvent @event)
+        {
+            if (!@event.TouchEvent.HasValue) return;
+
+            var touch = @event.TouchEvent.Value;
         }
 
         public void Dispose()
@@ -49,9 +62,7 @@ namespace e_sharp_minor
             // Render our pre-made paths each frame:
             vg.Clear(0, 0, platform.FramebufferWidth, platform.FramebufferHeight);
 
-            vg.StrokePaint = strokePaint;
-            vg.FillPaint = fillPaint;
-            rect.Render(PaintMode.VG_FILL_PATH | PaintMode.VG_STROKE_PATH);
+            btn.Render();
 
             // Swap buffers to display and vsync:
             platform.SwapBuffers();

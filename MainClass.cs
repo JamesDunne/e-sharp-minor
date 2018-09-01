@@ -77,7 +77,7 @@ namespace e_sharp_minor
                 // Activate the first song in the setlist:
                 controller.ActivateSong(setlist.Songs[0], 0);
 
-                // Set up footswitch event listener:
+                // Set up input event listener:
                 platform.InputEvent += (ev) =>
                 {
                     if (ev.TouchEvent.HasValue)
