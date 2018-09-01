@@ -15,6 +15,10 @@ namespace e_sharp_minor
 
         internal readonly Glfw.Window window;
 
+        private int cursorX;
+        private int cursorY;
+        private bool cursorPressed;
+
         public GlfwPlatform(int width, int height)
         {
             midi = new MidiConsoleOut();
@@ -66,7 +70,8 @@ namespace e_sharp_minor
             Glfw.ShowWindow(window);
 
             Glfw.SetKeyCallback(window, handleKeys);
-            Glfw.SetMouseButtonCallback(window, handleMouse);
+            Glfw.SetMouseButtonCallback(window, handleMouseButton);
+            Glfw.SetCursorPosCallback(window, handleMousePos);
         }
 
         public void SwapBuffers()
@@ -82,20 +87,36 @@ namespace e_sharp_minor
             Glfw.WaitEvents();
         }
 
-        private void handleMouse(Glfw.Window window, Glfw.MouseButton button, bool state, Glfw.KeyMods mods)
+        void handleMousePos(Glfw.Window window, double x, double y)
         {
-            double cx, cy;
-            Glfw.GetCursorPos(window, out cx, out cy);
-            Console.WriteLine("{0},{1},{2}", cx, cy, state);
+            cursorX = (int)x;
+            cursorY = (Height - 1) - (int)y;
+
+            if (cursorPressed)
+            {
+                InputEvent(new InputEvent
+                {
+                    TouchEvent = new TouchEvent
+                    {
+                        X = cursorX,
+                        Y = cursorY,
+                        Pressed = cursorPressed
+                    }
+                });
+            }
+        }
+
+        private void handleMouseButton(Glfw.Window window, Glfw.MouseButton button, bool state, Glfw.KeyMods mods)
+        {
+            cursorPressed = state;
 
             InputEvent(new InputEvent
             {
                 TouchEvent = new TouchEvent
                 {
-                    // TODO: transform x,y pos to match OpenVG coord system:
-                    X = (int)cx,
-                    Y = (int)cy,
-                    Pressed = state
+                    X = cursorX,
+                    Y = cursorY,
+                    Pressed = cursorPressed
                 }
             });
         }

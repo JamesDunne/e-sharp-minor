@@ -80,7 +80,12 @@ namespace e_sharp_minor
                 // Set up footswitch event listener:
                 platform.InputEvent += (ev) =>
                 {
-                    if (ev.FootSwitchEvent.HasValue)
+                    if (ev.TouchEvent.HasValue)
+                    {
+                        var touch = ev.TouchEvent.Value;
+                        Console.WriteLine("{0},{1},{2}", touch.X, touch.Y, touch.Pressed);
+                    }
+                    else if (ev.FootSwitchEvent.HasValue)
                     {
                         FootSwitchEvent fsw = ev.FootSwitchEvent.Value;
                         Console.WriteLine("{0} {1}", fsw.FootSwitch, fsw.WhatAction);
