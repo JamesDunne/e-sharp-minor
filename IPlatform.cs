@@ -19,6 +19,7 @@ namespace e_sharp_minor
 
         void SwapBuffers();
         bool ShouldQuit();
+        void WaitEvents();
     }
 
     public struct TouchEvent

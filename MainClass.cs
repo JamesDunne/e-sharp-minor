@@ -105,11 +105,11 @@ namespace e_sharp_minor
                     bool quit = false;
                     do
                     {
-                        // TODO: switch to blocking wait for all events.
-                        //fsw.PollEvents();
-
                         // Render UI screen:
                         ui.Render();
+
+                        // Wait for next event:
+                        platform.WaitEvents();
 
                         // Check with the GUI if user indicated app should quit:
                         quit |= platform.ShouldQuit();

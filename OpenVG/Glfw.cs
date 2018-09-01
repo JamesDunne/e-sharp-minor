@@ -29,7 +29,7 @@ public static class Glfw
     public delegate void WindowBoolFunc([MarshalAs(UnmanagedType.Struct)] Window window, [MarshalAs(UnmanagedType.Bool)] bool value);
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-    public delegate void KeyFunc([MarshalAs(UnmanagedType.Struct)] Window window, KeyCode key, int scan, KeyMods mods);
+    public delegate void KeyFunc([MarshalAs(UnmanagedType.Struct)] Window window, KeyCode key, int scan, KeyAction action, KeyMods mods);
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
     public delegate void CharFunc([MarshalAs(UnmanagedType.Struct)] Window window, char chr);
@@ -295,6 +295,13 @@ public static class Glfw
         Control = 0x0002,
         Alt = 0x0004,
         Super = 0x0008
+    }
+
+    public enum KeyAction : int
+    {
+        Release = 0,
+        Press = 1,
+        Repeat = 2
     }
 
     public enum Joystick

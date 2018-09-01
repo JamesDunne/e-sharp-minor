@@ -64,6 +64,66 @@ namespace e_sharp_minor
 
             Debug.WriteLine("glfw.ShowWindow(window)");
             Glfw.ShowWindow(window);
+
+            Glfw.SetKeyCallback(window, handleKeys);
+            Glfw.SetMouseButtonCallback(window, handleMouse);
+        }
+
+        public void SwapBuffers()
+        {
+            Glfw.SwapBuffers(window);
+        }
+
+        /// <summary>
+        /// Waits for events and reacts to them.
+        /// </summary>
+        public void WaitEvents()
+        {
+            Glfw.WaitEvents();
+        }
+
+        private void handleMouse(Glfw.Window window, Glfw.MouseButton button, bool state, Glfw.KeyMods mods)
+        {
+            double cx, cy;
+            Glfw.GetCursorPos(window, out cx, out cy);
+            Console.WriteLine("{0},{1},{2}", cx, cy, state);
+
+            InputEvent(new InputEvent
+            {
+                TouchEvent = new TouchEvent
+                {
+                    // TODO: transform x,y pos to match OpenVG coord system:
+                    X = (int)cx,
+                    Y = (int)cy,
+                    Pressed = state
+                }
+            });
+        }
+
+        private void handleKeys(Glfw.Window window, Glfw.KeyCode key, int scan, Glfw.KeyAction action, Glfw.KeyMods mods)
+        {
+            if (key == Glfw.KeyCode.Left)
+            {
+                InputEvent(new InputEvent
+                {
+                    FootSwitchEvent = new FootSwitchEvent
+                    {
+                        FootSwitch = FootSwitch.Left,
+                        WhatAction = (FootSwitchAction)(int)action  // conveniently, the enum values line up.
+                    }
+                });
+            }
+            else if (key == Glfw.KeyCode.Right)
+            {
+                InputEvent(new InputEvent
+                {
+                    FootSwitchEvent = new FootSwitchEvent
+                    {
+                        FootSwitch = FootSwitch.Right,
+                        WhatAction = (FootSwitchAction)(int)action  // conveniently, the enum values line up.
+                    }
+                });
+            }
         }
 
         public IOpenVG VG => vg;
@@ -129,17 +189,5 @@ namespace e_sharp_minor
         extern static uint vgPrivMakeCurrentAM(IntPtr context, IntPtr surface);
 
         #endregion
-
-        public void SwapBuffers()
-        {
-            Glfw.SwapBuffers(window);
-            // TODO: is this necessary to handle window events?
-            Glfw.PollEvents();
-
-            //double cx, cy;
-            //Glfw.GetCursorPos(window, out cx, out cy);
-            //Console.WriteLine("{0},{1}", cx, cy);
-        }
-
     }
 }

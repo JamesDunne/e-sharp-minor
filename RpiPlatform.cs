@@ -213,6 +213,11 @@ namespace e_sharp_minor
             return false;
         }
 
+        public void WaitEvents()
+        {
+            // TODO
+        }
+
         #region DispmanX
 
         [DllImport("bcm_host", EntryPoint = "bcm_host_init")]
