@@ -33,6 +33,9 @@ namespace e_sharp_minor
             Debug.WriteLine("glfw.Init()");
             Glfw.Init();
 
+            // Disable window resizing
+            Glfw.WindowHint(Glfw.Hint.Resizable, false);
+
             Debug.WriteLine("window = glfw.CreateWindow()");
             window = Glfw.CreateWindow(width, height, "e-sharp-minor");
 
