@@ -92,8 +92,13 @@ namespace e_sharp_minor
 
         void handleMousePos(Glfw.Window window, double x, double y)
         {
-            cursorX = (int)x;
-            cursorY = (Height - 1) - (int)y;
+            int newX = (int)x;
+            int newY = (Height - 1) - (int)y;
+
+            if (newX == cursorX && newY == cursorY) return;
+
+            cursorX = newX;
+            cursorY = newY;
 
             // NOTE: x,y can go outside window boundaries.
 
