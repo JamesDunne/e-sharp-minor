@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 using OpenVG;
 
-namespace e_sharp_minor
+namespace EMinor
 {
     public class GlfwPlatform : IPlatform
     {

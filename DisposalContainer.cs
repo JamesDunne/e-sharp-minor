@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace e_sharp_minor
+namespace EMinor
 {
     public class DisposalContainer : IDisposable
     {

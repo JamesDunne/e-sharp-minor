@@ -1,7 +1,7 @@
 ﻿using System;
 using OpenVG;
 
-namespace e_sharp_minor
+namespace EMinor
 {
     public interface IPlatform : IDisposable
     {

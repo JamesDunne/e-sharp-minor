@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace e_sharp_minor
+namespace EMinor
 {
     public interface IMIDI : IDisposable
     {

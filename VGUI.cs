@@ -1,9 +1,9 @@
 ﻿using System;
-using UI;
+using EMinor.UI;
 using OpenVG;
 using Shapes;
 
-namespace e_sharp_minor
+namespace EMinor
 {
     public class VGUI : IDisposable
     {
@@ -27,10 +27,10 @@ namespace e_sharp_minor
             vg.ClearColor = new float[] { 0.0f, 0.0f, 0.2f, 1.0f };
 
             this.disposalContainer = new DisposalContainer(
-                root = new Panel(platform, 0, 0, platform.Width, platform.Height),
+                root = new Panel(platform, new Bounds(platform.Width, platform.Height)),
                 strokePaint = new PaintColor(vg, new float[] { 1.0f, 1.0f, 1.0f, 1.0f }),
                 fillPaint = new PaintColor(vg, new float[] { 0.6f, 0.6f, 0.6f, 1.0f }),
-                btn = new Button(platform, 100, 100, platform.Width - 100 * 2, platform.Height - 100 * 2)
+                btn = new Button(platform, new Bounds(100, 100, platform.Width - 100 * 2, platform.Height - 100 * 2))
                 {
                     Stroke = strokePaint,
                     Fill = fillPaint

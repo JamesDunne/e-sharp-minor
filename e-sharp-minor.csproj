@@ -8,7 +8,7 @@
 
     <TargetFramework>netcoreapp2.1</TargetFramework>
 
-    <RootNamespace>e_sharp_minor</RootNamespace>
+    <RootNamespace>EMinor</RootNamespace>
 
     <Platforms>AnyCPU;x86</Platforms>
 

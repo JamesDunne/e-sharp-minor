@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
-namespace e_sharp_minor
+namespace EMinor
 {
     public class LinuxEventDevice : IDisposable
     {

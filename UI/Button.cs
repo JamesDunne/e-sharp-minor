@@ -1,9 +1,9 @@
 ﻿using System;
-using e_sharp_minor;
+using EMinor;
 using OpenVG;
 using Shapes;
 
-namespace UI
+namespace EMinor.UI
 {
     public class Button : Component
     {
@@ -12,11 +12,11 @@ namespace UI
         public PaintColor Stroke { get; set; }
         public PaintColor Fill { get; set; }
 
-        public Button(IPlatform platform, float x, float y, float width, float height)
-            : base(platform, x, y, width, height)
+        public Button(IPlatform platform, Bounds bounds)
+            : base(platform, bounds)
         {
             disposalContainer.Add(
-                rect = new RoundRect(vg, x, y, width, height, 16, 16)
+                rect = new RoundRect(vg, bounds.X, bounds.Y, bounds.W, bounds.H, 16, 16)
                 {
                     StrokeLineWidth = 1.0f
                 }

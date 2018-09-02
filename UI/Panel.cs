@@ -1,12 +1,12 @@
 ﻿using System;
-using e_sharp_minor;
+using EMinor;
 
-namespace UI
+namespace EMinor.UI
 {
     public class Panel : Component
     {
-        public Panel(IPlatform platform, float x, float y, float width, float height)
-            : base(platform, x, y, width, height)
+        public Panel(IPlatform platform, Bounds bounds)
+            : base(platform, bounds)
         {
         }
 

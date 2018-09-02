@@ -8,7 +8,7 @@ using Shapes;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 
-namespace e_sharp_minor
+namespace EMinor
 {
     class MainClass
     {

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using YamlDotNet.Serialization;
 
-namespace e_sharp_minor
+namespace EMinor
 {
     namespace V6
     {

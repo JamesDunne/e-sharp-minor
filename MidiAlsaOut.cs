@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 
-namespace e_sharp_minor
+namespace EMinor
 {
     public class MidiAlsaOut : IMIDI, IDisposable
     {

@@ -8,7 +8,7 @@ using OpenVG;
 // Don't listen to any "field not assigned" warnings.
 #pragma warning disable CS0649
 
-namespace e_sharp_minor
+namespace EMinor
 {
     public class RpiPlatform : IPlatform
     {

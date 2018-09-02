@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace e_sharp_minor
+namespace EMinor
 {
     // Prevents sending redundant MIDI commands.
     public class MidiState : IMIDI

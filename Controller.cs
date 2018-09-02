@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using e_sharp_minor.V6;
+using EMinor.V6;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 using static System.IO.File;
 using static System.Math;
 
-namespace e_sharp_minor
+namespace EMinor
 {
     public class Controller
     {

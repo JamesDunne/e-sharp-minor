@@ -6,7 +6,7 @@ using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 using System.Linq;
 
-namespace e_sharp_minor
+namespace EMinor
 {
     public class Translator
     {
