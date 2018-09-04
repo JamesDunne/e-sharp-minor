@@ -1,58 +1,15 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
-
-
   <PropertyGroup>
-
     <OutputType>Exe</OutputType>
-
     <TargetFramework>netcoreapp2.1</TargetFramework>
-
     <RootNamespace>EMinor</RootNamespace>
-
     <Platforms>AnyCPU;x86</Platforms>
-
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
-
-
 
   <PropertyGroup Condition="'$(Configuration)' == 'pi-debug'">
-
-    <!--<RuntimeIdentifier>linux-arm</RuntimeIdentifier>-->
-
+    <RuntimeIdentifier>linux-arm</RuntimeIdentifier>
     <DefineConstants>RPI</DefineConstants>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)' == 'osx-debug'">
-
-    <!--<RuntimeIdentifier>osx.10.12-x64</RuntimeIdentifier>-->
-
-    <DefineConstants>OSX</DefineConstants>
-
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <Prefer32Bit>true</Prefer32Bit>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'">
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <Prefer32Bit>true</Prefer32Bit>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <Prefer32Bit>true</Prefer32Bit>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
 
   <ItemGroup>
