@@ -27,7 +27,7 @@ namespace EMinor
             using (IPlatform platform = new GlfwPlatform(800, 480))
 #endif
             {
-                var controller = new Controller(platform.MIDI, 2);
+                var controller = new Controller(platform.MIDI, channel: 2);
                 controller.LoadData();
 
                 Console.WriteLine("all songs alphabetical:");
