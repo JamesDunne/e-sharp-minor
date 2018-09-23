@@ -44,6 +44,9 @@ namespace OpenVG
         PaintHandle GetPaint(PaintMode paintModes);
         void SetPaint(PaintHandle paint, PaintMode paintModes);
 
+        FontHandle CreateFont(int glyphCapacityHint);
+        void DestroyFont(FontHandle font);
+
         #endregion
 
         #region VG Properties
@@ -98,6 +101,24 @@ namespace OpenVG
         public static implicit operator PathHandle(uint handle)
         {
             return new PathHandle(handle);
+        }
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct FontHandle
+    {
+        public uint Handle;
+
+        private FontHandle(uint handle) => Handle = handle;
+
+        public static implicit operator uint(FontHandle paint)
+        {
+            return paint.Handle;
+        }
+
+        public static implicit operator FontHandle(uint handle)
+        {
+            return new FontHandle(handle);
         }
     }
 

@@ -196,6 +196,20 @@ namespace OpenVG
             vgSetPaint(paint, paintModes);
         }
 
+        [DllImport(vg, EntryPoint = "vgCreateFont")]
+        extern static uint vgCreateFont(int glyphCapacityHint);
+        public FontHandle CreateFont(int glyphCapacityHint)
+        {
+            return vgCreateFont(glyphCapacityHint);
+        }
+
+        [DllImport(vg, EntryPoint = "vgDestroyFont")]
+        extern static uint vgDestroyFont(uint fontHandle);
+        public void DestroyFont(FontHandle font)
+        {
+            vgDestroyFont(font);
+        }
+
         #endregion
 
         #region VG Properties
