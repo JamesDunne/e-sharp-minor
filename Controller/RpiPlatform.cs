@@ -146,9 +146,11 @@ namespace EMinor
             window.element = dispman_element;
             window.width = Width;
             window.height = Height;
+            var windowHandle = GCHandle.Alloc(window, GCHandleType.Pinned);
+
 
             Debug.WriteLine("eglCreateWindowSurface(egldisplay, ...)");
-            eglsurface = eglCreateWindowSurface(egldisplay, eglconfig, ref window, null);
+            eglsurface = eglCreateWindowSurface(egldisplay, eglconfig, windowHandle.AddrOfPinnedObject(), null);
             if (eglsurface == 0)
             {
                 throw new Exception("eglCreateWindowSurface returned FALSE");
@@ -583,7 +585,7 @@ namespace EMinor
         extern static uint eglCreateWindowSurface(
             uint dpy,
             uint config,
-            ref EGL_DISPMANX_WINDOW_T win,
+            IntPtr win,
             int[] attrib_list
         ); // returns EGLSurface
 
