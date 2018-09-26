@@ -273,7 +273,7 @@ namespace EMinor
 
         public IOpenVG VG => vg;
 
-        public IMIDI MIDI => MIDI;
+        public IMIDI MIDI => midi;
 
         public int Width { get; }
         public int Height { get; }
