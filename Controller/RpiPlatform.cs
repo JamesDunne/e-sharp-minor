@@ -191,12 +191,11 @@ namespace EMinor
         const int ABS_MT_POSITION_Y = 0x36;
         const int ABS_MT_TRACKING_ID = 0x39;
 
+        TouchEvent lastEvent;
+
         void TouchScreen_EventListener(List<LinuxEventDevice.Event> events)
         {
             bool changed = false;
-            bool touching = false;
-            int x = 0;
-            int y = 0;
 
             foreach (var ev in events)
             {
@@ -204,17 +203,17 @@ namespace EMinor
 
                 if (ev.Code == ABS_MT_POSITION_X)
                 {
-                    x = ev.Value;
+                    lastEvent.X = ev.Value;
                     changed = true;
                 }
                 else if (ev.Code == ABS_MT_POSITION_Y)
                 {
-                    y = (Height - 1) - ev.Value;
+                    lastEvent.Y = (Height - 1) - ev.Value;
                     changed = true;
                 }
                 else if (ev.Code == ABS_MT_TRACKING_ID)
                 {
-                    touching = ev.Value != -1;
+                    lastEvent.Pressed = ev.Value != -1;
                     changed = true;
                 }
             }
@@ -222,15 +221,7 @@ namespace EMinor
             if (!changed) return;
 
             // Fire touch input event:
-            InputEvent(new InputEvent
-            {
-                TouchEvent = new TouchEvent
-                {
-                    X = x,
-                    Y = y,
-                    Pressed = touching
-                }
-            });
+            InputEvent(new InputEvent { TouchEvent = lastEvent });
         }
 
         void Fsw_EventListener(List<LinuxEventDevice.Event> events)
