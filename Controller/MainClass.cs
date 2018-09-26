@@ -109,6 +109,8 @@ namespace EMinor
                 using (var fi = System.IO.File.OpenRead("Vera.ttf"))
                     typeFace = new NRasterizer.OpenTypeReader().Read(fi);
 
+                platform.VG.Seti(ParamType.VG_RENDERING_QUALITY, (int)RenderingQuality.VG_RENDERING_QUALITY_BETTER);
+
                 var vera = platform.VG.CreateFont(typeFace.Glyphs.Count);
                 var vgRasterizer = new VGGlyphRasterizer(platform.VG);
                 vgRasterizer.ConvertGlyphs(typeFace, vera);
@@ -137,11 +139,12 @@ namespace EMinor
                         platform.VG.FillPaint = white;
                         platform.VG.Seti(ParamType.VG_MATRIX_MODE, (int)MatrixMode.VG_MATRIX_GLYPH_USER_TO_SURFACE);
                         platform.VG.LoadIdentity();
-                        platform.VG.Translate(400, 240);
-                        platform.VG.Scale(20, 20);
+                        platform.VG.Translate(200, 240);
+                        platform.VG.Scale(18, 18);
                         platform.VG.Setfv(ParamType.VG_GLYPH_ORIGIN, new float[] { 0.0f, 0.0f });
-                        platform.VG.DrawGlyph(vera, 'a', PaintMode.VG_FILL_PATH, false);
-                        platform.VG.DrawGlyph(vera, 'b', PaintMode.VG_FILL_PATH, false);
+                        //platform.VG.DrawGlyph(vera, 'a', PaintMode.VG_FILL_PATH, false);
+                        //platform.VG.DrawGlyph(vera, 'b', PaintMode.VG_FILL_PATH, false);
+                        platform.VG.DrawGlyphs(vera, "Jim Dunne test mode!", PaintMode.VG_FILL_PATH, true);
                         platform.VG.Seti(ParamType.VG_MATRIX_MODE, (int)MatrixMode.VG_MATRIX_PATH_USER_TO_SURFACE);
 
                         // Swap buffers to display and vsync:

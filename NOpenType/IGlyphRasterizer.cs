@@ -7,13 +7,13 @@ namespace NRasterizer
         int Resolution { get; }
 
         void BeginRead(int countourCount);
-        void EndRead();
+        void EndRead(double escapementX, double escapementY);
 
         void LineTo(double x, double y);
         void Curve3(double p2x, double p2y, double x, double y);
         void Curve4(double p2x, double p2y, double p3x, double p3y, double x, double y);
         void MoveTo(double x, double y);
-        void CloseFigure(double escapementX, double escapementY);
+        void CloseFigure();
 
         // Called after all letters have been written.
         void Flush();

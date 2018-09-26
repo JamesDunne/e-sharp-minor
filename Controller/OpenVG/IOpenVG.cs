@@ -50,6 +50,7 @@ namespace OpenVG
         void DestroyFont(FontHandle font);
         void SetGlyphToPath(FontHandle font, uint glyphIndex, PathHandle path, bool isHinted, float[] origin, float[] escapement);
         void DrawGlyph(FontHandle font, uint glyphIndex, PaintMode paintModes, bool allowAutoHinting);
+        void DrawGlyphs(FontHandle font, string text, PaintMode paintModes, bool allowAutoHinting);
 
         #endregion
 
@@ -96,6 +97,8 @@ namespace OpenVG
         public uint Handle;
 
         private PathHandle(uint handle) => Handle = handle;
+
+        public static readonly PathHandle Invalid = (PathHandle)0;
 
         public static implicit operator uint(PathHandle paint)
         {
@@ -307,5 +310,12 @@ namespace OpenVG
         //VG_SEGMENT_MASK = 0xf << 1,
 
         //VG_PATH_SEGMENT_FORCE_SIZE = Constants.VG_MAX_ENUM
+    }
+
+    public enum RenderingQuality : int
+    {
+        VG_RENDERING_QUALITY_NONANTIALIASED = 0x1200,
+        VG_RENDERING_QUALITY_FASTER = 0x1201,
+        VG_RENDERING_QUALITY_BETTER = 0x1202, /* Default */
     }
 }

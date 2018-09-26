@@ -170,12 +170,13 @@ namespace NRasterizer
                     justFromCurveMode = false;
                     controlPointCount = 0;
                 }
-                // TODO: fix hard-coded 0 escapement Y:
-                rasterizer.CloseFigure(glyphWidth, 0);
+                rasterizer.CloseFigure();
                 //--------                   
                 startContour++;
             }
-            rasterizer.EndRead();
+
+            // TODO: fix hard-coded 0 escapement Y:
+            rasterizer.EndRead(glyphWidth, 0);
         }
 
         private static Point<int> GetMidPoint(Point<int> v1, int v2x, int v2y)

@@ -245,6 +245,14 @@ namespace OpenVG
             vgDrawGlyph(font, glyphIndex, (uint)paintModes, allowAutoHinting ? 1U : 0);
         }
 
+        [DllImport(vg, EntryPoint = "vgDrawGlyphs")]
+        extern static void vgDrawGlyphs(uint font, uint glyphCount, byte[] glyphIndices, float[] adjustmentsX, float[] adjustmentsY, uint paintModes, uint allowAutoHinting);
+        public void DrawGlyphs(FontHandle font, string text, PaintMode paintModes, bool allowAutoHinting)
+        {
+            var glyphIndices = System.Text.Encoding.UTF32.GetBytes(text);
+            vgDrawGlyphs(font, (uint)text.Length, glyphIndices, null, null, (uint)paintModes, allowAutoHinting ? 1U : 0);
+        }
+
         #endregion
 
         #region VG Properties

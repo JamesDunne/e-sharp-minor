@@ -54,9 +54,9 @@ namespace NRasterizer
             _inner.BeginRead(countourCount);
         }
 
-        public void EndRead()
+        public void EndRead(double escapementX, double escapementY)
         {
-            _inner.EndRead();
+            _inner.EndRead(X(escapementX), Y(escapementY));
         }
 
         public void LineTo(double x, double y)
@@ -83,9 +83,9 @@ namespace NRasterizer
             _inner.MoveTo(X(x), Y(y));
         }
 
-        public void CloseFigure(double escapementX, double escapementY)
+        public void CloseFigure()
         {
-            _inner.CloseFigure(X(escapementX), Y(escapementY));
+            _inner.CloseFigure();
         }
     }
 }

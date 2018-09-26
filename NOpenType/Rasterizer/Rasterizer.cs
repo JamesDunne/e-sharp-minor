@@ -69,7 +69,7 @@ namespace NRasterizer.Rasterizer
             first = true;
         }
 
-        public void EndRead()
+        public void EndRead(double escapementX, double escapementY)
         {
         }
 
@@ -107,7 +107,7 @@ namespace NRasterizer.Rasterizer
             }
         }
 
-        public void CloseFigure(double escapementX, double escapementY)
+        public void CloseFigure()
         {
             LineTo(_firstX, _firstY);
         }

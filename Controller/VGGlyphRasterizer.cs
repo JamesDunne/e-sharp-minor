@@ -24,7 +24,6 @@ namespace EMinor
             var renderer = new NRasterizer.Renderer(typeFace, this);
             foreach (var c in typeFace.AllCharacters())
             {
-                Console.WriteLine(c);
                 renderer.RenderChar(0, 0, c, 72, false);
                 this.SetGlyphToPath(destFont, c);
             }
@@ -32,16 +31,23 @@ namespace EMinor
 
         public void SetGlyphToPath(FontHandle font, uint glyphIndex)
         {
-            var path = vg.CreatePathStandardFloat();
+            PathHandle path = PathHandle.Invalid;
+            if (segments.Count != 0)
+            {
+                path = vg.CreatePathStandardFloat();
 
-            byte[] segmentBytes = segments.Cast<byte>().ToArray();
-            float[] coordsFloats = coords.ToArray();
-            vg.AppendPathData(path, segmentBytes, coordsFloats);
+                byte[] segmentBytes = segments.Cast<byte>().ToArray();
+                float[] coordsFloats = coords.ToArray();
+                vg.AppendPathData(path, segmentBytes, coordsFloats);
+            }
 
             var origin = new float[] { 0.0f, 0.0f };
             vg.SetGlyphToPath(font, glyphIndex, path, false, origin, escapement);
 
-            vg.DestroyPath(path);
+            if (path != PathHandle.Invalid)
+            {
+                vg.DestroyPath(path);
+            }
         }
 
         #region IGlyphRasterizer
@@ -54,13 +60,13 @@ namespace EMinor
             this.coords = new List<float>(countourCount * 6);
         }
 
-        public void EndRead()
-        {
-        }
-
-        public void CloseFigure(double escapementX, double escapementY)
+        public void EndRead(double escapementX, double escapementY)
         {
             this.escapement = new float[] { (float)escapementX, (float)escapementY };
+        }
+
+        public void CloseFigure()
+        {
         }
 
         public void MoveTo(double x, double y)
