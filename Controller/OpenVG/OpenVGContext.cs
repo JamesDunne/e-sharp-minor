@@ -15,11 +15,19 @@ namespace OpenVG
 
         const string vg = "OpenVG";
 
+        [DllImport(vg, EntryPoint = "vgGetError")]
+        extern static int vgGetError();
+        public int GetError()
+        {
+            return vgGetError();
+        }
+
         [DllImport(vg, EntryPoint = "vgSeti")]
         extern static void vgSeti(ParamType paramType, int value);
         public void Seti(ParamType paramType, int value)
         {
             vgSeti(paramType, value);
+            checkError();
         }
 
         [DllImport(vg, EntryPoint = "vgSetf")]
@@ -27,6 +35,7 @@ namespace OpenVG
         public void Setf(ParamType paramType, float value)
         {
             vgSetf(paramType, value);
+            checkError();
         }
 
         [DllImport(vg, EntryPoint = "vgSetfv")]
@@ -34,20 +43,26 @@ namespace OpenVG
         public void Setfv(ParamType paramType, float[] values)
         {
             vgSetfv(paramType, values.Length, values);
+            checkError();
+            return result;
         }
 
         [DllImport(vg, EntryPoint = "vgGeti")]
         extern static int vgGeti(ParamType type);
         public int Geti(ParamType type)
         {
-            return vgGeti(type);
+            var result = vgGeti(type);
+            checkError();
+            return result;
         }
 
         [DllImport(vg, EntryPoint = "vgGetf")]
         extern static float vgGetf(ParamType type);
         public float Getf(ParamType type)
         {
-            return vgGetf(type);
+            var result = vgGetf(type);
+            checkError();
+            return result;
         }
 
         [DllImport(vg, EntryPoint = "vgGetVectorSize")]
@@ -59,6 +74,7 @@ namespace OpenVG
             int size = vgGetVectorSize(type);
             float[] vec = new float[size];
             vgGetfv(type, size, vec);
+            checkError();
             return vec;
         }
 
@@ -69,6 +85,7 @@ namespace OpenVG
             int size = vgGetVectorSize(type);
             int[] vec = new int[size];
             vgGetiv(type, size, vec);
+            checkError();
             return vec;
         }
 
@@ -77,6 +94,7 @@ namespace OpenVG
         public void SetParameteri(uint handle, int paramType, int value)
         {
             vgSetParameteri(handle, paramType, value);
+            checkError();
         }
 
         [DllImport(vg, EntryPoint = "vgSetParameterfv")]
@@ -84,6 +102,7 @@ namespace OpenVG
         public void SetParameterfv(uint handle, int paramType, float[] values)
         {
             vgSetParameterfv(handle, paramType, values.Length, values);
+            checkError();
         }
 
         [DllImport(vg, EntryPoint = "vgClear")]
@@ -91,6 +110,7 @@ namespace OpenVG
         public void Clear(int x, int y, int width, int height)
         {
             vgClear(x, y, width, height);
+            checkError();
         }
 
         [DllImport(vg)]
@@ -98,6 +118,7 @@ namespace OpenVG
         public void LoadIdentity()
         {
             vgLoadIdentity();
+            checkError();
         }
 
         [DllImport(vg)]
@@ -105,6 +126,7 @@ namespace OpenVG
         public void Translate(float tx, float ty)
         {
             vgTranslate(tx, ty);
+            checkError();
         }
 
         [DllImport(vg)]
@@ -112,6 +134,7 @@ namespace OpenVG
         public void Scale(float sx, float sy)
         {
             vgScale(sx, sy);
+            checkError();
         }
 
         [DllImport(vg)]
@@ -119,6 +142,7 @@ namespace OpenVG
         public void Shear(float shx, float shy)
         {
             vgShear(shx, shy);
+            checkError();
         }
 
         [DllImport(vg)]
@@ -126,6 +150,7 @@ namespace OpenVG
         public void Rotate(float angle)
         {
             vgRotate(angle);
+            checkError();
         }
 
         [DllImport(vg, EntryPoint = "vgCreatePath")]
@@ -144,7 +169,7 @@ namespace OpenVG
             PathCapabilities capabilities
         )
         {
-            return vgCreatePath(
+            var result = vgCreatePath(
                 pathFormat,
                 datatype,
                 scale,
@@ -153,11 +178,13 @@ namespace OpenVG
                 coordCapacityHint,
                 capabilities
             );
+            checkError();
+            return result;
         }
 
         public PathHandle CreatePathStandardFloat()
         {
-            return vgCreatePath(
+            var result = vgCreatePath(
                 Constants.VG_PATH_FORMAT_STANDARD,
                 PathDatatype.VG_PATH_DATATYPE_F,
                 1.0f,
@@ -166,6 +193,8 @@ namespace OpenVG
                 0,
                 PathCapabilities.VG_PATH_CAPABILITY_ALL
             );
+            checkError();
+            return result;
         }
 
         [DllImport(vg, EntryPoint = "vgDestroyPath")]
@@ -173,6 +202,7 @@ namespace OpenVG
         public void DestroyPath(PathHandle path)
         {
             vgDestroyPath(path);
+            checkError();
         }
 
         [DllImport(vg, EntryPoint = "vgDrawPath")]
@@ -180,6 +210,7 @@ namespace OpenVG
         public void DrawPath(PathHandle path, PaintMode paintModes)
         {
             vgDrawPath(path, paintModes);
+            checkError();
         }
 
         [DllImport(vg, EntryPoint = "vgAppendPathData")]
@@ -187,13 +218,16 @@ namespace OpenVG
         public void AppendPathData(PathHandle path, byte[] segments, float[] coords)
         {
             vgAppendPathData(path, segments.Length, segments, coords);
+            checkError();
         }
 
         [DllImport(vg, EntryPoint = "vgCreatePaint")]
         extern static uint vgCreatePaint();
         public PaintHandle CreatePaint()
         {
-            return vgCreatePaint();
+            var result = vgCreatePaint();
+            checkError();
+            return result;
         }
 
         [DllImport(vg, EntryPoint = "vgDestroyPaint")]
@@ -201,13 +235,16 @@ namespace OpenVG
         public void DestroyPaint(PaintHandle paint)
         {
             vgDestroyPaint(paint);
+            checkError();
         }
 
         [DllImport(vg, EntryPoint = "vgGetPaint")]
         extern static uint vgGetPaint(PaintMode paintModes);
         public PaintHandle GetPaint(PaintMode paintModes)
         {
-            return vgGetPaint(paintModes);
+            var result = vgGetPaint(paintModes);
+            checkError();
+            return result;
         }
 
         [DllImport(vg, EntryPoint = "vgSetPaint")]
@@ -215,13 +252,16 @@ namespace OpenVG
         public void SetPaint(PaintHandle paint, PaintMode paintModes)
         {
             vgSetPaint(paint, paintModes);
+            checkError();
         }
 
         [DllImport(vg, EntryPoint = "vgCreateFont")]
         extern static uint vgCreateFont(int glyphCapacityHint);
         public FontHandle CreateFont(int glyphCapacityHint)
         {
-            return vgCreateFont(glyphCapacityHint);
+            var result = vgCreateFont(glyphCapacityHint);
+            checkError();
+            return result;
         }
 
         [DllImport(vg, EntryPoint = "vgDestroyFont")]
@@ -229,6 +269,7 @@ namespace OpenVG
         public void DestroyFont(FontHandle font)
         {
             vgDestroyFont(font);
+            checkError();
         }
 
         [DllImport(vg, EntryPoint = "vgSetGlyphToPath")]
@@ -236,6 +277,7 @@ namespace OpenVG
         public void SetGlyphToPath(FontHandle font, uint glyphIndex, PathHandle path, bool isHinted, float[] origin, float[] escapement)
         {
             vgSetGlyphToPath(font, glyphIndex, path, isHinted ? 1U : 0, origin, escapement);
+            checkError();
         }
 
         [DllImport(vg, EntryPoint = "vgDrawGlyph")]
@@ -243,6 +285,7 @@ namespace OpenVG
         public void DrawGlyph(FontHandle font, uint glyphIndex, PaintMode paintModes, bool allowAutoHinting)
         {
             vgDrawGlyph(font, glyphIndex, (uint)paintModes, allowAutoHinting ? 1U : 0);
+            checkError();
         }
 
         [DllImport(vg, EntryPoint = "vgDrawGlyphs")]
@@ -251,6 +294,16 @@ namespace OpenVG
         {
             var glyphIndices = System.Text.Encoding.UTF32.GetBytes(text);
             vgDrawGlyphs(font, (uint)text.Length, glyphIndices, null, null, (uint)paintModes, allowAutoHinting ? 1U : 0);
+            checkError();
+        }
+
+        private void checkError()
+        {
+            int err = GetError();
+            if (err != 0)
+            {
+                throw new Exception(String.Format("VG error {0:X04}", err));
+            }
         }
 
         #endregion
@@ -261,11 +314,14 @@ namespace OpenVG
         {
             get
             {
-                return Getfv(ParamType.VG_CLEAR_COLOR);
+                var color = Getfv(ParamType.VG_CLEAR_COLOR);
+                checkError();
+                return color;
             }
             set
             {
                 Setfv(ParamType.VG_CLEAR_COLOR, value);
+                checkError();
             }
         }
 
@@ -273,11 +329,14 @@ namespace OpenVG
         {
             get
             {
-                return GetPaint(PaintMode.VG_STROKE_PATH);
+                var handle = GetPaint(PaintMode.VG_STROKE_PATH);
+                checkError();
+                return handle;
             }
             set
             {
                 SetPaint(value, PaintMode.VG_STROKE_PATH);
+                checkError();
             }
         }
 
@@ -285,11 +344,14 @@ namespace OpenVG
         {
             get
             {
-                return GetPaint(PaintMode.VG_FILL_PATH);
+                var handle = GetPaint(PaintMode.VG_FILL_PATH);
+                checkError();
+                return handle;
             }
             set
             {
                 SetPaint(value, PaintMode.VG_FILL_PATH);
+                checkError();
             }
         }
 
@@ -301,14 +363,18 @@ namespace OpenVG
         extern static uint vgLine(uint path, float x0, float y0, float x1, float y1);
         public uint Line(PathHandle path, float x0, float y0, float x1, float y1)
         {
-            return vgLine(path, x0, y0, x1, y1);
+            var result = vgLine(path, x0, y0, x1, y1);
+            checkError();
+            return result;
         }
 
         [DllImport(vg, EntryPoint = "vguRoundRect")]
         extern static uint vgRoundRect(uint path, float x, float y, float width, float height, float arcWidth, float arcHeight);
         public uint RoundRect(PathHandle path, float x, float y, float width, float height, float arcWidth, float arcHeight)
         {
-            return vgRoundRect(path, x, y, width, height, arcWidth, arcHeight);
+            var result = vgRoundRect(path, x, y, width, height, arcWidth, arcHeight);
+            checkError();
+            return result;
         }
 
         #endregion
