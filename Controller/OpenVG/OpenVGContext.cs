@@ -44,7 +44,6 @@ namespace OpenVG
         {
             vgSetfv(paramType, values.Length, values);
             checkError();
-            return result;
         }
 
         [DllImport(vg, EntryPoint = "vgGeti")]
