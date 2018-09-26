@@ -146,11 +146,15 @@ namespace EMinor
             throwIfError();
 
             // Create OpenVGContext:
+            Debug.WriteLine("new OpenVGContext()");
             vg = new OpenVGContext();
 
             // Translate to pixel-perfect offset:
+            Debug.WriteLine("vgSeti(VG_MATRIX_MODE)");
             vg.Seti(OpenVG.ParamType.VG_MATRIX_MODE, (int)OpenVG.MatrixMode.VG_MATRIX_PATH_USER_TO_SURFACE);
+            Debug.WriteLine("vgLoadIdentity()");
             vg.LoadIdentity();
+            Debug.WriteLine("vgTranslate()");
             vg.Translate(0.5f, 0.5f);
         }
 
@@ -299,10 +303,12 @@ namespace EMinor
 
             if (ready.Contains(fsw))
             {
+                Debug.WriteLine("fsw.PollEvents()");
                 fsw.PollEvents();
             }
             if (ready.Contains(touchScreen))
             {
+                Debug.WriteLine("touchScreen.PollEvents()");
                 touchScreen.PollEvents();
             }
         }
