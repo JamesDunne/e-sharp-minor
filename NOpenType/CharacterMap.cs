@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace NRasterizer
 {
@@ -25,9 +26,25 @@ namespace NRasterizer
         {
             for (int i = 0; i < _segCount; i++)
             {
-                if (_endCode[i] >= character && _startCode[i] <= character)
+                if (_startCode[i] <= character && character <= _endCode[i])
                 {
-                    return true;
+                    if (_idRangeOffset == null || _idDelta == null)
+                    {
+                        // 1:1 mapping
+                        return _glyphIdArray[character] != 0;
+                    }
+
+                    if (_idRangeOffset[i] == 0)
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        var offset = _idRangeOffset[i] / 2 + (character - _startCode[i]);
+
+                        if (_glyphIdArray[offset - _idRangeOffset.Length + i] == 0) return false;
+                        return true;
+                    }
                 }
             }
             return false;
@@ -43,28 +60,26 @@ namespace NRasterizer
             // TODO: Fast fegment lookup using bit operations?
             for (int i = 0; i < _segCount; i++)
             {
-                if (_endCode[i] >= character && _startCode[i] <= character)
+                if (_startCode[i] <= character && character <= _endCode[i])
                 {
                     if (_idRangeOffset == null || _idDelta == null)
                     {
-                        // Straightforward mapping if id-range and id-delta are missing:
+                        // 1:1 mapping
                         return _glyphIdArray[character];
+                    }
+
+                    if (_idRangeOffset[i] == 0)
+                    {
+                        return (uint)((int)character + _idDelta[i]) & 65535;
                     }
                     else
                     {
-                        if (_idRangeOffset?[i] == 0)
-                        {
-                            return (character + _idDelta[i]) % 65536; // TODO: bitmask instead?
-                        }
-                        else
-                        {
-                            var offset = _idRangeOffset[i] / 2 + (character - _startCode[i]);
+                        var offset = _idRangeOffset[i] / 2 + (character - _startCode[i]);
 
-                            // I want to thank Microsoft for this clever pointer trick
-                            // TODO: What if the value fetched is inside the _idRangeOffset table?
-                            // TODO: e.g. (offset - _idRangeOffset.Length + i < 0)
-                            return _glyphIdArray[offset - _idRangeOffset.Length + i];
-                        }
+                        // I want to thank Microsoft for this clever pointer trick
+                        // TODO: What if the value fetched is inside the _idRangeOffset table?
+                        // TODO: e.g. (offset - _idRangeOffset.Length + i < 0)
+                        return _glyphIdArray[offset - _idRangeOffset.Length + i];
                     }
                 }
             }

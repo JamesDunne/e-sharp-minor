@@ -18,6 +18,18 @@ namespace EMinor
             this.vg = vg;
         }
 
+        public void ConvertGlyphs(NRasterizer.Typeface typeFace, FontHandle destFont)
+        {
+            // Create a renderer instance that renders glyphs to OpenVG paths:
+            var renderer = new NRasterizer.Renderer(typeFace, this);
+            foreach (var c in typeFace.AllCharacters())
+            {
+                Console.WriteLine(c);
+                renderer.RenderChar(0, 0, c, 72, false);
+                this.SetGlyphToPath(destFont, c);
+            }
+        }
+
         public void SetGlyphToPath(FontHandle font, uint glyphIndex)
         {
             var path = vg.CreatePathStandardFloat();
@@ -87,7 +99,6 @@ namespace EMinor
 
         public void Flush()
         {
-            //throw new NotImplementedException();
         }
 
         #endregion

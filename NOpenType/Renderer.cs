@@ -25,13 +25,9 @@ namespace NRasterizer
         /// </summary>
         /// <param name="glyphLayout">The glyph layout.</param>
         /// <param name="scalingFactor">The scaling factor.</param>
-        internal void RenderGlyph(GlyphLayout glyphLayout, int scalingFactor)
+        internal void RenderGlyph(int x, int y, Glyph glyph, int glyphWidth, int scalingFactor, bool flipY = true)
         {
-            int x = glyphLayout.TopLeft.X;
-            int y = glyphLayout.TopLeft.Y;
-            Glyph glyph = glyphLayout.glyph;
-
-            var rasterizer = new ToPixelRasterizer(x, y, scalingFactor, FontToPixelDivisor, _rasterizer);
+            var rasterizer = new ToPixelRasterizer(x, y, scalingFactor, FontToPixelDivisor, _rasterizer, flipY);
 
             ushort[] contours = glyph.EndPoints;
             short[] xs = glyph.X;
@@ -174,7 +170,8 @@ namespace NRasterizer
                     justFromCurveMode = false;
                     controlPointCount = 0;
                 }
-                rasterizer.CloseFigure(glyphLayout.BottomRight.X, glyphLayout.BottomRight.Y);
+                // TODO: fix hard-coded 0 escapement Y:
+                rasterizer.CloseFigure(glyphWidth, 0);
                 //--------                   
                 startContour++;
             }
@@ -205,25 +202,28 @@ namespace NRasterizer
 
             foreach (var layout in glyphs)
             {
-                RenderGlyph(layout, scalingFactor);
+                RenderGlyph(layout.TopLeft.x, layout.TopLeft.Y, layout.glyph, layout.BottomRight.X, scalingFactor);
             }
             _rasterizer.Flush();
         }
 
-        public void RenderChar(char character, int scalingFactor = 1)
+        public void RenderChar(int x, int y, char character, int scalingFactor = 1, bool flipY = true)
         {
             var glyph = _typeface.Lookup(character);
             var glyphWidth = _typeface.GetAdvanceWidth(character);
-            // remove the min for EM square to calculate the final 'height' for the glyph from the origin because fonts need flipping to work sensibly.
-            int drawheightEM = EmSquare.Size - glyph.Bounds.YMin;
-            var layout = new GlyphLayout
-            {
-                glyph = glyph,
-                TopLeft = new Point<int>(0, 0),
-                BottomRight = new Point<int>(glyphWidth, drawheightEM)
-            };
 
-            RenderGlyph(layout, scalingFactor);
+            int drawheightEM;
+            if (flipY)
+            {
+                // remove the min for EM square to calculate the final 'height' for the glyph from the origin because fonts need flipping to work sensibly.
+                drawheightEM = EmSquare.Size - glyph.Bounds.YMin;
+            }
+            else
+            {
+                drawheightEM = glyph.Bounds.YMin;
+            }
+
+            RenderGlyph(x, y, glyph, glyphWidth, scalingFactor, flipY);
 
             _rasterizer.Flush();
         }

@@ -1,5 +1,6 @@
 ﻿using NRasterizer.Tables;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace NRasterizer
 {
@@ -22,6 +23,16 @@ namespace NRasterizer
             _horizontalMetrics = horizontalMetrics;
         }
 
+        public IEnumerable<char> AllCharacters()
+        {
+            for (char c = (char)0; c < (char)0xffff; c++)
+            {
+                if (!_cmaps.Any(m => m.IsCharacterInMap(c))) continue;
+
+                yield return c;
+            }
+        }
+
         public int LookupIndex(char character)
         {
             // TODO: What if there are none or several tables?
@@ -35,7 +46,8 @@ namespace NRasterizer
 
         public Glyph Lookup(char character)
         {
-            return _glyphs[LookupIndex(character)];
+            int index = LookupIndex(character);
+            return _glyphs[index];
         }
 
         public ushort GetAdvanceWidth(char character)
@@ -43,7 +55,7 @@ namespace NRasterizer
             return _horizontalMetrics.GetAdvanceWidth(LookupIndex(character));
         }
 
-        public int LineSpacing {get { return _lineSpacing; } }
+        public int LineSpacing { get { return _lineSpacing; } }
         public Bounds Bounds { get { return _bounds; } }
         public ushort UnitsPerEm { get { return _unitsPerEm; } }
         public List<Glyph> Glyphs { get { return _glyphs; } }

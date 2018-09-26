@@ -12,15 +12,29 @@ namespace NRasterizer
     internal class ToPixelRasterizer
     {
         private readonly IGlyphRasterizer _inner;
-        private readonly float _x;
-        private readonly float _y;
+        private readonly double _x;
+        private readonly double _y;
+        private readonly double _xScalar;
+        private readonly double _yScalar;
         private readonly int _scalingFactor;
         private readonly int _divider;
 
-        public ToPixelRasterizer(int x, int y, int scalingFactor, int divider, IGlyphRasterizer inner)
+        public ToPixelRasterizer(int x, int y, int scalingFactor, int divider, IGlyphRasterizer inner, bool flipY = true)
         {
-            _x = x;
-            _y = y + EmSquare.Size;
+            if (flipY)
+            {
+                _xScalar = 1.0;
+                _yScalar = -1.0;
+                _x = x;
+                _y = y + EmSquare.Size;
+            }
+            else
+            {
+                _xScalar = 1.0;
+                _yScalar = 1.0;
+                _x = x;
+                _y = y;
+            }
             _scalingFactor = scalingFactor;
             _divider = divider;
             _inner = inner;
@@ -28,11 +42,11 @@ namespace NRasterizer
 
         private double X(double x)
         {
-            return (_scalingFactor * (_x + x)) / _divider;
+            return (_scalingFactor * (_x + _xScalar * x)) / _divider;
         }
         private double Y(double y)
         {
-            return (_scalingFactor * (_y - y)) / _divider;
+            return (_scalingFactor * (_y + _yScalar * y)) / _divider;
         }
 
         public void BeginRead(int countourCount)
@@ -60,8 +74,8 @@ namespace NRasterizer
             _inner.Curve4(
                 X(p2x), Y(p2y),
                 X(p3x), Y(p3y),
-                X(x), Y(y));
-            
+                X(x), Y(y)
+            );
         }
 
         public void MoveTo(double x, double y)
