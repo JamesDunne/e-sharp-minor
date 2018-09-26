@@ -232,10 +232,17 @@ namespace OpenVG
         }
 
         [DllImport(vg, EntryPoint = "vgSetGlyphToPath")]
-        extern static void vgSetGlyphToPath(uint font, int glyphIndex, uint path, int isHinted, float[] glyphOrigin, float[] escapement);
-        public void SetGlyphToPath(FontHandle font, int glyphIndex, PathHandle path, bool isHinted, float[] origin, float[] escapement)
+        extern static void vgSetGlyphToPath(uint font, uint glyphIndex, uint path, uint isHinted, float[] glyphOrigin, float[] escapement);
+        public void SetGlyphToPath(FontHandle font, uint glyphIndex, PathHandle path, bool isHinted, float[] origin, float[] escapement)
         {
-            vgSetGlyphToPath(font, glyphIndex, path, 0, origin, escapement);
+            vgSetGlyphToPath(font, glyphIndex, path, isHinted ? 1U : 0, origin, escapement);
+        }
+
+        [DllImport(vg, EntryPoint = "vgDrawGlyph")]
+        extern static void vgDrawGlyph(uint font, uint glyphIndex, uint paintModes, uint allowAutoHinting);
+        public void DrawGlyph(FontHandle font, uint glyphIndex, PaintMode paintModes, bool allowAutoHinting)
+        {
+            vgDrawGlyph(font, glyphIndex, (uint)paintModes, allowAutoHinting ? 1U : 0);
         }
 
         #endregion

@@ -13,7 +13,7 @@ namespace NRasterizer
         void Curve3(double p2x, double p2y, double x, double y);
         void Curve4(double p2x, double p2y, double p3x, double p3y, double x, double y);
         void MoveTo(double x, double y);
-        void CloseFigure();
+        void CloseFigure(double escapementX, double escapementY);
 
         // Called after all letters have been written.
         void Flush();

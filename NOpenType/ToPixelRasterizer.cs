@@ -69,9 +69,9 @@ namespace NRasterizer
             _inner.MoveTo(X(x), Y(y));
         }
 
-        public void CloseFigure()
+        public void CloseFigure(double escapementX, double escapementY)
         {
-            _inner.CloseFigure();
+            _inner.CloseFigure(X(escapementX), Y(escapementY));
         }
     }
 }

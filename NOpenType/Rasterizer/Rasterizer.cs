@@ -107,7 +107,7 @@ namespace NRasterizer.Rasterizer
             }
         }
 
-        public void CloseFigure()
+        public void CloseFigure(double escapementX, double escapementY)
         {
             LineTo(_firstX, _firstY);
         }

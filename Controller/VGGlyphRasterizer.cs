@@ -11,19 +11,22 @@ namespace EMinor
 
         private List<PathSegment> segments;
         private List<float> coords;
+        private float[] escapement;
 
         public VGGlyphRasterizer(IOpenVG vg)
         {
             this.vg = vg;
         }
 
-        public void SetGlyphToPath(FontHandle font, int glyphIndex, int glyphWidth)
+        public void SetGlyphToPath(FontHandle font, uint glyphIndex)
         {
             var path = vg.CreatePathStandardFloat();
-            vg.AppendPathData(path, segments.Cast<byte>().ToArray(), coords.ToArray());
+
+            byte[] segmentBytes = segments.Cast<byte>().ToArray();
+            float[] coordsFloats = coords.ToArray();
+            vg.AppendPathData(path, segmentBytes, coordsFloats);
 
             var origin = new float[] { 0.0f, 0.0f };
-            var escapement = new float[] { (float)glyphWidth, 0.0f };
             vg.SetGlyphToPath(font, glyphIndex, path, false, origin, escapement);
 
             vg.DestroyPath(path);
@@ -43,9 +46,9 @@ namespace EMinor
         {
         }
 
-        public void CloseFigure()
+        public void CloseFigure(double escapementX, double escapementY)
         {
-            //throw new NotImplementedException();
+            this.escapement = new float[] { (float)escapementX, (float)escapementY };
         }
 
         public void MoveTo(double x, double y)

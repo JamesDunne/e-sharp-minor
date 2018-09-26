@@ -48,7 +48,8 @@ namespace OpenVG
 
         FontHandle CreateFont(int glyphCapacityHint);
         void DestroyFont(FontHandle font);
-        void SetGlyphToPath(FontHandle font, int glyphIndex, PathHandle path, bool isHinted, float[] origin, float[] escapement);
+        void SetGlyphToPath(FontHandle font, uint glyphIndex, PathHandle path, bool isHinted, float[] origin, float[] escapement);
+        void DrawGlyph(FontHandle font, uint glyphIndex, PaintMode paintModes, bool allowAutoHinting);
 
         #endregion
 

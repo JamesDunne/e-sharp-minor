@@ -9,7 +9,7 @@ namespace NRasterizer
     {
         private const int PointsPerInch = 72;
 
-        internal const int FontToPixelDivisor = EmSquare.Size * PointsPerInch;
+        public const int FontToPixelDivisor = EmSquare.Size * PointsPerInch;
 
         private readonly IGlyphRasterizer _rasterizer;
         private readonly Typeface _typeface;
@@ -174,7 +174,7 @@ namespace NRasterizer
                     justFromCurveMode = false;
                     controlPointCount = 0;
                 }
-                rasterizer.CloseFigure();
+                rasterizer.CloseFigure(glyphLayout.BottomRight.X, glyphLayout.BottomRight.Y);
                 //--------                   
                 startContour++;
             }
@@ -210,9 +210,8 @@ namespace NRasterizer
             _rasterizer.Flush();
         }
 
-        public int RenderChar(char character)
+        public void RenderChar(char character, int scalingFactor = 1)
         {
-            int scalingFactor = 1;
             var glyph = _typeface.Lookup(character);
             var glyphWidth = _typeface.GetAdvanceWidth(character);
             // remove the min for EM square to calculate the final 'height' for the glyph from the origin because fonts need flipping to work sensibly.
@@ -227,8 +226,6 @@ namespace NRasterizer
             RenderGlyph(layout, scalingFactor);
 
             _rasterizer.Flush();
-
-            return glyphWidth;
         }
 
         /// <summary>
