@@ -35,6 +35,8 @@ namespace EMinor
 
             // Disable window resizing
             Glfw.WindowHint(Glfw.Hint.Resizable, false);
+            // Enable multi-sampling
+            Glfw.WindowHint(Glfw.Hint.Samples, 4);
 
             Debug.WriteLine("window = glfw.CreateWindow()");
             window = Glfw.CreateWindow(width, height, "e-sharp-minor");
@@ -55,7 +57,8 @@ namespace EMinor
             vgContext = vgPrivContextCreateAM(IntPtr.Zero);
 
             // create a drawing surface (sRGBA premultiplied color space)
-            vgSurface = vgPrivSurfaceCreateAM(fbWidth, fbHeight, 0, 1, 1);
+            //vgSurface = vgPrivSurfaceCreateAM(fbWidth, fbHeight, 0, 1, 1);
+            vgSurface = vgPrivSurfaceCreateAM(fbWidth, fbHeight, 0, 0, 0);
 
             // bind context and surface
             vgPrivMakeCurrentAM(vgContext, vgSurface);
