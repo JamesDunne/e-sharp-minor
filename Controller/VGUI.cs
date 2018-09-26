@@ -55,8 +55,6 @@ namespace EMinor
         public void Render()
         {
             // Render our pre-made paths each frame:
-            vg.Clear(0, 0, platform.FramebufferWidth, platform.FramebufferHeight);
-
             btn.Render();
         }
     }

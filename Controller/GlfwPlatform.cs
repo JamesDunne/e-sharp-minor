@@ -36,7 +36,7 @@ namespace EMinor
             // Disable window resizing
             Glfw.WindowHint(Glfw.Hint.Resizable, false);
             // Enable multi-sampling
-            Glfw.WindowHint(Glfw.Hint.Samples, 4);
+            Glfw.WindowHint(Glfw.Hint.Samples, 8);
 
             Debug.WriteLine("window = glfw.CreateWindow()");
             window = Glfw.CreateWindow(width, height, "e-sharp-minor");

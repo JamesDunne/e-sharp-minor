@@ -116,12 +116,6 @@ namespace EMinor
                 var vgRasterizer = new VGGlyphRasterizer(platform.VG);
                 vgRasterizer.ConvertGlyphs(typeFace, vera);
 
-                //var renderer = new NRasterizer.Renderer(typeFace, vgRasterizer);
-                //renderer.RenderChar(0, 0, 'a', 72, false);
-                //vgRasterizer.SetGlyphToPath(vera, 'a');
-                //renderer.RenderChar(0, 0, 'b', 72, false);
-                //vgRasterizer.SetGlyphToPath(vera, 'b');
-
                 //platform.VG.DestroyFont(vera);
                 var white = new PaintColor(platform.VG, new float[] { 1.0f, 1.0f, 1.0f, 1.0f });
 
@@ -131,22 +125,24 @@ namespace EMinor
                     bool quit = false;
                     do
                     {
-                        // Render UI screen:
-                        //ui.Render();
-
+                        platform.VG.Seti(ParamType.VG_MATRIX_MODE, (int)MatrixMode.VG_MATRIX_PATH_USER_TO_SURFACE);
                         platform.VG.Clear(0, 0, platform.FramebufferWidth, platform.FramebufferHeight);
+
+                        // Render UI screen:
+                        ui.Render();
 
                         // Test render some text:
                         platform.VG.FillPaint = white;
                         platform.VG.Seti(ParamType.VG_MATRIX_MODE, (int)MatrixMode.VG_MATRIX_GLYPH_USER_TO_SURFACE);
                         platform.VG.LoadIdentity();
-                        platform.VG.Translate(200, 240);
-                        platform.VG.Scale(18, 18);
+                        platform.VG.Translate(220, 260);
+                        platform.VG.Scale(20, 20);
                         platform.VG.Setfv(ParamType.VG_GLYPH_ORIGIN, new float[] { 0.0f, 0.0f });
-                        //platform.VG.DrawGlyph(vera, 'a', PaintMode.VG_FILL_PATH, true);
-                        //platform.VG.DrawGlyph(vera, 'b', PaintMode.VG_FILL_PATH, true);
-                        platform.VG.DrawGlyphs(vera, "Jim Dunne test mode!", PaintMode.VG_FILL_PATH, false);
-                        platform.VG.Seti(ParamType.VG_MATRIX_MODE, (int)MatrixMode.VG_MATRIX_PATH_USER_TO_SURFACE);
+                        platform.VG.DrawGlyphs(vera, "Step 1) Read Vera.ttf binary", PaintMode.VG_FILL_PATH, false);
+                        platform.VG.Setfv(ParamType.VG_GLYPH_ORIGIN, new float[] { 0.0f, -1.0f });
+                        platform.VG.DrawGlyphs(vera, "Step 2) Convert glyphs to OpenVG paths", PaintMode.VG_FILL_PATH, false);
+                        platform.VG.Setfv(ParamType.VG_GLYPH_ORIGIN, new float[] { 0.0f, -2.0f });
+                        platform.VG.DrawGlyphs(vera, "Step 3) Profit!", PaintMode.VG_FILL_PATH, false);
 
                         // Swap buffers to display and vsync:
                         platform.SwapBuffers();
