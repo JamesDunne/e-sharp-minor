@@ -12,22 +12,20 @@ namespace EMinor.UI
         public PaintColor Stroke { get; set; }
         public PaintColor Fill { get; set; }
 
-        public Button(IPlatform platform, Bounds bounds)
-            : base(platform, bounds)
+        public Button(IPlatform platform, Point point, RoundRect rect)
+            : base(platform, point, rect.Bounds)
         {
-            disposalContainer.Add(
-                rect = new RoundRect(vg, bounds.X, bounds.Y, bounds.W, bounds.H, 16, 16)
-                {
-                    StrokeLineWidth = 1.0f
-                }
-            );
+            this.rect = rect;
         }
 
         public override void Render()
         {
             vg.StrokePaint = Stroke;
             vg.FillPaint = Fill;
+            vg.PushMatrix();
+            vg.Translate(point.X, point.Y);
             rect.Render(PaintMode.VG_STROKE_PATH | PaintMode.VG_FILL_PATH);
+            vg.PopMatrix();
         }
     }
 }

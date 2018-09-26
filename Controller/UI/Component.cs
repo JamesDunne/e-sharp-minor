@@ -1,5 +1,5 @@
 ﻿using System;
-using EMinor;
+using Shapes;
 using OpenVG;
 
 namespace EMinor.UI
@@ -10,12 +10,14 @@ namespace EMinor.UI
         protected readonly IOpenVG vg;
         protected readonly DisposalContainer disposalContainer;
 
+        protected readonly Point point;
         protected readonly Bounds bounds;
 
-        protected Component(IPlatform platform, Bounds bounds)
+        protected Component(IPlatform platform, Point point, Bounds bounds)
         {
             this.platform = platform;
             this.vg = platform.VG;
+            this.point = point;
             this.bounds = bounds;
             this.disposalContainer = new DisposalContainer();
         }
@@ -25,6 +27,7 @@ namespace EMinor.UI
             this.disposalContainer.Dispose();
         }
 
+        public Point Point => point;
         public Bounds Bounds => bounds;
 
         public abstract void Render();

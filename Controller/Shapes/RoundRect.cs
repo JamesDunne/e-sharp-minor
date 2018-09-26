@@ -5,10 +5,13 @@ namespace Shapes
 {
     public class RoundRect : Shape
     {
-        public RoundRect(IOpenVG vg, float x0, float y0, float width, float height, float arcWidth, float arcHeight)
+        public RoundRect(IOpenVG vg, Bounds bounds, float arcWidth, float arcHeight)
             : base(vg)
         {
-            vg.RoundRect(path, x0, y0, width, height, arcWidth, arcHeight);
+            this.Bounds = bounds;
+            vg.RoundRect(path, 0, 0, bounds.W, bounds.H, arcWidth, arcHeight);
         }
+
+        public Bounds Bounds { get; }
     }
 }

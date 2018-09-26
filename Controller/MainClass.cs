@@ -81,12 +81,19 @@ namespace EMinor
                     // Activate the first song in the setlist:
                     controller.ActivateSong(setlist.Songs[0], 0);
 
+                    TouchEvent touch = new TouchEvent
+                    {
+                        X = 0,
+                        Y = 0,
+                        Pressed = false
+                    };
+
                     // Set up input event listener:
                     platform.InputEvent += (ev) =>
                     {
                         if (ev.TouchEvent.HasValue)
                         {
-                            var touch = ev.TouchEvent.Value;
+                            touch = ev.TouchEvent.Value;
                             Console.WriteLine("{0},{1},{2}", touch.X, touch.Y, touch.Pressed);
                         }
                         else if (ev.FootSwitchEvent.HasValue)
@@ -108,8 +115,7 @@ namespace EMinor
                         }
                     };
 
-                    // Swap buffers to display and vsync:
-                    platform.SwapBuffers();
+                    IOpenVG vg = platform.VG;
 
                     // Load TTF font:
                     Debug.WriteLine("Load Vera.ttf");
@@ -121,15 +127,16 @@ namespace EMinor
                     }
 
                     Debug.WriteLine("Set rendering quality and pixel layout");
-                    platform.VG.Seti(ParamType.VG_RENDERING_QUALITY, (int)RenderingQuality.VG_RENDERING_QUALITY_BETTER);
-                    platform.VG.Seti(ParamType.VG_PIXEL_LAYOUT, (int)PixelLayout.VG_PIXEL_LAYOUT_RGB_HORIZONTAL);
+                    vg.Seti(ParamType.VG_RENDERING_QUALITY, (int)RenderingQuality.VG_RENDERING_QUALITY_BETTER);
+                    vg.Seti(ParamType.VG_PIXEL_LAYOUT, (int)PixelLayout.VG_PIXEL_LAYOUT_RGB_HORIZONTAL);
 
-                    var vera = platform.VG.CreateFont(typeFace.Glyphs.Count);
-                    var vgRasterizer = new VGGlyphRasterizer(platform.VG);
+                    var vera = vg.CreateFont(typeFace.Glyphs.Count);
+                    var vgRasterizer = new VGGlyphRasterizer(vg);
                     vgRasterizer.ConvertGlyphs(typeFace, vera);
 
                     //platform.VG.DestroyFont(vera);
-                    var white = new PaintColor(platform.VG, new float[] { 1.0f, 1.0f, 1.0f, 1.0f });
+                    var white = new PaintColor(vg, new float[] { 1.0f, 1.0f, 1.0f, 1.0f });
+                    //var point = new Circle(vg);
 
                     // Initialize UI:
                     using (var ui = new VGUI(platform, controller))
@@ -137,24 +144,30 @@ namespace EMinor
                         bool quit = false;
                         do
                         {
-                            platform.VG.Seti(ParamType.VG_MATRIX_MODE, (int)MatrixMode.VG_MATRIX_PATH_USER_TO_SURFACE);
-                            platform.VG.Clear(0, 0, platform.FramebufferWidth, platform.FramebufferHeight);
+                            vg.Clear(0, 0, platform.FramebufferWidth, platform.FramebufferHeight);
 
                             // Render UI screen:
                             ui.Render();
 
                             // Test render some text:
-                            platform.VG.FillPaint = white;
-                            platform.VG.Seti(ParamType.VG_MATRIX_MODE, (int)MatrixMode.VG_MATRIX_GLYPH_USER_TO_SURFACE);
-                            platform.VG.LoadIdentity();
-                            platform.VG.Translate(220, 260);
-                            platform.VG.Scale(20, 20);
-                            platform.VG.Setfv(ParamType.VG_GLYPH_ORIGIN, new float[] { 0.0f, 0.0f });
-                            platform.VG.DrawGlyphs(vera, "Step 1) Read Vera.ttf binary", PaintMode.VG_FILL_PATH, false);
-                            platform.VG.Setfv(ParamType.VG_GLYPH_ORIGIN, new float[] { 0.0f, -1.0f });
-                            platform.VG.DrawGlyphs(vera, "Step 2) Convert glyphs to OpenVG paths", PaintMode.VG_FILL_PATH, false);
-                            platform.VG.Setfv(ParamType.VG_GLYPH_ORIGIN, new float[] { 0.0f, -2.0f });
-                            platform.VG.DrawGlyphs(vera, "Step 3) Profit!", PaintMode.VG_FILL_PATH, false);
+                            vg.FillPaint = white;
+                            vg.Seti(ParamType.VG_MATRIX_MODE, (int)MatrixMode.VG_MATRIX_GLYPH_USER_TO_SURFACE);
+                            vg.LoadIdentity();
+                            vg.Translate(220, 260);
+                            vg.Scale(20, 20);
+                            vg.Setfv(ParamType.VG_GLYPH_ORIGIN, new float[] { 0.0f, 0.0f });
+                            vg.DrawGlyphs(vera, "Step 1) Read Vera.ttf binary", PaintMode.VG_FILL_PATH, false);
+                            vg.Setfv(ParamType.VG_GLYPH_ORIGIN, new float[] { 0.0f, -1.0f });
+                            vg.DrawGlyphs(vera, "Step 2) Convert glyphs to OpenVG paths", PaintMode.VG_FILL_PATH, false);
+                            vg.Setfv(ParamType.VG_GLYPH_ORIGIN, new float[] { 0.0f, -2.0f });
+                            vg.DrawGlyphs(vera, "Step 3) Profit!", PaintMode.VG_FILL_PATH, false);
+                            vg.Seti(ParamType.VG_MATRIX_MODE, (int)MatrixMode.VG_MATRIX_PATH_USER_TO_SURFACE);
+
+                            // Draw touch cursor:
+                            if (touch.Pressed)
+                            {
+                                //vg.
+                            }
 
                             // Swap buffers to display and vsync:
                             platform.SwapBuffers();

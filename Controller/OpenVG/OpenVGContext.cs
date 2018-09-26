@@ -135,6 +135,22 @@ namespace OpenVG
         }
 
         [DllImport(vg)]
+        extern static void vgLoadMatrix(float[] m);
+        public void LoadMatrix(float[] m)
+        {
+            vgLoadMatrix(m);
+            checkError();
+        }
+
+        [DllImport(vg)]
+        extern static void vgGetMatrix(float[] m);
+        public void GetMatrix(float[] m)
+        {
+            vgGetMatrix(m);
+            checkError();
+        }
+
+        [DllImport(vg)]
         extern static void vgTranslate(float tx, float ty);
         public void Translate(float tx, float ty)
         {
@@ -321,6 +337,40 @@ namespace OpenVG
 
         #endregion
 
+        #region VG fakes
+
+        Dictionary<int, Stack<float[]>> matrixStack = new Dictionary<int, Stack<float[]>>();
+
+        public void PushMatrix()
+        {
+            int matrixMode = Geti(ParamType.VG_MATRIX_MODE);
+            Stack<float[]> stack;
+            if (!matrixStack.TryGetValue(matrixMode, out stack))
+            {
+                stack = new Stack<float[]>();
+                matrixStack.Add(matrixMode, stack);
+            }
+
+            float[] m = new float[9];
+            GetMatrix(m);
+            stack.Push(m);
+        }
+
+        public void PopMatrix()
+        {
+            int matrixMode = Geti(ParamType.VG_MATRIX_MODE);
+            Stack<float[]> stack;
+            if (!matrixStack.TryGetValue(matrixMode, out stack))
+            {
+                stack = new Stack<float[]>();
+                matrixStack.Add(matrixMode, stack);
+            }
+
+            float[] m = stack.Pop();
+            LoadMatrix(m);
+        }
+
+        #endregion
         #region VG Properties
 
         public float[] ClearColor

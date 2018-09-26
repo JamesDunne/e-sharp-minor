@@ -1,12 +1,12 @@
 ﻿using System;
-using EMinor;
+using Shapes;
 
 namespace EMinor.UI
 {
     public class Panel : Component
     {
-        public Panel(IPlatform platform, Bounds bounds)
-            : base(platform, bounds)
+        public Panel(IPlatform platform, Point point, Bounds bounds)
+            : base(platform, point, bounds)
         {
         }
 

@@ -26,10 +26,15 @@ namespace OpenVG
         void Clear(int x, int y, int width, int height);
 
         void LoadIdentity();
+        void LoadMatrix(float[] m);
+        void GetMatrix(float[] m);
         void Translate(float tx, float ty);
         void Scale(float sx, float sy);
         void Shear(float shx, float shy);
         void Rotate(float angle);
+
+        void PushMatrix();
+        void PopMatrix();
 
         PathHandle CreatePath(
             int pathFormat,
