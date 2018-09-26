@@ -371,6 +371,7 @@ namespace OpenVG
         }
 
         #endregion
+
         #region VG Properties
 
         public float[] ClearColor
@@ -436,6 +437,15 @@ namespace OpenVG
         public uint RoundRect(PathHandle path, float x, float y, float width, float height, float arcWidth, float arcHeight)
         {
             var result = vgRoundRect(path, x, y, width, height, arcWidth, arcHeight);
+            checkError();
+            return result;
+        }
+
+        [DllImport(vg, EntryPoint = "vguEllipse")]
+        extern static uint vguEllipse(uint path, float cx, float cy, float width, float height);
+        public uint Ellipse(PathHandle path, float cx, float cy, float width, float height)
+        {
+            var result = vguEllipse(path, cx, cy, width, height);
             checkError();
             return result;
         }

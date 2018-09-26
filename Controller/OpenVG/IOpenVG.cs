@@ -79,6 +79,8 @@ namespace OpenVG
 
         uint RoundRect(PathHandle path, float x, float y, float width, float height, float arcWidth, float arcHeight);
 
+        uint Ellipse(PathHandle path, float cx, float cy, float width, float height);
+
         #endregion
     }
 

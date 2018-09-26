@@ -136,7 +136,7 @@ namespace EMinor
 
                     //platform.VG.DestroyFont(vera);
                     var white = new PaintColor(vg, new float[] { 1.0f, 1.0f, 1.0f, 1.0f });
-                    //var point = new Circle(vg);
+                    var point = new Ellipse(vg, 24, 24);
 
                     // Initialize UI:
                     using (var ui = new VGUI(platform, controller))
@@ -166,7 +166,10 @@ namespace EMinor
                             // Draw touch cursor:
                             if (touch.Pressed)
                             {
-                                //vg.
+                                vg.PushMatrix();
+                                vg.Translate(touch.X, touch.Y);
+                                point.Render(PaintMode.VG_FILL_PATH);
+                                vg.PopMatrix();
                             }
 
                             // Swap buffers to display and vsync:
