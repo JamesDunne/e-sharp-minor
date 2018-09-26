@@ -76,7 +76,7 @@ namespace EMinor
             dispman_element = vc_dispmanx_element_add(
                 dispman_update,
                 dispman_display,
-                1 /*layer*/,
+                0 /*layer*/,
                 ref dst_rect,
                 0 /*src*/,
                 ref src_rect,
@@ -117,14 +117,14 @@ namespace EMinor
             throwIfError();
 
             int[] attribs = new int[] {
-                (int)EGL_ATTRIBUTES.EGL_COLOR_BUFFER_TYPE,  (int)EGL.EGL_RGB_BUFFER,
-                (int)EGL_ATTRIBUTES.EGL_SURFACE_TYPE,       (int)EGL_ATTRIBUTES.EGL_WINDOW_BIT,
                 (int)EGL_ATTRIBUTES.EGL_RED_SIZE,           8,
                 (int)EGL_ATTRIBUTES.EGL_GREEN_SIZE,         8,
                 (int)EGL_ATTRIBUTES.EGL_BLUE_SIZE,          8,
-                (int)EGL_ATTRIBUTES.EGL_ALPHA_SIZE,         0,
-                (int)EGL_ATTRIBUTES.EGL_LUMINANCE_SIZE,     0,
-                //(int)EGL_ATTRIBUTES.EGL_SAMPLES,            4,
+                (int)EGL_ATTRIBUTES.EGL_ALPHA_SIZE,         8,
+                (int)EGL_ATTRIBUTES.EGL_LUMINANCE_SIZE,     (int)EGL_ATTRIBUTES.EGL_DONT_CARE,
+                (int)EGL_ATTRIBUTES.EGL_SURFACE_TYPE,       (int)EGL_ATTRIBUTES.EGL_WINDOW_BIT,
+                //(int)EGL_ATTRIBUTES.EGL_COLOR_BUFFER_TYPE,  (int)EGL.EGL_RGB_BUFFER,
+                (int)EGL_ATTRIBUTES.EGL_SAMPLES,            1,
                 (int)EGL_ATTRIBUTES.EGL_NONE
             };
             int numconfigs;
@@ -315,7 +315,8 @@ namespace EMinor
         {
             Debug.WriteLine("eglSwapBuffers(display, surface)");
             uint success = eglSwapBuffers(egldisplay, eglsurface);
-            if (success == 0) {
+            if (success == 0)
+            {
                 throw new Exception("eglSwapBuffers returned FALSE");
             }
         }

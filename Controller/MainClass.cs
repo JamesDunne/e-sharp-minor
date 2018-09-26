@@ -108,11 +108,19 @@ namespace EMinor
                         }
                     };
 
+                    // Swap buffers to display and vsync:
+                    platform.SwapBuffers();
+
                     // Load TTF font:
+                    Debug.WriteLine("Load Vera.ttf");
                     NRasterizer.Typeface typeFace;
                     using (var fi = System.IO.File.OpenRead("Vera.ttf"))
+                    {
+                        Debug.WriteLine("OpenTypeReader");
                         typeFace = new NRasterizer.OpenTypeReader().Read(fi);
+                    }
 
+                    Debug.WriteLine("Set rendering quality and pixel layout");
                     platform.VG.Seti(ParamType.VG_RENDERING_QUALITY, (int)RenderingQuality.VG_RENDERING_QUALITY_BETTER);
                     platform.VG.Seti(ParamType.VG_PIXEL_LAYOUT, (int)PixelLayout.VG_PIXEL_LAYOUT_RGB_HORIZONTAL);
 
