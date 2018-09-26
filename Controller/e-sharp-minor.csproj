@@ -9,7 +9,7 @@
 
   <PropertyGroup Condition="'$(Configuration)' == 'pi-debug'">
     <RuntimeIdentifier>linux-arm</RuntimeIdentifier>
-    <DefineConstants>RPI</DefineConstants>
+    <DefineConstants>RPI;DEBUG;TRACE</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>
