@@ -112,8 +112,10 @@ namespace EMinor
                 var vera = platform.VG.CreateFont(typeFace.Glyphs.Count);
                 var vgRasterizer = new VGGlyphRasterizer(platform.VG);
                 var renderer = new NRasterizer.Renderer(typeFace, vgRasterizer);
-                renderer.RenderChar('a', 96 * 20);
+                renderer.RenderChar('a', 96);
                 vgRasterizer.SetGlyphToPath(vera, 'a');
+                renderer.RenderChar('b', 96);
+                vgRasterizer.SetGlyphToPath(vera, 'b');
 
                 //platform.VG.DestroyFont(vera);
                 var white = new PaintColor(platform.VG, new float[] { 1.0f, 1.0f, 1.0f, 1.0f });
@@ -131,12 +133,13 @@ namespace EMinor
 
                         // Test render some text:
                         platform.VG.FillPaint = white;
-                        //platform.VG.Seti(ParamType.VG_MATRIX_MODE, (int)MatrixMode.VG_MATRIX_GLYPH_USER_TO_SURFACE);
-                        //platform.VG.LoadIdentity();
-                        //platform.VG.Scale(20, 20);
-                        //platform.VG.Translate(200, 400);
-                        platform.VG.Setfv(ParamType.VG_GLYPH_ORIGIN, new float[] { 20.0f, 20.0f });
+                        platform.VG.Seti(ParamType.VG_MATRIX_MODE, (int)MatrixMode.VG_MATRIX_GLYPH_USER_TO_SURFACE);
+                        platform.VG.LoadIdentity();
+                        platform.VG.Translate(400, 240);
+                        platform.VG.Scale(20, 20);
+                        platform.VG.Setfv(ParamType.VG_GLYPH_ORIGIN, new float[] { 0.0f, 0.0f });
                         platform.VG.DrawGlyph(vera, 'a', PaintMode.VG_FILL_PATH, false);
+                        platform.VG.DrawGlyph(vera, 'b', PaintMode.VG_FILL_PATH, false);
                         //platform.VG.Seti(ParamType.VG_MATRIX_MODE, (int)MatrixMode.VG_MATRIX_PATH_USER_TO_SURFACE);
 
                         // Swap buffers to display and vsync:
