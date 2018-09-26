@@ -110,6 +110,7 @@ namespace EMinor
                     typeFace = new NRasterizer.OpenTypeReader().Read(fi);
 
                 platform.VG.Seti(ParamType.VG_RENDERING_QUALITY, (int)RenderingQuality.VG_RENDERING_QUALITY_BETTER);
+                platform.VG.Seti(ParamType.VG_PIXEL_LAYOUT, (int)PixelLayout.VG_PIXEL_LAYOUT_RGB_HORIZONTAL);
 
                 var vera = platform.VG.CreateFont(typeFace.Glyphs.Count);
                 var vgRasterizer = new VGGlyphRasterizer(platform.VG);
@@ -142,9 +143,9 @@ namespace EMinor
                         platform.VG.Translate(200, 240);
                         platform.VG.Scale(18, 18);
                         platform.VG.Setfv(ParamType.VG_GLYPH_ORIGIN, new float[] { 0.0f, 0.0f });
-                        //platform.VG.DrawGlyph(vera, 'a', PaintMode.VG_FILL_PATH, false);
-                        //platform.VG.DrawGlyph(vera, 'b', PaintMode.VG_FILL_PATH, false);
-                        platform.VG.DrawGlyphs(vera, "Jim Dunne test mode!", PaintMode.VG_FILL_PATH, true);
+                        //platform.VG.DrawGlyph(vera, 'a', PaintMode.VG_FILL_PATH, true);
+                        //platform.VG.DrawGlyph(vera, 'b', PaintMode.VG_FILL_PATH, true);
+                        platform.VG.DrawGlyphs(vera, "Jim Dunne test mode!", PaintMode.VG_FILL_PATH, false);
                         platform.VG.Seti(ParamType.VG_MATRIX_MODE, (int)MatrixMode.VG_MATRIX_PATH_USER_TO_SURFACE);
 
                         // Swap buffers to display and vsync:

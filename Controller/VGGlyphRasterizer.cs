@@ -24,7 +24,7 @@ namespace EMinor
             var renderer = new NRasterizer.Renderer(typeFace, this);
             foreach (var c in typeFace.AllCharacters())
             {
-                renderer.RenderChar(0, 0, c, 72, false);
+                renderer.RenderChar(0, 0, c, 1, false);
                 this.SetGlyphToPath(destFont, c);
             }
         }
@@ -34,10 +34,19 @@ namespace EMinor
             PathHandle path = PathHandle.Invalid;
             if (segments.Count != 0)
             {
-                path = vg.CreatePathStandardFloat();
-
                 byte[] segmentBytes = segments.Cast<byte>().ToArray();
                 float[] coordsFloats = coords.ToArray();
+
+                path = vg.CreatePath(
+                    Constants.VG_PATH_FORMAT_STANDARD,
+                    PathDatatype.VG_PATH_DATATYPE_F,
+                    1.0f / 2048,
+                    0.0f,
+                    segmentBytes.Length,
+                    coordsFloats.Length,
+                    PathCapabilities.VG_PATH_CAPABILITY_ALL
+                );
+
                 vg.AppendPathData(path, segmentBytes, coordsFloats);
             }
 
@@ -62,7 +71,7 @@ namespace EMinor
 
         public void EndRead(double escapementX, double escapementY)
         {
-            this.escapement = new float[] { (float)escapementX, (float)escapementY };
+            this.escapement = new float[] { (float)escapementX / 2048, (float)escapementY / 2048 };
         }
 
         public void CloseFigure()

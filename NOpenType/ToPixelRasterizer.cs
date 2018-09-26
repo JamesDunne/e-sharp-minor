@@ -42,11 +42,11 @@ namespace NRasterizer
 
         private double X(double x)
         {
-            return (_scalingFactor * (_x + _xScalar * x)) / _divider;
+            return (_scalingFactor * (_x + _xScalar * x)); // / _divider;
         }
         private double Y(double y)
         {
-            return (_scalingFactor * (_y + _yScalar * y)) / _divider;
+            return (_scalingFactor * (_y + _yScalar * y)); // / _divider;
         }
 
         public void BeginRead(int countourCount)

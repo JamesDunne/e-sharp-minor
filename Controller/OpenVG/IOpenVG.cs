@@ -318,4 +318,13 @@ namespace OpenVG
         VG_RENDERING_QUALITY_FASTER = 0x1201,
         VG_RENDERING_QUALITY_BETTER = 0x1202, /* Default */
     }
+
+    public enum PixelLayout : int
+    {
+        VG_PIXEL_LAYOUT_UNKNOWN = 0x1300,
+        VG_PIXEL_LAYOUT_RGB_VERTICAL = 0x1301,
+        VG_PIXEL_LAYOUT_BGR_VERTICAL = 0x1302,
+        VG_PIXEL_LAYOUT_RGB_HORIZONTAL = 0x1303,
+        VG_PIXEL_LAYOUT_BGR_HORIZONTAL = 0x1304,
+    }
 }
