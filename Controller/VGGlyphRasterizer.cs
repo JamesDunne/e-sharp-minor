@@ -38,7 +38,6 @@ namespace EMinor
                 byte[] segmentBytes = segments.Cast<byte>().ToArray();
                 float[] coordsFloats = coords.ToArray();
 
-                Debug.WriteLine("vgCreatePath");
                 path = vg.CreatePath(
                     Constants.VG_PATH_FORMAT_STANDARD,
                     PathDatatype.VG_PATH_DATATYPE_F,
@@ -49,17 +48,14 @@ namespace EMinor
                     PathCapabilities.VG_PATH_CAPABILITY_ALL
                 );
 
-                Debug.WriteLine("vgAppendPathData");
                 vg.AppendPathData(path, segmentBytes, coordsFloats);
             }
 
             var origin = new float[] { 0.0f, 0.0f };
-            Debug.WriteLine("vgSetGlyphToPath");
             vg.SetGlyphToPath(font, glyphIndex, path, false, origin, escapement);
 
             if (path != PathHandle.Invalid)
             {
-                Debug.WriteLine("vgDestroyPath");
                 vg.DestroyPath(path);
             }
         }

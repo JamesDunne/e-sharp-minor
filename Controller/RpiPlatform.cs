@@ -200,21 +200,20 @@ namespace EMinor
             foreach (var ev in events)
             {
                 if (ev.Type != LinuxEventDevice.EV_ABS) continue;
-
-                if (ev.Code == ABS_MT_POSITION_X)
+                switch (ev.Code)
                 {
-                    lastEvent.X = ev.Value;
-                    changed = true;
-                }
-                else if (ev.Code == ABS_MT_POSITION_Y)
-                {
-                    lastEvent.Y = (Height - 1) - ev.Value;
-                    changed = true;
-                }
-                else if (ev.Code == ABS_MT_TRACKING_ID)
-                {
-                    lastEvent.Pressed = ev.Value != -1;
-                    changed = true;
+                    case ABS_MT_POSITION_X:
+                        lastEvent.X = ev.Value;
+                        changed = true;
+                        break;
+                    case ABS_MT_POSITION_Y:
+                        lastEvent.Y = (Height - 1) - ev.Value;
+                        changed = true;
+                        break;
+                    case ABS_MT_TRACKING_ID:
+                        lastEvent.Pressed = ev.Value != -1;
+                        changed = true;
+                        break;
                 }
             }
 
@@ -308,7 +307,7 @@ namespace EMinor
         {
             vg.Finish();
 
-            Debug.WriteLine("eglSwapBuffers(display, surface)");
+            //Debug.WriteLine("eglSwapBuffers(display, surface)");
             uint success = eglSwapBuffers(egldisplay, eglsurface);
             if (success == 0)
             {
@@ -328,12 +327,12 @@ namespace EMinor
 
             if (ready.Contains(fsw))
             {
-                Debug.WriteLine("fsw.PollEvents()");
+                //Debug.WriteLine("fsw.PollEvents()");
                 fsw.PollEvents();
             }
             if (ready.Contains(touchScreen))
             {
-                Debug.WriteLine("touchScreen.PollEvents()");
+                //Debug.WriteLine("touchScreen.PollEvents()");
                 touchScreen.PollEvents();
             }
         }
