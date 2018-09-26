@@ -91,7 +91,7 @@ namespace EMinor
             checkError(vc_dispmanx_update_submit_sync(dispman_update));
 
 
-
+            uint success;
             // TODO: validate this assumption that display number goes here (what other values to use besides EGL_DEFAULT_DISPLAY?)
             Debug.WriteLine("eglGetDisplay(...)");
             egldisplay = eglGetDisplay(bcmDisplay);
@@ -100,28 +100,42 @@ namespace EMinor
             Debug.WriteLine("egldisplay = {0}", egldisplay);
 
             Debug.WriteLine("eglInitialize(egldisplay)");
-            eglInitialize(egldisplay, out majorVersion, out minorVersion);
+            success = eglInitialize(egldisplay, out majorVersion, out minorVersion);
+            if (success == 0)
+            {
+                throw new Exception("eglInitialize returned FALSE");
+            }
             throwIfError();
+            Debug.WriteLine("egl majorVersion={0} minorVersion={1}", majorVersion, minorVersion);
             Debug.WriteLine("eglBindAPI(EGL_OPENVG_API)");
-            eglBindAPI(EGL.EGL_OPENVG_API);
+            success = eglBindAPI(EGL.EGL_OPENVG_API);
+            if (success == 0)
+            {
+                throw new Exception("eglBindAPI returned FALSE");
+            }
+
             throwIfError();
 
             int[] attribs = new int[] {
                 (int)EGL_ATTRIBUTES.EGL_COLOR_BUFFER_TYPE,  (int)EGL.EGL_RGB_BUFFER,
                 (int)EGL_ATTRIBUTES.EGL_SURFACE_TYPE,       (int)EGL_ATTRIBUTES.EGL_WINDOW_BIT,
-                (int)EGL_ATTRIBUTES.EGL_SAMPLES,            1,
                 (int)EGL_ATTRIBUTES.EGL_RED_SIZE,           8,
                 (int)EGL_ATTRIBUTES.EGL_GREEN_SIZE,         8,
                 (int)EGL_ATTRIBUTES.EGL_BLUE_SIZE,          8,
-                (int)EGL_ATTRIBUTES.EGL_ALPHA_SIZE,         8,
+                (int)EGL_ATTRIBUTES.EGL_ALPHA_SIZE,         0,
                 (int)EGL_ATTRIBUTES.EGL_LUMINANCE_SIZE,     0,
+                //(int)EGL_ATTRIBUTES.EGL_SAMPLES,            4,
                 (int)EGL_ATTRIBUTES.EGL_NONE
             };
             int numconfigs;
             uint eglconfig;
 
             Debug.WriteLine("eglChooseConfig(egldisplay, ...)");
-            eglChooseConfig(egldisplay, attribs, out eglconfig, 1, out numconfigs);
+            success = eglChooseConfig(egldisplay, attribs, out eglconfig, 1, out numconfigs);
+            if (success == 0)
+            {
+                throw new Exception("eglChooseConfig returned FALSE");
+            }
             throwIfError();
             if (numconfigs != 1)
             {
@@ -135,14 +149,26 @@ namespace EMinor
 
             Debug.WriteLine("eglCreateWindowSurface(egldisplay, ...)");
             eglsurface = eglCreateWindowSurface(egldisplay, eglconfig, ref window, null);
+            if (eglsurface == 0)
+            {
+                throw new Exception("eglCreateWindowSurface returned FALSE");
+            }
             throwIfError();
             Debug.WriteLine("eglsurface = {0}", eglsurface);
             Debug.WriteLine("eglCreateContext(egldisplay, ...)");
             eglcontext = eglCreateContext(egldisplay, eglconfig, 0, null);
+            if (eglcontext == 0)
+            {
+                throw new Exception("eglCreateContext returned FALSE");
+            }
             throwIfError();
             Debug.WriteLine("eglcontext = {0}", eglcontext);
             Debug.WriteLine("eglMakeCurrent(egldisplay, eglsurface, eglsurface, eglcontext)");
-            eglMakeCurrent(egldisplay, eglsurface, eglsurface, eglcontext);
+            success = eglMakeCurrent(egldisplay, eglsurface, eglsurface, eglcontext);
+            if (success == 0)
+            {
+                throw new Exception("eglMakeCurrent returned FALSE");
+            }
             throwIfError();
 
             // Create OpenVGContext:
@@ -288,7 +314,10 @@ namespace EMinor
         public void SwapBuffers()
         {
             Debug.WriteLine("eglSwapBuffers(display, surface)");
-            eglSwapBuffers(egldisplay, eglsurface);
+            uint success = eglSwapBuffers(egldisplay, eglsurface);
+            if (success == 0) {
+                throw new Exception("eglSwapBuffers returned FALSE");
+            }
         }
 
         public bool ShouldQuit()

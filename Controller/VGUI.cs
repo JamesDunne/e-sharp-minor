@@ -22,7 +22,7 @@ namespace EMinor
             this.platform = platform;
             this.vg = platform.VG;
 
-            Console.WriteLine("Display[0] = {0}x{1}", platform.Width, platform.Height);
+            Console.WriteLine("Display[0] = {0}x{1} ({2}x{3})", platform.Width, platform.Height, platform.FramebufferWidth, platform.FramebufferHeight);
 
             vg.ClearColor = new float[] { 0.0f, 0.0f, 0.2f, 1.0f };
 
