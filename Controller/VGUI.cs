@@ -54,23 +54,10 @@ namespace EMinor
 
         public void Render()
         {
-#if TIMING
-            var sw = new Stopwatch();
-            sw.Restart();
-#endif
-
             // Render our pre-made paths each frame:
             vg.Clear(0, 0, platform.FramebufferWidth, platform.FramebufferHeight);
 
             btn.Render();
-
-            // Swap buffers to display and vsync:
-            platform.SwapBuffers();
-
-#if TIMING
-            // usually writes "16 ms"
-            Console.WriteLine("{0} ms", sw.ElapsedMilliseconds);
-#endif
         }
     }
 }

@@ -113,6 +113,12 @@ namespace EMinor
                         // Render UI screen:
                         ui.Render();
 
+                        // Test render some text:
+
+
+                        // Swap buffers to display and vsync:
+                        platform.SwapBuffers();
+
                         // Wait for next event:
                         platform.WaitEvents();
 
