@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 
@@ -154,6 +155,19 @@ namespace OpenVG
             );
         }
 
+        public PathHandle CreatePathStandardFloat()
+        {
+            return vgCreatePath(
+                Constants.VG_PATH_FORMAT_STANDARD,
+                PathDatatype.VG_PATH_DATATYPE_F,
+                1.0f,
+                0.0f,
+                0,
+                0,
+                PathCapabilities.VG_PATH_CAPABILITY_ALL
+            );
+        }
+
         [DllImport(vg, EntryPoint = "vgDestroyPath")]
         extern static void vgDestroyPath(uint path);
         public void DestroyPath(PathHandle path)
@@ -166,6 +180,13 @@ namespace OpenVG
         public void DrawPath(PathHandle path, PaintMode paintModes)
         {
             vgDrawPath(path, paintModes);
+        }
+
+        [DllImport(vg, EntryPoint = "vgAppendPathData")]
+        extern static void vgAppendPathData(uint path, int numSegments, byte[] pathSegments, float[] pathData);
+        public void AppendPathData(PathHandle path, byte[] segments, float[] coords)
+        {
+            vgAppendPathData(path, segments.Length, segments, coords);
         }
 
         [DllImport(vg, EntryPoint = "vgCreatePaint")]
@@ -208,6 +229,13 @@ namespace OpenVG
         public void DestroyFont(FontHandle font)
         {
             vgDestroyFont(font);
+        }
+
+        [DllImport(vg, EntryPoint = "vgSetGlyphToPath")]
+        extern static void vgSetGlyphToPath(uint font, int glyphIndex, uint path, int isHinted, float[] glyphOrigin, float[] escapement);
+        public void SetGlyphToPath(FontHandle font, int glyphIndex, PathHandle path, bool isHinted, float[] origin, float[] escapement)
+        {
+            vgSetGlyphToPath(font, glyphIndex, path, 0, origin, escapement);
         }
 
         #endregion

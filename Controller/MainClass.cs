@@ -112,7 +112,10 @@ namespace EMinor
                 var vera = platform.VG.CreateFont(typeFace.Glyphs.Count);
                 var vgRasterizer = new VGGlyphRasterizer(platform.VG);
                 var renderer = new NRasterizer.Renderer(typeFace, vgRasterizer);
-                renderer.RenderChar(0, 0, 'a', new NRasterizer.TextOptions { FontSize = 1, LineHeight = 1f });
+                var width = renderer.RenderChar('a');
+                vgRasterizer.SetGlyphToPath(vera, 'a', width);
+
+                //platform.VG.DestroyFont(vera);
 
                 // Initialize UI:
                 using (var ui = new VGUI(platform, controller))

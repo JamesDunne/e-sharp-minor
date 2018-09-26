@@ -35,9 +35,11 @@ namespace OpenVG
             int coordCapacityHint,
             PathCapabilities capabilities
         );
+        PathHandle CreatePathStandardFloat();
         void DestroyPath(PathHandle path);
 
         void DrawPath(PathHandle path, PaintMode paintModes);
+        void AppendPathData(PathHandle path, byte[] segments, float[] coords);
 
         PaintHandle CreatePaint();
         void DestroyPaint(PaintHandle paint);
@@ -46,6 +48,7 @@ namespace OpenVG
 
         FontHandle CreateFont(int glyphCapacityHint);
         void DestroyFont(FontHandle font);
+        void SetGlyphToPath(FontHandle font, int glyphIndex, PathHandle path, bool isHinted, float[] origin, float[] escapement);
 
         #endregion
 
@@ -282,5 +285,26 @@ namespace OpenVG
         VG_PAINT_TYPE_PATTERN = 0x1B03,
 
         VG_PAINT_TYPE_FORCE_SIZE = Constants.VG_MAX_ENUM
+    }
+
+    public enum PathSegment : byte
+    {
+        VG_CLOSE_PATH = (0 << 1),
+        VG_MOVE_TO = (1 << 1),
+        VG_LINE_TO = (2 << 1),
+        //VG_HLINE_TO = (3 << 1),
+        //VG_VLINE_TO = (4 << 1),
+        VG_QUAD_TO = (5 << 1),
+        VG_CUBIC_TO = (6 << 1),
+        VG_SQUAD_TO = (7 << 1),
+        //VG_SCUBIC_TO = (8 << 1),
+        //VG_SCCWARC_TO = (9 << 1),
+        //VG_SCWARC_TO = (10 << 1),
+        //VG_LCCWARC_TO = (11 << 1),
+        //VG_LCWARC_TO = (12 << 1),
+
+        //VG_SEGMENT_MASK = 0xf << 1,
+
+        //VG_PATH_SEGMENT_FORCE_SIZE = Constants.VG_MAX_ENUM
     }
 }
