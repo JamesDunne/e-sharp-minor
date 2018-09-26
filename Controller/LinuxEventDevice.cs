@@ -98,8 +98,8 @@ namespace EMinor
                 foreach (var dev in fds)
                 {
                     int fd = dev;
-                    ulong mask = (1UL << (fd % fd_size));
-                    if ((fd_ptr[(fd / fd_size)] & mask) == mask)
+                    ulong mask = (1UL << (fd % NFDBITS));
+                    if ((fd_ptr[(fd / NFDBITS)] & mask) == mask)
                     {
                         ready[n] = dev;
                         n++;
