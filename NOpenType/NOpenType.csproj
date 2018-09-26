@@ -6,7 +6,7 @@
     <AssemblyTitle>NOpenType</AssemblyTitle>
     <VersionPrefix>0.0.1</VersionPrefix>
     <Authors>Samuel Carlsson, WinterDev</Authors>
-    <TargetFramework>netstandard1.1</TargetFramework>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
     <AssemblyName>NOpenType</AssemblyName>
     <PackageId>NOpenType</PackageId>
     <PackageTags>font;truetype;true-type</PackageTags>

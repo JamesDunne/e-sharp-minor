@@ -24,8 +24,10 @@ namespace EMinor
                 // Select appropriate device implementation classes depending on build configuration
                 // Use 'pi-debug' configuration to enable RPI.
 #if RPI
+                Console.WriteLine("RPI platform");
                 using (IPlatform platform = new RpiPlatform(0))
 #else
+                Console.WriteLine("GLFW platform");
                 using (IPlatform platform = new GlfwPlatform(800, 480))
 #endif
                 {
