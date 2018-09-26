@@ -21,6 +21,18 @@ namespace NRasterizer
             _glyphIdArray = glyphIdArray;
         }
 
+        public bool IsCharacterInMap(UInt32 character)
+        {
+            for (int i = 0; i < _segCount; i++)
+            {
+                if (_endCode[i] >= character && _startCode[i] <= character)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
         public int CharacterToGlyphIndex(UInt32 character)
         {
             return (int)RawCharacterToGlyphIndex(character);
@@ -33,18 +45,26 @@ namespace NRasterizer
             {
                 if (_endCode[i] >= character && _startCode[i] <= character)
                 {
-                    if (_idRangeOffset[i] == 0)
+                    if (_idRangeOffset == null || _idDelta == null)
                     {
-                        return (character + _idDelta[i]) % 65536; // TODO: bitmask instead?
+                        // Straightforward mapping if id-range and id-delta are missing:
+                        return _glyphIdArray[character];
                     }
                     else
                     {
-                        var offset = _idRangeOffset[i] / 2 + (character - _startCode[i]);
+                        if (_idRangeOffset?[i] == 0)
+                        {
+                            return (character + _idDelta[i]) % 65536; // TODO: bitmask instead?
+                        }
+                        else
+                        {
+                            var offset = _idRangeOffset[i] / 2 + (character - _startCode[i]);
 
-                        // I want to thank Microsoft for this clever pointer trick
-                        // TODO: What if the value fetched is inside the _idRangeOffset table?
-                        // TODO: e.g. (offset - _idRangeOffset.Length + i < 0)
-                        return _glyphIdArray[offset - _idRangeOffset.Length + i];
+                            // I want to thank Microsoft for this clever pointer trick
+                            // TODO: What if the value fetched is inside the _idRangeOffset table?
+                            // TODO: e.g. (offset - _idRangeOffset.Length + i < 0)
+                            return _glyphIdArray[offset - _idRangeOffset.Length + i];
+                        }
                     }
                 }
             }

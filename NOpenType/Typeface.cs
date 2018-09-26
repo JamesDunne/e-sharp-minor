@@ -25,7 +25,12 @@ namespace NRasterizer
         public int LookupIndex(char character)
         {
             // TODO: What if there are none or several tables?
-            return _cmaps[0].CharacterToGlyphIndex(character);
+            foreach (var cmap in _cmaps)
+            {
+                if (!cmap.IsCharacterInMap(character)) continue;
+                return cmap.CharacterToGlyphIndex(character);
+            }
+            return 0;
         }
 
         public Glyph Lookup(char character)

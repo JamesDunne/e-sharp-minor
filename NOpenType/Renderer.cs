@@ -202,12 +202,33 @@ namespace NRasterizer
         {
             int scalingFactor = ScalingFactor(options.FontSize);
             var glyphs = Layout(x, y, text, options).ToList();
-            
+
             foreach (var layout in glyphs)
             {
                 RenderGlyph(layout, scalingFactor);
             }
-            _rasterizer.Flush();            
+            _rasterizer.Flush();
+        }
+
+        public void RenderChar(int x, int y, char character, TextOptions options)
+        {
+            int scalingFactor = ScalingFactor(options.FontSize);
+            int xx = (x * FontToPixelDivisor) / scalingFactor;
+            int yy = (y * FontToPixelDivisor) / scalingFactor;
+
+            var glyph = _typeface.Lookup(character);
+            var glyphWidth = _typeface.GetAdvanceWidth(character);
+            // remove the min for EM square to calculate the final 'height' for the glyph from the origin because fonts need flipping to work sensibly.
+            int drawheightEM = EmSquare.Size - glyph.Bounds.YMin;
+            var layout = new GlyphLayout
+            {
+                glyph = glyph,
+                TopLeft = new Point<int>(xx, yy),
+                BottomRight = new Point<int>(glyphWidth + xx, drawheightEM + yy)
+            };
+
+            RenderGlyph(layout, scalingFactor);
+            _rasterizer.Flush();
         }
 
         /// <summary>
@@ -281,7 +302,7 @@ namespace NRasterizer
                         var glyph = _typeface.Lookup(character);
                         var glyphWidth = _typeface.GetAdvanceWidth(character);
                         // remove the min for EM square to calculate the final 'height' for the glyph from the origin because fonts need flipping to work sensibly.
-                        int drawheightEM = EmSquare.Size - glyph.Bounds.YMin; 
+                        int drawheightEM = EmSquare.Size - glyph.Bounds.YMin;
                         yield return new GlyphLayout
                         {
                             glyph = glyph,
