@@ -8,6 +8,8 @@ namespace OpenVG
         #region VG
 
         int GetError();
+        void Flush();
+        void Finish();
 
         int Geti(ParamType type);
         float Getf(ParamType type);

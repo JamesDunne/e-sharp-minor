@@ -22,6 +22,20 @@ namespace OpenVG
             return vgGetError();
         }
 
+        [DllImport(vg, EntryPoint = "vgFlush")]
+        extern static void vgFlush();
+        public void Flush()
+        {
+            vgFlush();
+        }
+
+        [DllImport(vg, EntryPoint = "vgFinish")]
+        extern static void vgFinish();
+        public void Finish()
+        {
+            vgFinish();
+        }
+
         [DllImport(vg, EntryPoint = "vgSeti")]
         extern static void vgSeti(ParamType paramType, int value);
         public void Seti(ParamType paramType, int value)
