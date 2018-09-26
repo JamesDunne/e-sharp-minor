@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if !RPI
+using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using OpenVG;
@@ -225,3 +226,4 @@ namespace EMinor
         #endregion
     }
 }
+#endif

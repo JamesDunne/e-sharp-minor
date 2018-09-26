@@ -26,7 +26,7 @@ namespace NRasterizer
         {
             for (int i = 0; i < _segCount; i++)
             {
-                if (_startCode[i] <= character && character <= _endCode[i])
+                if (_endCode[i] >= character && _startCode[i] <= character)
                 {
                     if (_idRangeOffset == null || _idDelta == null)
                     {
@@ -57,10 +57,10 @@ namespace NRasterizer
 
         public uint RawCharacterToGlyphIndex(UInt32 character)
         {
-            // TODO: Fast fegment lookup using bit operations?
+            // TODO: Fast segment lookup using bit operations?
             for (int i = 0; i < _segCount; i++)
             {
-                if (_startCode[i] <= character && character <= _endCode[i])
+                if (_endCode[i] >= character && _startCode[i] <= character)
                 {
                     if (_idRangeOffset == null || _idDelta == null)
                     {

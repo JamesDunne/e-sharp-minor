@@ -207,6 +207,8 @@ namespace EMinor
             {
                 if (ev.Type != LinuxEventDevice.EV_KEY) continue;
 
+                Console.WriteLine("{0:X04} {1:X04} {2:X04}", ev.Type, ev.Code, ev.Value);
+
                 // Fire footswitch input event:
                 InputEvent(new InputEvent
                 {

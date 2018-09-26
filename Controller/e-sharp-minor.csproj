@@ -3,7 +3,7 @@
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp2.1</TargetFramework>
     <RootNamespace>EMinor</RootNamespace>
-    <Platforms>AnyCPU;x86</Platforms>
+    <Platforms>AnyCPU</Platforms>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
@@ -21,6 +21,7 @@
     <None Remove="lib\glfw.dll" />
     <None Remove="setlists.yml" />
     <None Remove="song-names.yml" />
+    <None Remove="Vera.ttf" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="all-programs-v6.yml">
@@ -42,6 +43,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="song-names.yml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Vera.ttf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

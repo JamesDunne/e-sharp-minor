@@ -124,7 +124,6 @@ namespace EMinor
                     ev.Value = iev->Value;
 
                     // Add the event to the collection:
-                    Console.WriteLine("{0:X4} {1:X4} {2:X4}", ev.Type, ev.Code, ev.Value);
                     if (events == null) events = new List<Event>();
                     events.Add(ev);
                 }

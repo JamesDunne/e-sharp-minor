@@ -35,7 +35,6 @@ namespace NRasterizer
 
         public int LookupIndex(char character)
         {
-            // TODO: What if there are none or several tables?
             foreach (var cmap in _cmaps)
             {
                 if (!cmap.IsCharacterInMap(character)) continue;
@@ -53,6 +52,11 @@ namespace NRasterizer
         public ushort GetAdvanceWidth(char character)
         {
             return _horizontalMetrics.GetAdvanceWidth(LookupIndex(character));
+        }
+
+        public ushort GetAdvanceWidth(int glyphIndex)
+        {
+            return _horizontalMetrics.GetAdvanceWidth(glyphIndex);
         }
 
         public int LineSpacing { get { return _lineSpacing; } }
