@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 
 namespace EMinor
@@ -66,16 +67,23 @@ namespace EMinor
             unsafe
             {
                 // Build up fd_set for read:
-                const int fd_size = 1024 / (8 * 8);
+                const int FD_SETSIZE = 256;
+                const int NFDBITS = 8 * sizeof(ulong);
+                const int fd_size = FD_SETSIZE / NFDBITS;
                 ulong* fd_ptr = stackalloc ulong[fd_size];
+                int maxfd = 0;
                 foreach (var dev in fds)
                 {
                     int fd = dev;
-                    fd_ptr[(fd / fd_size)] |= (1UL << (fd % fd_size));
+                    if (fd > maxfd) maxfd = fd;
+                    fd_ptr[(fd / NFDBITS)] |= (1UL << (fd % NFDBITS));
                 }
 
                 // Await for read readiness:
-                select(1, fd_ptr, null, null, IntPtr.Zero);
+                //Debug.WriteLine("fd_ptr[0] = {0:X08}", fd_ptr[0]);
+                //Debug.WriteLine("select() blocked");
+                select(maxfd+1, fd_ptr, null, null, IntPtr.Zero);
+                //Debug.WriteLine("select() unblocked");
 
                 // Count number of fds ready:
                 int numReady = 0;
@@ -109,7 +117,7 @@ namespace EMinor
             fixed (byte* evBytePtr = eventBytes)
             {
                 // Read input events until no more are left:
-                while (read(fd, evBytePtr, (UIntPtr)sizeOfInputEvent) != IntPtr.Zero)
+                while (Read(fd, evBytePtr, (UIntPtr)sizeOfInputEvent) != IntPtr.Zero)
                 {
                     Event ev;
 
@@ -134,6 +142,14 @@ namespace EMinor
                 // Fire event listener with the collection of events read in:
                 EventListener(events);
             }
+        }
+
+        unsafe static IntPtr Read(int fd, void* buffer, UIntPtr count)
+        {
+            //Debug.WriteLine("read({0}) blocked", fd);
+            IntPtr result = read(fd, buffer, count);
+            //Debug.WriteLine("read({0}) unblocked", fd);
+            return result;
         }
 
         #region Linux evdev structs
