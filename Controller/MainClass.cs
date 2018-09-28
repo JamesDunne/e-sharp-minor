@@ -150,12 +150,11 @@ namespace EMinor
                             ui.Render();
 
                             // Test render some text:
-#if false
                             vg.FillPaint = white;
                             vg.Seti(ParamType.VG_MATRIX_MODE, (int)MatrixMode.VG_MATRIX_GLYPH_USER_TO_SURFACE);
                             vg.LoadIdentity();
                             vg.Translate(220, 260);
-                            vg.Scale(20, 20);
+                            vg.Scale(18, 18);
                             vg.Setfv(ParamType.VG_GLYPH_ORIGIN, new float[] { 0.0f, 0.0f });
                             vg.DrawGlyphs(vera, "Step 1) Read Vera.ttf binary", PaintMode.VG_FILL_PATH, false);
                             vg.Setfv(ParamType.VG_GLYPH_ORIGIN, new float[] { 0.0f, -1.0f });
@@ -163,7 +162,6 @@ namespace EMinor
                             vg.Setfv(ParamType.VG_GLYPH_ORIGIN, new float[] { 0.0f, -2.0f });
                             vg.DrawGlyphs(vera, "Step 3) Profit!", PaintMode.VG_FILL_PATH, false);
                             vg.Seti(ParamType.VG_MATRIX_MODE, (int)MatrixMode.VG_MATRIX_PATH_USER_TO_SURFACE);
-#endif
 
                             // Draw touch cursor:
                             if (touch.Pressed)
