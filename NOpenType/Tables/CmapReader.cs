@@ -26,8 +26,19 @@ namespace NRasterizer.Tables
 
             long tableEndAt = tableStart + length;
 
+            if (format == 6)
+            {
+                var language = input.ReadUInt16();
+                var firstCode = input.ReadUInt16();
+                var entryCount = input.ReadUInt16();
 
-            if (format == 4)
+                int glyphIdArrayLength = (int)(tableEndAt - input.BaseStream.Position) / 2;
+                var glyphIdArray = ReadUInt16Array(input, glyphIdArrayLength);
+
+                //convert to format4 cmap table
+                return new CharacterMap(1, new ushort[] { firstCode }, new ushort[] { (ushort)(firstCode + entryCount) }, null, null, glyphIdArray);
+            }
+            else if (format == 4)
             {
                 var version = input.ReadUInt16();
                 var segCountX2 = input.ReadUInt16();
