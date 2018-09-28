@@ -94,12 +94,12 @@ namespace EMinor
                         if (ev.TouchEvent.HasValue)
                         {
                             touch = ev.TouchEvent.Value;
-                            Console.WriteLine("{0},{1},{2}", touch.X, touch.Y, touch.Pressed);
+                            //Console.WriteLine("{0},{1},{2}", touch.X, touch.Y, touch.Pressed);
                         }
                         else if (ev.FootSwitchEvent.HasValue)
                         {
                             FootSwitchEvent fsw = ev.FootSwitchEvent.Value;
-                            Console.WriteLine("{0} {1}", fsw.FootSwitch, fsw.WhatAction);
+                            //Console.WriteLine("{0} {1}", fsw.FootSwitch, fsw.WhatAction);
 
                             if (fsw.FootSwitch == FootSwitch.Left)
                             {
