@@ -20,11 +20,11 @@ namespace EMinor
         private int cursorY;
         private bool cursorPressed;
 
-        public GlfwPlatform(int width, int height)
+        public GlfwPlatform(int width, int height, bool fullscreen = false)
         {
             midi = new MidiConsoleOut();
 
-            // Window coordinates (non-retina):
+            // Window dimensions (aspect ratio) in VG coordinate space (non-retina):
             this.Width = width;
             this.Height = height;
 
@@ -40,7 +40,13 @@ namespace EMinor
             Glfw.WindowHint(Glfw.Hint.Samples, 8);
 
             Debug.WriteLine("window = glfw.CreateWindow()");
-            window = Glfw.CreateWindow(width, height, "e-sharp-minor");
+            window = Glfw.CreateWindow(
+                width,
+                height,
+                "e-sharp-minor",
+                fullscreen ? Glfw.GetPrimaryMonitor() : Glfw.Monitor.None,
+                Glfw.Window.None
+            );
 
             Debug.WriteLine("glfw.MakeContextCurrent(window)");
             Glfw.MakeContextCurrent(window);
@@ -86,6 +92,20 @@ namespace EMinor
             Glfw.SetKeyCallback(window, handleKeys);
             Glfw.SetMouseButtonCallback(window, handleMouseButton);
             Glfw.SetCursorPosCallback(window, handleMousePos);
+        }
+
+        public void SetFullscreenMode(bool fullscreen)
+        {
+            Glfw.Monitor monitor;
+            if (fullscreen)
+            {
+                monitor = Glfw.GetPrimaryMonitor();
+            }
+            else
+            {
+                monitor = Glfw.Monitor.None;
+            }
+            Glfw.SetWindowMonitor(window, monitor);
         }
 
         public void SwapBuffers()

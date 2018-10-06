@@ -792,6 +792,28 @@ public static class Glfw
         return new Monitor(ptr);
     }
 
+    [DllImport(dll, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "glfwSetWindowMonitor")]
+    static extern void glfwSetWindowMonitor(
+        [MarshalAs(UnmanagedType.Struct)] Window window,
+        [MarshalAs(UnmanagedType.Struct)] Monitor monitor,
+        int xpos,
+        int ypos,
+        int width,
+        int height,
+        int refreshRate
+    );
+    public static void SetWindowMonitor(Window window, Monitor monitor)
+    {
+        int width;
+        int height;
+        GetWindowSize(window, out width, out height);
+        int xpos;
+        int ypos;
+        GetWindowPos(window, out xpos, out ypos);
+
+        glfwSetWindowMonitor(window, monitor, xpos, ypos, width, height, 0);
+    }
+
     [DllImport(dll, CallingConvention = CallingConvention.Cdecl)]
     static extern int glfwGetWindowAttrib(IntPtr window, int attrib);
     public static bool GetWindowAttrib(Window window, WindowAttrib attrib)
