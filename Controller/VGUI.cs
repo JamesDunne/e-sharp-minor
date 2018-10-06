@@ -17,6 +17,7 @@ namespace EMinor
         private readonly Button btn;
         private readonly Component root;
         private PaintColor white;
+        private PaintColor pointColor;
         private Ellipse point;
         private FontHandle vera;
 
@@ -68,6 +69,7 @@ namespace EMinor
             vgRasterizer.ConvertGlyphs(typeFace, vera);
 
             this.white = new PaintColor(vg, new float[] { 1.0f, 1.0f, 1.0f, 1.0f });
+            this.pointColor = new PaintColor(vg, new float[] { 0.0f, 1.0f, 0.0f, 0.5f });
             this.point = new Ellipse(vg, 24, 24);
         }
 
@@ -134,13 +136,12 @@ namespace EMinor
             // Draw touch cursor:
             if (touch.Pressed)
             {
-                vg.FillPaint = white;
+                vg.FillPaint = pointColor;
                 vg.PushMatrix();
                 vg.Translate(touch.X, touch.Y);
                 point.Render(PaintMode.VG_FILL_PATH);
                 vg.PopMatrix();
             }
-
         }
     }
 }
