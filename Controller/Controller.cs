@@ -34,6 +34,8 @@ namespace EMinor
         public int CurrentScene { get { return currentScene; } }
         public int LastScene { get { return currentSong.SceneDescriptors.Count - 1; } }
 
+        public string CurrentSongName => CurrentSong?.Name ?? "";
+
         public void LoadData()
         {
             var de = new DeserializerBuilder()
