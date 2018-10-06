@@ -51,36 +51,23 @@ namespace EMinor
                     }
                     Console.WriteLine();
 
+                    // Use latest active setlist:
                     var setlist = (
                         from sl in controller.Setlists
                         where sl.Active
                         select sl
                     ).Last();
 
-                    // Match song names with songs:
-                    setlist.Songs = new List<V6.Song>(setlist.SongNames.Count);
-                    for (int i = 0; i < setlist.SongNames.Count; i++)
-                    {
-                        var setlistSongName = setlist.SongNames[i];
-                        if (setlistSongName.StartsWith("BREAK:", StringComparison.OrdinalIgnoreCase)) continue;
-
-                        setlist.Songs.Add((
-                            from song in controller.Songs
-                            where song.MatchesName(setlistSongName)
-                            select song
-                        ).Single());
-                    }
-
                     Console.WriteLine("Setlist for {0} on {1}", setlist.Venue, setlist.Date);
                     Console.WriteLine("{0} songs", setlist.Songs.Count);
-                    foreach (var song in setlist.Songs)
+                    for (int i = 0; i < setlist.Songs.Count; i++)
                     {
-                        Console.WriteLine("  {0}", song.Name);
+                        var song = setlist.Songs[i];
+                        Console.WriteLine("  {0}. {1}", i, song.Name);
                     }
 
                     // Activate the first song in the setlist:
-                    controller.CurrentSetlist = setlist;
-                    controller.ActivateSong(setlist.Songs[0], 0);
+                    controller.ActivateSetlist(setlist);
 
                     // Initialize UI:
                     IOpenVG vg = platform.VG;

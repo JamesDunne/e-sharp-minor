@@ -50,6 +50,16 @@ namespace EMinor
 
         public int LastSongIndex => Songs.Count - 1;
 
+        public void ActivateSetlist(Setlist setlist)
+        {
+            currentSetlist = setlist;
+            currentSetlistIdx = 0;
+            if (currentSetlistIdx < setlist.Songs.Count)
+            {
+                ActivateSong(setlist.Songs[currentSetlistIdx], 0);
+            }
+        }
+
         public void NextScene()
         {
             if (CurrentScene < LastScene)
@@ -221,6 +231,34 @@ namespace EMinor
                 .SelectMany(m => m.Songs)
                 .OrderBy(s => s.Name)
                 .ToList();
+
+            // Initialize Setlists:
+            foreach (var setlist in Setlists)
+            {
+                // Match song names with songs:
+                setlist.Songs = new List<V6.Song>(setlist.SongNames.Count);
+                for (int i = 0; i < setlist.SongNames.Count; i++)
+                {
+                    var setlistSongName = setlist.SongNames[i];
+
+                    // Skip BREAK markers used for printouts:
+                    if (setlistSongName.StartsWith("BREAK:", StringComparison.OrdinalIgnoreCase)) continue;
+
+                    var song = (
+                        from s in Songs
+                        where s.MatchesName(setlistSongName)
+                        select s
+                    ).SingleOrDefault();
+
+                    if (song == null)
+                    {
+                        Console.Error.WriteLine("Setlist {0} song name '{1}' has no match in songs!", setlist.Date, setlistSongName);
+                        continue;
+                    }
+
+                    setlist.Songs.Add(song);
+                }
+            }
         }
 
         int DBtoMIDI(double db)
