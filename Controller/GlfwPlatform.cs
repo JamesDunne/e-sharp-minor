@@ -73,6 +73,13 @@ namespace EMinor
             vg.Scale((float)fbWidth / (float)width, (float)fbHeight / (float)height);
             vg.Translate(0.5f, 0.5f);
 
+            vg.Seti(ParamType.VG_MATRIX_MODE, (int)MatrixMode.VG_MATRIX_GLYPH_USER_TO_SURFACE);
+            vg.LoadIdentity();
+            vg.Scale((float)fbWidth / (float)width, (float)fbHeight / (float)height);
+            vg.Translate(0.5f, 0.5f);
+
+            vg.Seti(ParamType.VG_MATRIX_MODE, (int)MatrixMode.VG_MATRIX_PATH_USER_TO_SURFACE);
+
             Debug.WriteLine("glfw.ShowWindow(window)");
             Glfw.ShowWindow(window);
 

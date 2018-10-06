@@ -152,7 +152,7 @@ namespace EMinor
                             // Test render some text:
                             vg.FillPaint = white;
                             vg.Seti(ParamType.VG_MATRIX_MODE, (int)MatrixMode.VG_MATRIX_GLYPH_USER_TO_SURFACE);
-                            vg.LoadIdentity();
+                            vg.PushMatrix();
                             vg.Translate(220, 260);
                             vg.Scale(18, 18);
                             vg.Setfv(ParamType.VG_GLYPH_ORIGIN, new float[] { 0.0f, 0.0f });
@@ -161,6 +161,8 @@ namespace EMinor
                             vg.DrawGlyphs(vera, "Step 2) Convert glyphs to OpenVG paths", PaintMode.VG_FILL_PATH, false);
                             vg.Setfv(ParamType.VG_GLYPH_ORIGIN, new float[] { 0.0f, -2.0f });
                             vg.DrawGlyphs(vera, "Step 3) Profit!", PaintMode.VG_FILL_PATH, false);
+                            vg.PopMatrix();
+
                             vg.Seti(ParamType.VG_MATRIX_MODE, (int)MatrixMode.VG_MATRIX_PATH_USER_TO_SURFACE);
 
                             // Draw touch cursor:
@@ -172,6 +174,7 @@ namespace EMinor
                                 point.Render(PaintMode.VG_FILL_PATH);
                                 vg.PopMatrix();
                             }
+
 
                             // Swap buffers to display and vsync:
                             platform.SwapBuffers();
