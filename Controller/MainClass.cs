@@ -79,6 +79,7 @@ namespace EMinor
                     }
 
                     // Activate the first song in the setlist:
+                    controller.CurrentSetlist = setlist;
                     controller.ActivateSong(setlist.Songs[0], 0);
 
                     // Initialize UI:

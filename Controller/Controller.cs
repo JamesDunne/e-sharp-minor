@@ -42,7 +42,7 @@ namespace EMinor
         public int CurrentScene { get { return currentScene; } }
         public int LastScene { get { return currentSong.SceneDescriptors.Count - 1; } }
 
-        public Setlist CurrentSetlist { get { return currentSetlist; } }
+        public Setlist CurrentSetlist { get { return currentSetlist; } set { currentSetlist = value; } }
         public int CurrentSetlistIndex { get { return currentSetlistIdx; } }
         public int LastSetlistIndex { get { return (currentSetlist?.Songs?.Count ?? 1) - 1; } }
 
@@ -68,6 +68,7 @@ namespace EMinor
                 if (currentSetlistIdx > LastSetlistIndex)
                 {
                     // Don't wrap; end of setlist:
+                    currentSetlistIdx = LastSetlistIndex;
                     return;
                 }
 
