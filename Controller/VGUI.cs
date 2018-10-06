@@ -27,8 +27,6 @@ namespace EMinor
             this.platform = platform;
             vg = platform.VG;
 
-            Console.WriteLine("Display[0] = {0}x{1} ({2}x{3})", platform.Width, platform.Height, platform.FramebufferWidth, platform.FramebufferHeight);
-
             vg.ClearColor = new float[] { 0.0f, 0.0f, 0.2f, 1.0f };
 
             platform.InputEvent += Platform_InputEvent;
@@ -89,13 +87,15 @@ namespace EMinor
         {
             if (ev.TouchEvent.HasValue)
             {
+                // Record last touch point:
                 touch = ev.TouchEvent.Value;
+
                 //Console.WriteLine("{0},{1},{2}", touch.X, touch.Y, touch.Pressed);
             }
             else if (ev.FootSwitchEvent.HasValue)
             {
                 FootSwitchEvent fsw = ev.FootSwitchEvent.Value;
-                Console.WriteLine("{0} {1}", fsw.FootSwitch, fsw.WhatAction);
+                //Console.WriteLine("{0} {1}", fsw.FootSwitch, fsw.WhatAction);
 
                 if (fsw.WhatAction != FootSwitchAction.Released)
                 {

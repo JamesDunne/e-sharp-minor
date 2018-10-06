@@ -31,14 +31,10 @@ namespace EMinor
                 using (IPlatform platform = new GlfwPlatform(800, 480))
 #endif
                 {
+                    Console.WriteLine("Display[0] = {0}x{1} ({2}x{3})", platform.Width, platform.Height, platform.FramebufferWidth, platform.FramebufferHeight);
+
                     var controller = new Controller(platform.MIDI, channel: 2);
                     controller.LoadData();
-
-                    Console.WriteLine("all songs alphabetical:");
-                    foreach (var song in controller.Songs)
-                    {
-                        Console.WriteLine("  {0}", song.Name);
-                    }
 
                     Console.WriteLine();
                     foreach (var midiProgram in controller.MidiPrograms)
@@ -46,8 +42,15 @@ namespace EMinor
                         Console.WriteLine("midi: {0}", midiProgram.ProgramNumber);
                         foreach (var song in midiProgram.Songs)
                         {
-                            Console.WriteLine("  song: {0}", song.Name);
+                            Console.WriteLine("  {0}", song.Name);
                         }
+                    }
+                    Console.WriteLine();
+                    Console.WriteLine("all songs alphabetical:");
+                    for (int i = 0; i < controller.Songs.Count; i++)
+                    {
+                        var song = controller.Songs[i];
+                        Console.WriteLine("  {0}. {1}", i + 1, song.Name);
                     }
                     Console.WriteLine();
 
@@ -63,7 +66,7 @@ namespace EMinor
                     for (int i = 0; i < setlist.Songs.Count; i++)
                     {
                         var song = setlist.Songs[i];
-                        Console.WriteLine("  {0}. {1}", i, song.Name);
+                        Console.WriteLine("  {0}. {1}", i + 1, song.Name);
                     }
 
                     // Activate the first song in the setlist:
