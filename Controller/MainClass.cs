@@ -81,64 +81,8 @@ namespace EMinor
                     // Activate the first song in the setlist:
                     controller.ActivateSong(setlist.Songs[0], 0);
 
-                    TouchEvent touch = new TouchEvent
-                    {
-                        X = 0,
-                        Y = 0,
-                        Pressed = false
-                    };
-
-                    // Set up input event listener:
-                    platform.InputEvent += (ev) =>
-                    {
-                        if (ev.TouchEvent.HasValue)
-                        {
-                            touch = ev.TouchEvent.Value;
-                            //Console.WriteLine("{0},{1},{2}", touch.X, touch.Y, touch.Pressed);
-                        }
-                        else if (ev.FootSwitchEvent.HasValue)
-                        {
-                            FootSwitchEvent fsw = ev.FootSwitchEvent.Value;
-                            Console.WriteLine("{0} {1}", fsw.FootSwitch, fsw.WhatAction);
-
-                            if (fsw.FootSwitch == FootSwitch.Left)
-                            {
-                                if (controller.CurrentScene == 0)
-                                {
-
-                                }
-                            }
-                            else if (fsw.FootSwitch == FootSwitch.Right)
-                            {
-
-                            }
-                        }
-                    };
-
-                    IOpenVG vg = platform.VG;
-
-                    // Load TTF font:
-                    Debug.WriteLine("Load Vera.ttf");
-                    NRasterizer.Typeface typeFace;
-                    using (var fi = System.IO.File.OpenRead("Vera.ttf"))
-                    {
-                        Debug.WriteLine("OpenTypeReader");
-                        typeFace = new NRasterizer.OpenTypeReader().Read(fi);
-                    }
-
-                    Debug.WriteLine("Set rendering quality and pixel layout");
-                    vg.Seti(ParamType.VG_RENDERING_QUALITY, (int)RenderingQuality.VG_RENDERING_QUALITY_BETTER);
-                    vg.Seti(ParamType.VG_PIXEL_LAYOUT, (int)PixelLayout.VG_PIXEL_LAYOUT_RGB_HORIZONTAL);
-
-                    var vera = vg.CreateFont(typeFace.Glyphs.Count);
-                    var vgRasterizer = new VGGlyphRasterizer(vg);
-                    vgRasterizer.ConvertGlyphs(typeFace, vera);
-
-                    //platform.VG.DestroyFont(vera);
-                    var white = new PaintColor(vg, new float[] { 1.0f, 1.0f, 1.0f, 1.0f });
-                    var point = new Ellipse(vg, 24, 24);
-
                     // Initialize UI:
+                    IOpenVG vg = platform.VG;
                     using (var ui = new VGUI(platform, controller))
                     {
                         bool quit = false;
@@ -148,33 +92,6 @@ namespace EMinor
 
                             // Render UI screen:
                             ui.Render();
-
-                            // Test render some text:
-                            vg.FillPaint = white;
-                            vg.Seti(ParamType.VG_MATRIX_MODE, (int)MatrixMode.VG_MATRIX_GLYPH_USER_TO_SURFACE);
-                            vg.PushMatrix();
-                            vg.Translate(220, 260);
-                            vg.Scale(18, 18);
-                            vg.Setfv(ParamType.VG_GLYPH_ORIGIN, new float[] { 0.0f, 0.0f });
-                            vg.DrawGlyphs(vera, "Step 1) Read Vera.ttf binary", PaintMode.VG_FILL_PATH, false);
-                            vg.Setfv(ParamType.VG_GLYPH_ORIGIN, new float[] { 0.0f, -1.0f });
-                            vg.DrawGlyphs(vera, "Step 2) Convert glyphs to OpenVG paths", PaintMode.VG_FILL_PATH, false);
-                            vg.Setfv(ParamType.VG_GLYPH_ORIGIN, new float[] { 0.0f, -2.0f });
-                            vg.DrawGlyphs(vera, "Step 3) Profit!", PaintMode.VG_FILL_PATH, false);
-                            vg.PopMatrix();
-
-                            vg.Seti(ParamType.VG_MATRIX_MODE, (int)MatrixMode.VG_MATRIX_PATH_USER_TO_SURFACE);
-
-                            // Draw touch cursor:
-                            if (touch.Pressed)
-                            {
-                                vg.FillPaint = white;
-                                vg.PushMatrix();
-                                vg.Translate(touch.X, touch.Y);
-                                point.Render(PaintMode.VG_FILL_PATH);
-                                vg.PopMatrix();
-                            }
-
 
                             // Swap buffers to display and vsync:
                             platform.SwapBuffers();
