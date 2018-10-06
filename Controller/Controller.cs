@@ -16,12 +16,19 @@ namespace EMinor
 
         private int currentScene;
         private Song currentSong;
+        private int currentSongIdx;
+        private Setlist currentSetlist;
+        private int currentSetlistIdx;
 
         public Controller(IMIDI midi, int channel)
         {
             // Wrap the MIDI output device in a state-tracker:
             this.midi = (midi is MidiState) ? (MidiState)midi : new MidiState(midi);
             this.channel = channel;
+
+            this.currentSongIdx = 0;
+            this.currentSetlistIdx = 0;
+            this.currentSetlist = null;
             this.currentSong = null;
             this.currentScene = 0;
         }
@@ -30,11 +37,98 @@ namespace EMinor
         public List<Setlist> Setlists { get; private set; }
         public List<Song> Songs { get; private set; }
 
+        public int CurrentSongIndex { get { return currentSongIdx; } }
         public Song CurrentSong { get { return currentSong; } }
         public int CurrentScene { get { return currentScene; } }
         public int LastScene { get { return currentSong.SceneDescriptors.Count - 1; } }
 
+        public Setlist CurrentSetlist { get { return currentSetlist; } }
+        public int CurrentSetlistIndex { get { return currentSetlistIdx; } }
+        public int LastSetlistIndex { get { return (currentSetlist?.Songs?.Count ?? 1) - 1; } }
+
         public string CurrentSongName => CurrentSong?.Name ?? "";
+
+        public int LastSongIndex => Songs.Count - 1;
+
+        public void NextScene()
+        {
+            if (CurrentScene < LastScene)
+            {
+                // advance to next scene in current song:
+                ActivateScene(CurrentScene + 1);
+                return;
+            }
+
+            var nextSong = (Song)null;
+
+            if (CurrentSetlist != null)
+            {
+                // setlist mode:
+                currentSetlistIdx++;
+                if (currentSetlistIdx > LastSetlistIndex)
+                {
+                    // Don't wrap; end of setlist:
+                    return;
+                }
+
+                nextSong = CurrentSetlist.Songs[currentSetlistIdx];
+            }
+            else
+            {
+                // song mode:
+                currentSongIdx++;
+                if (currentSongIdx > LastSongIndex)
+                {
+                    // Wrap around to first song:
+                    currentSongIdx = 0;
+                }
+
+                nextSong = Songs[currentSongIdx];
+            }
+
+            ActivateSong(nextSong, 0);
+        }
+
+        public void PreviousScene()
+        {
+            if (CurrentScene > 0)
+            {
+                // advance to previous scene in current song:
+                ActivateScene(CurrentScene - 1);
+                return;
+            }
+
+            var nextSong = (Song)null;
+
+            if (CurrentSetlist != null)
+            {
+                // setlist mode:
+                currentSetlistIdx--;
+                if (currentSetlistIdx < 0)
+                {
+                    currentSetlistIdx = 0;
+                    return;
+                }
+
+                nextSong = CurrentSetlist.Songs[currentSetlistIdx];
+            }
+            else
+            {
+                // song mode:
+                currentSongIdx--;
+                if (currentSongIdx < 0)
+                {
+                    // wrap around to last song:
+                    currentSongIdx = LastSongIndex;
+                }
+
+                nextSong = Songs[currentSongIdx];
+            }
+
+            // Select last scene in previous song:
+            int nextScene = nextSong.SceneDescriptors.Count - 1;
+            ActivateSong(nextSong, nextScene);
+        }
 
         public void LoadData()
         {

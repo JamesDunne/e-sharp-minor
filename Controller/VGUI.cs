@@ -97,16 +97,16 @@ namespace EMinor
                 FootSwitchEvent fsw = ev.FootSwitchEvent.Value;
                 Console.WriteLine("{0} {1}", fsw.FootSwitch, fsw.WhatAction);
 
-                if (fsw.FootSwitch == FootSwitch.Left)
+                if (fsw.WhatAction != FootSwitchAction.Released)
                 {
-                    if (controller.CurrentScene == 0)
+                    if (fsw.FootSwitch == FootSwitch.Left)
                     {
-
+                        controller.PreviousScene();
                     }
-                }
-                else if (fsw.FootSwitch == FootSwitch.Right)
-                {
-
+                    else if (fsw.FootSwitch == FootSwitch.Right)
+                    {
+                        controller.NextScene();
+                    }
                 }
             }
         }
