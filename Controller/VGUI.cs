@@ -122,22 +122,6 @@ namespace EMinor
             // Render our pre-made paths each frame:
             btnSong.Render();
 
-            // Test render some text:
-            //vg.Seti(ParamType.VG_MATRIX_MODE, (int)MatrixMode.VG_MATRIX_GLYPH_USER_TO_SURFACE);
-            //vg.PushMatrix();
-
-            //vg.Translate(220, 260);
-            //vg.Scale(18, 18);
-            //vg.Setfv(ParamType.VG_GLYPH_ORIGIN, new float[] { 0.0f, 0.0f });
-            //vg.FillPaint = white;
-            //vg.DrawGlyphs(vera, "Step 1) Read Vera.ttf binary", PaintMode.VG_FILL_PATH, false);
-            //vg.Setfv(ParamType.VG_GLYPH_ORIGIN, new float[] { 0.0f, -1.0f });
-            //vg.DrawGlyphs(vera, "Step 2) Convert glyphs to OpenVG paths", PaintMode.VG_FILL_PATH, false);
-            //vg.Setfv(ParamType.VG_GLYPH_ORIGIN, new float[] { 0.0f, -2.0f });
-            //vg.DrawGlyphs(vera, "Step 3) Profit!", PaintMode.VG_FILL_PATH, false);
-
-            //vg.PopMatrix();
-
             // Draw touch cursor:
             if (touch.Pressed)
             {
