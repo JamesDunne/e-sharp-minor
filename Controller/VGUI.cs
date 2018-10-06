@@ -20,6 +20,7 @@ namespace EMinor
         private PaintColor pointColor;
         private Ellipse point;
         private FontHandle vera;
+        private Button btnScene;
 
         public VGUI(IPlatform platform, Controller controller)
         {
@@ -60,13 +61,28 @@ namespace EMinor
                 btnSong = new Button(
                     platform,
                     new Point(0, platform.Height - 33),
-                    new RoundRect(vg, new Bounds(platform.Width - 1, 32), 16, 16)
+                    new RoundRect(vg, new Bounds(platform.Width - 80 - 1, 32), 16, 16)
                     {
                         StrokeLineWidth = 1.0f
                     },
                     vera,
                     white,
                     () => controller.CurrentSongName
+                )
+                {
+                    Stroke = strokePaint,
+                    Fill = fillPaint
+                },
+                btnScene = new Button(
+                    platform,
+                    new Point(platform.Width - 80 - 1, platform.Height - 33),
+                    new RoundRect(vg, new Bounds(80, 32), 16, 16)
+                    {
+                        StrokeLineWidth = 1.0f
+                    },
+                    vera,
+                    white,
+                    () => controller.CurrentSceneDisplay
                 )
                 {
                     Stroke = strokePaint,
@@ -121,6 +137,7 @@ namespace EMinor
         {
             // Render our pre-made paths each frame:
             btnSong.Render();
+            btnScene.Render();
 
             // Draw touch cursor:
             if (touch.Pressed)
