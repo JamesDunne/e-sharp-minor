@@ -73,7 +73,9 @@ namespace EMinor
                     }
 
                     // Activate the first song in the setlist:
+                    controller.StartMidiBatch();
                     controller.ActivateSetlist(setlist);
+                    controller.EndMidiBatch();
 
                     // Initialize UI:
                     IOpenVG vg = platform.VG;
