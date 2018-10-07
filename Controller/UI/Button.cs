@@ -36,14 +36,18 @@ namespace EMinor.UI
             rect.Render(PaintMode.VG_STROKE_PATH | PaintMode.VG_FILL_PATH);
             vg.PopMatrix();
 
-            vg.Seti(ParamType.VG_MATRIX_MODE, (int)MatrixMode.VG_MATRIX_GLYPH_USER_TO_SURFACE);
-            vg.PushMatrix();
-            vg.Translate(point.X + rect.ArcWidth * 0.5f, point.Y + rect.ArcHeight * 0.5f);
-            vg.Scale(18, 18);
-            vg.Setfv(ParamType.VG_GLYPH_ORIGIN, new float[] { 0.0f, 0.0f });
-            vg.FillPaint = textColor;
-            vg.DrawGlyphs(textFont, text(), PaintMode.VG_FILL_PATH, false);
-            vg.PopMatrix();
+            if (text != null)
+            {
+                vg.Seti(ParamType.VG_MATRIX_MODE, (int)MatrixMode.VG_MATRIX_GLYPH_USER_TO_SURFACE);
+                vg.PushMatrix();
+                // Left-aligned:
+                vg.Translate(point.X + rect.ArcWidth * 0.5f, point.Y + rect.ArcHeight * 0.5f);
+                vg.Scale(18, 18);
+                vg.Setfv(ParamType.VG_GLYPH_ORIGIN, new float[] { 0.0f, 0.0f });
+                vg.FillPaint = textColor;
+                vg.DrawGlyphs(textFont, text(), PaintMode.VG_FILL_PATH, false);
+                vg.PopMatrix();
+            }
         }
     }
 }

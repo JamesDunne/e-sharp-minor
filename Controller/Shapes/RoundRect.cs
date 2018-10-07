@@ -11,7 +11,7 @@ namespace Shapes
             this.Bounds = bounds;
             ArcWidth = arcWidth;
             ArcHeight = arcHeight;
-            vg.RoundRect(path, 0, 0, bounds.W, bounds.H, arcWidth, arcHeight);
+            vg.RoundRect(path, 0, 0, bounds.W - 1.0f, bounds.H - 1.0f, arcWidth, arcHeight);
         }
 
         public Bounds Bounds { get; }

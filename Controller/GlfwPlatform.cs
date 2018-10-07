@@ -202,6 +202,9 @@ namespace EMinor
         public int Width { get; }
         public int Height { get; }
 
+        public float MaxX => (float)Width - 1.0f;
+        public float MaxY => (float)Height - 1.0f;
+
         public int FramebufferWidth { get; }
         public int FramebufferHeight { get; }
 

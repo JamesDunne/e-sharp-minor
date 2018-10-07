@@ -12,15 +12,16 @@ namespace EMinor
         private readonly IPlatform platform;
         private readonly IOpenVG vg;
         private readonly DisposalContainer disposalContainer;
+
         private readonly PaintColor strokePaint;
         private readonly PaintColor fillPaint;
         private readonly Button btnSong;
         private readonly Component root;
-        private PaintColor white;
-        private PaintColor pointColor;
-        private Ellipse point;
-        private FontHandle vera;
-        private Button btnScene;
+        private readonly PaintColor white;
+        private readonly PaintColor pointColor;
+        private readonly Ellipse point;
+        private readonly FontHandle vera;
+        private readonly Button btnScene;
 
         public VGUI(IPlatform platform, Controller controller)
         {
@@ -60,8 +61,8 @@ namespace EMinor
                 fillPaint = new PaintColor(vg, new float[] { 0.3f, 0.3f, 0.3f, 1.0f }),
                 btnSong = new Button(
                     platform,
-                    new Point(0, platform.Height - 33),
-                    new RoundRect(vg, new Bounds(platform.Width - 80 - 1, 32), 16, 16)
+                    new Point(0, platform.Height - 32),
+                    new RoundRect(vg, new Bounds(platform.Width - 80, 32), 16, 16)
                     {
                         StrokeLineWidth = 1.0f
                     },
@@ -75,7 +76,7 @@ namespace EMinor
                 },
                 btnScene = new Button(
                     platform,
-                    new Point(platform.Width - 80 - 1, platform.Height - 33),
+                    new Point(platform.Width - 80, platform.Height - 32),
                     new RoundRect(vg, new Bounds(80, 32), 16, 16)
                     {
                         StrokeLineWidth = 1.0f
