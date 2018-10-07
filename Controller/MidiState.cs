@@ -37,8 +37,15 @@ namespace EMinor
         /// <value><c>true</c> if enabled; otherwise, <c>false</c>.</value>
         public bool Enabled { get; set; }
 
+        class ChannelBatchState
+        {
+            public bool ProgramChanged;
+            public int ProgramValue;
+            public Dictionary<int, int> ControllersModified;
+        }
+
         private bool batchMode = false;
-        private Dictionary<int, HashSet<int>> batchChannels;
+        private Dictionary<int, ChannelBatchState> batchChannels;
 
         /// <summary>
         /// Start a batch mode to queue up MIDI changes per channel.
@@ -46,7 +53,7 @@ namespace EMinor
         public void StartBatch()
         {
             batchMode = true;
-            batchChannels = new Dictionary<int, HashSet<int>>();
+            batchChannels = new Dictionary<int, ChannelBatchState>();
         }
 
         /// <summary>
@@ -54,22 +61,23 @@ namespace EMinor
         /// </summary>
         public void EndBatch()
         {
+            // Disable batch mode:
             batchMode = false;
+
+            // Send out minimal MIDI updates comparing against pre-batch state:
             foreach (var channel in batchChannels.Keys)
             {
-                var controllerSet = batchChannels[channel];
-                if (controllerSet.Contains(-1))
+                var channelState = batchChannels[channel];
+                if (channelState.ProgramChanged)
                 {
-                    controllerSet.Remove(-1);
-
                     // Change program:
-                    midi.SetProgram(channel, channels[channel].programValue);
+                    this.SetProgram(channel, channelState.ProgramValue);
                 }
 
                 // Update all controller values for this channel:
-                foreach (var controller in controllerSet)
+                foreach (var controller in channelState.ControllersModified.Keys)
                 {
-                    midi.SetController(channel, controller, channels[channel].controllerValues[controller]);
+                    this.SetController(channel, controller, channelState.ControllersModified[controller]);
                 }
             }
         }
@@ -78,18 +86,18 @@ namespace EMinor
         {
             if (batchMode)
             {
-                HashSet<int> controllerSet;
-                if (!batchChannels.TryGetValue(channel, out controllerSet))
+                ChannelBatchState channelState;
+                if (!batchChannels.TryGetValue(channel, out channelState))
                 {
-                    controllerSet = new HashSet<int>();
-                    batchChannels.Add(channel, controllerSet);
+                    channelState = new ChannelBatchState()
+                    {
+                        ControllersModified = new Dictionary<int, int>()
+                    };
+                    batchChannels.Add(channel, channelState);
                 }
 
-                // Remember that this controller was changed:
-                controllerSet.Add(controller);
-
-                // Remember this controller value:
-                channels[channel].controllerValues[controller] = value;
+                // Remember the controller value:
+                channelState.ControllersModified[controller] = value;
                 return;
             }
 
@@ -104,19 +112,17 @@ namespace EMinor
         {
             if (batchMode)
             {
-                HashSet<int> controllerSet;
+                ChannelBatchState controllerSet;
                 if (!batchChannels.TryGetValue(channel, out controllerSet))
                 {
-                    controllerSet = new HashSet<int>();
+                    controllerSet = new ChannelBatchState();
                     batchChannels.Add(channel, controllerSet);
                 }
 
-                // Forget all the last controller data we sent on this channel:
-                controllerSet.Clear();
-                channels[channel].Reset();
-                // Indicate that the program was changed:
-                controllerSet.Add(-1);
-                channels[channel].programValue = program;
+                // Clear the state and indicate program changed:
+                controllerSet.ControllersModified = new Dictionary<int, int>();
+                controllerSet.ProgramChanged = true;
+                controllerSet.ProgramValue = program;
                 return;
             }
 
