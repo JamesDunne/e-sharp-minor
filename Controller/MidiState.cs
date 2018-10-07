@@ -37,8 +37,62 @@ namespace EMinor
         /// <value><c>true</c> if enabled; otherwise, <c>false</c>.</value>
         public bool Enabled { get; set; }
 
+        private bool batchMode = false;
+        private Dictionary<int, HashSet<int>> batchChannels;
+
+        /// <summary>
+        /// Start a batch mode to queue up MIDI changes per channel.
+        /// </summary>
+        public void StartBatch()
+        {
+            batchMode = true;
+            batchChannels = new Dictionary<int, HashSet<int>>();
+        }
+
+        /// <summary>
+        /// Ends batch mode and sends out latest MIDI program and controller changes per channel.
+        /// </summary>
+        public void EndBatch()
+        {
+            batchMode = false;
+            foreach (var channel in batchChannels.Keys)
+            {
+                var controllerSet = batchChannels[channel];
+                if (controllerSet.Contains(-1))
+                {
+                    controllerSet.Remove(-1);
+
+                    // Change program:
+                    midi.SetProgram(channel, channels[channel].programValue);
+                }
+
+                // Update all controller values for this channel:
+                foreach (var controller in controllerSet)
+                {
+                    midi.SetController(channel, controller, channels[channel].controllerValues[controller]);
+                }
+            }
+        }
+
         public void SetController(int channel, int controller, int value)
         {
+            if (batchMode)
+            {
+                HashSet<int> controllerSet;
+                if (!batchChannels.TryGetValue(channel, out controllerSet))
+                {
+                    controllerSet = new HashSet<int>();
+                    batchChannels.Add(channel, controllerSet);
+                }
+
+                // Remember that this controller was changed:
+                controllerSet.Add(controller);
+
+                // Remember this controller value:
+                channels[channel].controllerValues[controller] = value;
+                return;
+            }
+
             if (!Enabled || channels[channel].controllerValues[controller] != value)
             {
                 midi.SetController(channel, controller, value);
@@ -48,10 +102,28 @@ namespace EMinor
 
         public void SetProgram(int channel, int program)
         {
+            if (batchMode)
+            {
+                HashSet<int> controllerSet;
+                if (!batchChannels.TryGetValue(channel, out controllerSet))
+                {
+                    controllerSet = new HashSet<int>();
+                    batchChannels.Add(channel, controllerSet);
+                }
+
+                // Forget all the last controller data we sent on this channel:
+                controllerSet.Clear();
+                channels[channel].Reset();
+                // Indicate that the program was changed:
+                controllerSet.Add(-1);
+                channels[channel].programValue = program;
+                return;
+            }
+
             if (!Enabled || channels[channel].programValue != program)
             {
                 // Forget all sent data now that we're switching programs:
-                Reset();
+                channels[channel].Reset();
                 midi.SetProgram(channel, program);
                 channels[channel].programValue = program;
             }

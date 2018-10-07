@@ -146,6 +146,16 @@ namespace EMinor
             ActivateSong(nextSong, nextScene);
         }
 
+        public void StartMidiBatch()
+        {
+            midi.StartBatch();
+        }
+
+        public void EndMidiBatch()
+        {
+            midi.EndBatch();
+        }
+
         public void LoadData()
         {
             var de = new DeserializerBuilder()

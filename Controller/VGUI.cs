@@ -106,6 +106,12 @@ namespace EMinor
                 FootSwitchEvent fsw = ev.FootSwitchEvent.Value;
                 //Console.WriteLine("{0} {1}", fsw.FootSwitch, fsw.WhatAction);
 
+                if (fsw.WhatAction == FootSwitchAction.Pressed)
+                {
+                    // Start batching up MIDI updates while the footswitch is held:
+                    controller.StartMidiBatch();
+                }
+
                 if (fsw.WhatAction != FootSwitchAction.Released)
                 {
                     if (fsw.FootSwitch == FootSwitch.Left)
@@ -116,6 +122,12 @@ namespace EMinor
                     {
                         controller.NextScene();
                     }
+                }
+
+                if (fsw.WhatAction == FootSwitchAction.Released)
+                {
+                    // Finish the batch and send out the most recent MIDI updates:
+                    controller.EndMidiBatch();
                 }
             }
         }
@@ -131,7 +143,7 @@ namespace EMinor
             // Render our pre-made paths each frame:
             if (touch.Pressed && btnSong.IsPointInside(touch.Point))
             {
-
+                // todo
             }
             btnSong.Render();
             btnScene.Render();
