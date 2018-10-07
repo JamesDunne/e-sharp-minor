@@ -8,9 +8,9 @@ midi_programs:
       cab1:
         enabled_switch_cc: 39
         xy_switch_cc: 102
-      gate1:
+      gte1:
         enabled_switch_cc: 60
-      compressor1:
+      cmp1:
         enabled_switch_cc: 43
       pit1:
         enabled_switch_cc: 77
@@ -34,10 +34,10 @@ midi_programs:
           cab1:
             on: true
             xy: X
-          gate1:
+          gte1:
             on: false
             xy: X
-          compressor1:
+          cmp1:
             on: true
             xy: X
       dirty:
@@ -49,10 +49,10 @@ midi_programs:
           cab1:
             on: true
             xy: X
-          gate1:
+          gte1:
             on: true
             xy: X
-          compressor1:
+          cmp1:
             on: true
             xy: X
       acoustic:
@@ -64,10 +64,10 @@ midi_programs:
           cab1:
             on: true
             xy: Y
-          gate1:
+          gte1:
             on: false
             xy: X
-          compressor1:
+          cmp1:
             on: true
             xy: X
   - name: JD
@@ -78,9 +78,9 @@ midi_programs:
       cab2:
         enabled_switch_cc: 40
         xy_switch_cc: 103
-      gate2:
+      gte2:
         enabled_switch_cc: 61
-      compressor2:
+      cmp2:
         enabled_switch_cc: 44
       pit2:
         enabled_switch_cc: 78
@@ -104,10 +104,10 @@ midi_programs:
           cab2:
             on: true
             xy: X
-          gate2:
+          gte2:
             on: false
             xy: X
-          compressor2:
+          cmp2:
             on: true
             xy: X
       dirty:
@@ -119,10 +119,10 @@ midi_programs:
           cab2:
             on: true
             xy: X
-          gate2:
+          gte2:
             on: true
             xy: X
-          compressor2:
+          cmp2:
             on: true
             xy: X
       acoustic:
@@ -134,10 +134,10 @@ midi_programs:
           cab2:
             on: true
             xy: Y
-          gate2:
+          gte2:
             on: false
             xy: X
-          compressor2:
+          cmp2:
             on: true
             xy: X
   songs:
@@ -270,7 +270,7 @@ midi_programs:
       amps:
       - tone: dirty
       - tone: dirty
-        volume: 6
+        volume: 5
         blocks:
           dly2:
             on: true
@@ -290,7 +290,7 @@ midi_programs:
       amps:
       - tone: dirty
       - tone: dirty
-        volume: 6
+        volume: 5
         blocks:
           dly2:
             on: true
@@ -302,7 +302,7 @@ midi_programs:
       amps:
       - tone: dirty
       - tone: dirty
-        volume: 6
+        volume: 5
         blocks:
           dly2:
             on: true
@@ -314,7 +314,7 @@ midi_programs:
       amps:
       - tone: dirty
       - tone: dirty
-        volume: 6
+        volume: 5
         blocks:
           dly2:
             on: true
@@ -356,7 +356,7 @@ midi_programs:
       - tone: dirty
       - tone: dirty
         gain: 112
-        volume: 6
+        volume: 5
         blocks:
           dly2:
             on: true
@@ -386,7 +386,7 @@ midi_programs:
       - tone: dirty
       - tone: dirty
         gain: 112
-        volume: 6
+        volume: 5
         blocks:
           dly2:
             on: true
@@ -558,7 +558,7 @@ midi_programs:
       amps:
       - tone: dirty
       - tone: dirty
-        volume: 6
+        volume: 4
         blocks:
           dly2:
             on: true
@@ -582,7 +582,7 @@ midi_programs:
       amps:
       - tone: dirty
       - tone: dirty
-        volume: 6
+        volume: 4
         blocks:
           dly2:
             on: true
@@ -674,7 +674,7 @@ midi_programs:
     - name: JD dirty;MG lead
       amps:
       - tone: dirty
-        volume: 6
+        volume: 4
         blocks:
           dly1:
             on: true
@@ -758,7 +758,7 @@ midi_programs:
       - tone: dirty
         gain: 48
       - tone: dirty
-        volume: 6
+        volume: 4
         blocks:
           dly2:
             on: true
@@ -797,7 +797,7 @@ midi_programs:
     - name: JD dirty;MG lead
       amps:
       - tone: dirty
-        volume: 6
+        volume: 3
         blocks:
           dly1:
             on: true
@@ -805,7 +805,7 @@ midi_programs:
     - name: JD clean;MG lead
       amps:
       - tone: dirty
-        volume: 6
+        volume: 3
         blocks:
           dly1:
             on: true
@@ -821,7 +821,7 @@ midi_programs:
     - name: JD dirty;MG lead
       amps:
       - tone: dirty
-        volume: 6
+        volume: 3
         blocks:
           dly1:
             on: true
@@ -850,6 +850,23 @@ midi_programs:
       amps:
       - tone: dirty
       - tone: dirty
+    - name: JD lead
+      amps:
+      - tone: dirty
+      - tone: dirty
+        volume: 2
+    - name: JD dirty;MG dirty
+      amps:
+      - tone: dirty
+      - tone: dirty
+    - name: JD lead
+      amps:
+      - tone: dirty
+      - tone: dirty
+        volume: 2
+        blocks:
+          dly2:
+            on: true
   - name: The Middle
     short_name: The Middle
     alternate_names:
@@ -874,12 +891,12 @@ midi_programs:
       - tone: dirty
       - tone: dirty
         gain: 100
-        volume: 6
+        volume: 4
     - name: JD lead;MG dirty
       amps:
       - tone: dirty
       - tone: dirty
-        volume: -1
+        volume: -2
         blocks:
           phr2:
             on: true
@@ -964,7 +981,7 @@ midi_programs:
       amps:
       - tone: dirty
       - tone: dirty
-        volume: 6
+        volume: 5
         blocks:
           dly2:
             on: true
@@ -983,7 +1000,7 @@ midi_programs:
       amps:
       - tone: dirty
       - tone: dirty
-        volume: 3
+        volume: 4
     - name: JD lead;MG dirty
       amps:
       - tone: dirty
@@ -993,7 +1010,7 @@ midi_programs:
       amps:
       - tone: dirty
       - tone: dirty
-        volume: 3
+        volume: 4
         blocks:
           dly2:
             on: true
@@ -1055,24 +1072,27 @@ midi_programs:
     amps:
     - tones:
         dirty:
-          gain: 104
+          gain: 78
     - tones:
         dirty:
-          gain: 104
+          gain: 78
     scenes:
     - name: JD dirty;MG dirty
       amps:
       - tone: dirty
+        volume: -2
       - tone: dirty
     - name: JD lead
       amps:
       - tone: dirty
+        volume: -2
       - tone: dirty
         gain: 125
-        volume: 6
+        volume: 4
     - name: JD dirty;MG dirty
       amps:
       - tone: dirty
+        volume: -2
       - tone: dirty
   - name: Basketcase
     short_name: Basketcase
@@ -1115,7 +1135,7 @@ midi_programs:
       amps:
       - tone: dirty
       - tone: dirty
-        volume: 6
+        volume: 4
         blocks:
           dly2:
             on: true
@@ -1127,7 +1147,7 @@ midi_programs:
       amps:
       - tone: dirty
       - tone: dirty
-        volume: 6
+        volume: 4
         blocks:
           dly2:
             on: true
@@ -1141,10 +1161,10 @@ midi_programs:
     amps:
     - tones:
         dirty:
-          gain: 76
+          gain: 65
     - tones:
         dirty:
-          gain: 76
+          gain: 65
     scenes:
     - name: Rhythm
       amps:
@@ -1154,8 +1174,8 @@ midi_programs:
       amps:
       - tone: dirty
       - tone: dirty
-        gain: 104
-        volume: 6
+        gain: 112
+        volume: 3
     - name: Rhythm
       amps:
       - tone: dirty
@@ -1176,10 +1196,10 @@ midi_programs:
     amps:
     - tones:
         dirty:
-          gain: 76
+          gain: 74
     - tones:
         dirty:
-          gain: 76
+          gain: 74
     scenes:
     - name: Rhythm
       amps:
@@ -1239,7 +1259,7 @@ midi_programs:
       - tone: dirty
       - tone: dirty
         gain: 94
-        volume: 6
+        volume: 4
         blocks:
           dly2:
             on: true
@@ -1248,6 +1268,7 @@ midi_programs:
       - tone: clean
       - tone: dirty
         gain: 94
+        volume: -2
         blocks:
           dly2:
             on: true
@@ -1347,7 +1368,7 @@ midi_programs:
       amps:
       - tone: dirty
       - tone: dirty
-        volume: 6
+        volume: 4
         blocks:
           dly2:
             on: true
@@ -1419,7 +1440,7 @@ midi_programs:
           cho1:
             on: true
       - tone: dirty
-        gain: 24
+        gain: 32
         volume: -2
     - name: Chorus
       amps:
@@ -1496,7 +1517,7 @@ midi_programs:
       amps:
       - tone: acoustic
       - tone: dirty
-        volume: 6
+        volume: 4
     - name: Verse
       amps:
       - tone: acoustic
@@ -1505,7 +1526,7 @@ midi_programs:
       amps:
       - tone: acoustic
       - tone: dirty
-        volume: 6
+        volume: 4
     - name: Verse
       amps:
       - tone: acoustic
@@ -1529,7 +1550,7 @@ midi_programs:
       amps:
       - tone: dirty
       - tone: dirty
-        volume: 3
+        volume: 4
     - name: Rhythm
       amps:
       - tone: dirty
@@ -1538,7 +1559,7 @@ midi_programs:
       amps:
       - tone: dirty
       - tone: dirty
-        volume: 3
+        volume: 4
     - name: Rhythm
       amps:
       - tone: dirty
@@ -1547,7 +1568,7 @@ midi_programs:
       amps:
       - tone: dirty
       - tone: dirty
-        volume: 4.5
+        volume: 5
     - name: Rhythm
       amps:
       - tone: dirty
@@ -1567,7 +1588,7 @@ midi_programs:
     - name: Breakdown
       amps:
       - tone: dirty
-        gain: 32
+        gain: 24
       - tone: dirty
     - name: Rhythm
       amps:
@@ -1632,10 +1653,10 @@ midi_programs:
     amps:
     - tones:
         dirty:
-          gain: 66
+          gain: 60
     - tones:
         dirty:
-          gain: 66
+          gain: 60
     scenes:
     - name: Rhythm
       amps:
@@ -1661,17 +1682,17 @@ midi_programs:
     amps:
     - tones:
         dirty:
-          gain: 48
+          gain: 44
     - tones:
         dirty:
-          gain: 48
+          gain: 44
     scenes:
     - name: Rhythm
       amps:
       - tone: dirty
-        volume: -1.5
+        volume: -1
       - tone: dirty
-        volume: -1.5
+        volume: -1
   - name: Comedown
     short_name: Comedown
     alternate_names:
@@ -1696,10 +1717,21 @@ midi_programs:
       - tone: dirty
       - tone: dirty
         volume: 3
+        blocks:
+          dly2:
+            on: true
     - name: Rhythm
       amps:
       - tone: dirty
       - tone: dirty
+    - name: Outro
+      amps:
+      - tone: dirty
+      - tone: dirty
+        volume: 1
+        blocks:
+          dly2:
+            on: true
 - midi: 1
   amps:
   - name: MG
@@ -1710,9 +1742,9 @@ midi_programs:
       cab1:
         enabled_switch_cc: 39
         xy_switch_cc: 102
-      gate1:
+      gte1:
         enabled_switch_cc: 60
-      compressor1:
+      cmp1:
         enabled_switch_cc: 43
       pit1:
         enabled_switch_cc: 77
@@ -1736,10 +1768,10 @@ midi_programs:
           cab1:
             on: true
             xy: X
-          gate1:
+          gte1:
             on: false
             xy: X
-          compressor1:
+          cmp1:
             on: true
             xy: X
       dirty:
@@ -1751,10 +1783,10 @@ midi_programs:
           cab1:
             on: true
             xy: X
-          gate1:
+          gte1:
             on: true
             xy: X
-          compressor1:
+          cmp1:
             on: true
             xy: X
       acoustic:
@@ -1766,10 +1798,10 @@ midi_programs:
           cab1:
             on: true
             xy: Y
-          gate1:
+          gte1:
             on: false
             xy: X
-          compressor1:
+          cmp1:
             on: true
             xy: X
   - name: JD
@@ -1780,9 +1812,9 @@ midi_programs:
       cab2:
         enabled_switch_cc: 40
         xy_switch_cc: 103
-      gate2:
+      gte2:
         enabled_switch_cc: 61
-      compressor2:
+      cmp2:
         enabled_switch_cc: 44
       pit2:
         enabled_switch_cc: 78
@@ -1806,10 +1838,10 @@ midi_programs:
           cab2:
             on: true
             xy: X
-          gate2:
+          gte2:
             on: false
             xy: X
-          compressor2:
+          cmp2:
             on: true
             xy: X
       dirty:
@@ -1821,10 +1853,10 @@ midi_programs:
           cab2:
             on: true
             xy: X
-          gate2:
+          gte2:
             on: true
             xy: X
-          compressor2:
+          cmp2:
             on: true
             xy: X
       acoustic:
@@ -1836,10 +1868,10 @@ midi_programs:
           cab2:
             on: true
             xy: Y
-          gate2:
+          gte2:
             on: false
             xy: X
-          compressor2:
+          cmp2:
             on: true
             xy: X
   songs:
@@ -1859,12 +1891,12 @@ midi_programs:
     scenes:
     - name: Clean
       amps:
-      - tone: clean
+      - tone: acoustic
       - tone: acoustic
     - name: MG Lead
       amps:
       - tone: dirty
-        volume: 3
+        volume: 4
         blocks:
           rtr1:
             on: true
@@ -1873,7 +1905,7 @@ midi_programs:
       - tone: acoustic
     - name: Clean
       amps:
-      - tone: clean
+      - tone: acoustic
       - tone: acoustic
   - name: What I Got
     short_name: What I Got
@@ -1890,7 +1922,7 @@ midi_programs:
       amps:
       - tone: acoustic
       - tone: acoustic
-        volume: 6
+        volume: 4
     - name: JD clean;MG clean
       amps:
       - tone: acoustic
@@ -1899,7 +1931,7 @@ midi_programs:
       amps:
       - tone: acoustic
       - tone: acoustic
-        volume: 6
+        volume: 4
     - name: JD clean;MG clean
       amps:
       - tone: acoustic
@@ -1914,9 +1946,9 @@ midi_programs:
       cab1:
         enabled_switch_cc: 39
         xy_switch_cc: 102
-      gate1:
+      gte1:
         enabled_switch_cc: 60
-      compressor1:
+      cmp1:
         enabled_switch_cc: 43
       pit1:
         enabled_switch_cc: 77
@@ -1940,10 +1972,10 @@ midi_programs:
           cab1:
             on: true
             xy: X
-          gate1:
+          gte1:
             on: false
             xy: X
-          compressor1:
+          cmp1:
             on: true
             xy: X
       dirty:
@@ -1955,10 +1987,10 @@ midi_programs:
           cab1:
             on: true
             xy: X
-          gate1:
+          gte1:
             on: true
             xy: X
-          compressor1:
+          cmp1:
             on: true
             xy: X
       acoustic:
@@ -1970,10 +2002,10 @@ midi_programs:
           cab1:
             on: true
             xy: Y
-          gate1:
+          gte1:
             on: false
             xy: X
-          compressor1:
+          cmp1:
             on: true
             xy: X
   - name: JD
@@ -1984,9 +2016,9 @@ midi_programs:
       cab2:
         enabled_switch_cc: 40
         xy_switch_cc: 103
-      gate2:
+      gte2:
         enabled_switch_cc: 61
-      compressor2:
+      cmp2:
         enabled_switch_cc: 44
       pit2:
         enabled_switch_cc: 78
@@ -2010,10 +2042,10 @@ midi_programs:
           cab2:
             on: true
             xy: X
-          gate2:
+          gte2:
             on: false
             xy: X
-          compressor2:
+          cmp2:
             on: true
             xy: X
       dirty:
@@ -2025,10 +2057,10 @@ midi_programs:
           cab2:
             on: true
             xy: X
-          gate2:
+          gte2:
             on: true
             xy: X
-          compressor2:
+          cmp2:
             on: true
             xy: X
       acoustic:
@@ -2040,10 +2072,10 @@ midi_programs:
           cab2:
             on: true
             xy: Y
-          gate2:
+          gte2:
             on: false
             xy: X
-          compressor2:
+          cmp2:
             on: true
             xy: X
   songs:
@@ -2057,10 +2089,10 @@ midi_programs:
     amps:
     - tones:
         dirty:
-          gain: 64
+          gain: 48
     - tones:
         dirty:
-          gain: 64
+          gain: 48
     scenes:
     - name: Main
       amps:
@@ -2126,7 +2158,7 @@ midi_programs:
       amps:
       - tone: dirty
       - tone: dirty
-        gain: 120
+        gain: 96
         volume: 6
         blocks:
           dly2:
@@ -2139,8 +2171,8 @@ midi_programs:
       amps:
       - tone: dirty
       - tone: dirty
-        gain: 120
-        volume: 2
+        gain: 112
+        volume: 3
         blocks:
           dly2:
             on: true
