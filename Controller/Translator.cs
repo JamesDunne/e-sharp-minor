@@ -84,8 +84,8 @@ namespace EMinor
                                 {
                                     { "amp1", new V6.FXBlockDefinition { EnabledSwitchCC = 37, XYSwitchCC = 100 } },
                                     { "cab1", new V6.FXBlockDefinition { EnabledSwitchCC = 39, XYSwitchCC = 102 } },
-                                    { "gate1", new V6.FXBlockDefinition { EnabledSwitchCC = 60 } },
-                                    { "compressor1", new V6.FXBlockDefinition { EnabledSwitchCC = 43 } },
+                                    { "gte1", new V6.FXBlockDefinition { EnabledSwitchCC = 60 } },
+                                    { "cmp1", new V6.FXBlockDefinition { EnabledSwitchCC = 43 } },
                                     { "pit1", new V6.FXBlockDefinition { EnabledSwitchCC = 77 } },
                                     { "rtr1", new V6.FXBlockDefinition { EnabledSwitchCC = 86 } },
                                     { "phr1", new V6.FXBlockDefinition { EnabledSwitchCC = 75 } },
@@ -101,8 +101,8 @@ namespace EMinor
                                         {
                                             { "amp1", new V6.FXBlock { On = true, XY = V6.XYSwitch.Y } },
                                             { "cab1", new V6.FXBlock { On = true, XY = V6.XYSwitch.X } },
-                                            { "gate1", new V6.FXBlock { On = false, XY = V6.XYSwitch.X } },
-                                            { "compressor1", new V6.FXBlock { On = true, XY = V6.XYSwitch.X } }
+                                            { "gte1", new V6.FXBlock { On = false, XY = V6.XYSwitch.X } },
+                                            { "cmp1", new V6.FXBlock { On = true, XY = V6.XYSwitch.X } }
                                         }
                                     } },
                                     { "dirty", new V6.AmpToneDefinition {
@@ -112,8 +112,8 @@ namespace EMinor
                                         {
                                             { "amp1", new V6.FXBlock { On = true, XY = V6.XYSwitch.X } },
                                             { "cab1", new V6.FXBlock { On = true, XY = V6.XYSwitch.X } },
-                                            { "gate1", new V6.FXBlock { On = true, XY = V6.XYSwitch.X } },
-                                            { "compressor1", new V6.FXBlock { On = true, XY = V6.XYSwitch.X } }
+                                            { "gte1", new V6.FXBlock { On = true, XY = V6.XYSwitch.X } },
+                                            { "cmp1", new V6.FXBlock { On = true, XY = V6.XYSwitch.X } }
                                         }
                                     } },
                                     { "acoustic", new V6.AmpToneDefinition {
@@ -123,8 +123,8 @@ namespace EMinor
                                         {
                                             { "amp1", new V6.FXBlock { On = false, XY = V6.XYSwitch.Y } },
                                             { "cab1", new V6.FXBlock { On = true, XY = V6.XYSwitch.Y } },
-                                            { "gate1", new V6.FXBlock { On = false, XY = V6.XYSwitch.X } },
-                                            { "compressor1", new V6.FXBlock { On = true, XY = V6.XYSwitch.X } }
+                                            { "gte1", new V6.FXBlock { On = false, XY = V6.XYSwitch.X } },
+                                            { "cmp1", new V6.FXBlock { On = true, XY = V6.XYSwitch.X } }
                                         }
                                     } }
                                 },
@@ -139,8 +139,8 @@ namespace EMinor
                                 {
                                     { "amp2", new V6.FXBlockDefinition { EnabledSwitchCC = 38, XYSwitchCC = 101 } },
                                     { "cab2", new V6.FXBlockDefinition { EnabledSwitchCC = 40, XYSwitchCC = 103 } },
-                                    { "gate2", new V6.FXBlockDefinition { EnabledSwitchCC = 61 } },
-                                    { "compressor2", new V6.FXBlockDefinition { EnabledSwitchCC = 44 } },
+                                    { "gte2", new V6.FXBlockDefinition { EnabledSwitchCC = 61 } },
+                                    { "cmp2", new V6.FXBlockDefinition { EnabledSwitchCC = 44 } },
                                     { "pit2", new V6.FXBlockDefinition { EnabledSwitchCC = 78 } },
                                     { "rtr2", new V6.FXBlockDefinition { EnabledSwitchCC = 87 } },
                                     { "phr2", new V6.FXBlockDefinition { EnabledSwitchCC = 76 } },
@@ -156,8 +156,8 @@ namespace EMinor
                                         {
                                             { "amp2", new V6.FXBlock { On = true, XY = V6.XYSwitch.Y } },
                                             { "cab2", new V6.FXBlock { On = true, XY = V6.XYSwitch.X } },
-                                            { "gate2", new V6.FXBlock { On = false, XY = V6.XYSwitch.X } },
-                                            { "compressor2", new V6.FXBlock { On = true, XY = V6.XYSwitch.X } }
+                                            { "gte2", new V6.FXBlock { On = false, XY = V6.XYSwitch.X } },
+                                            { "cmp2", new V6.FXBlock { On = true, XY = V6.XYSwitch.X } }
                                         }
                                     } },
                                     { "dirty", new V6.AmpToneDefinition {
@@ -167,8 +167,8 @@ namespace EMinor
                                         {
                                             { "amp2", new V6.FXBlock { On = true, XY = V6.XYSwitch.X } },
                                             { "cab2", new V6.FXBlock { On = true, XY = V6.XYSwitch.X } },
-                                            { "gate2", new V6.FXBlock { On = true, XY = V6.XYSwitch.X } },
-                                            { "compressor2", new V6.FXBlock { On = true, XY = V6.XYSwitch.X } }
+                                            { "gte2", new V6.FXBlock { On = true, XY = V6.XYSwitch.X } },
+                                            { "cmp2", new V6.FXBlock { On = true, XY = V6.XYSwitch.X } }
                                         }
                                     } },
                                     { "acoustic", new V6.AmpToneDefinition {
@@ -178,8 +178,8 @@ namespace EMinor
                                         {
                                             { "amp2", new V6.FXBlock { On = false, XY = V6.XYSwitch.Y } },
                                             { "cab2", new V6.FXBlock { On = true, XY = V6.XYSwitch.Y } },
-                                            { "gate2", new V6.FXBlock { On = false, XY = V6.XYSwitch.X } },
-                                            { "compressor2", new V6.FXBlock { On = true, XY = V6.XYSwitch.X } }
+                                            { "gte2", new V6.FXBlock { On = false, XY = V6.XYSwitch.X } },
+                                            { "cmp2", new V6.FXBlock { On = true, XY = V6.XYSwitch.X } }
                                         }
                                     } }
                                 },
