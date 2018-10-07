@@ -31,5 +31,7 @@ namespace EMinor.UI
         public Bounds Bounds => bounds;
 
         public abstract void Render();
+
+        public bool IsPointInside(Point p) => p.X >= point.X && p.Y >= point.Y && p.X < point.X + bounds.W && p.Y < point.Y + bounds.H;
     }
 }

@@ -16,8 +16,8 @@ namespace EMinor
 
         internal readonly Glfw.Window window;
 
-        private int cursorX;
-        private int cursorY;
+        private float cursorX;
+        private float cursorY;
         private bool cursorPressed;
 
         public GlfwPlatform(int width, int height, bool fullscreen = false)
@@ -128,8 +128,8 @@ namespace EMinor
 
         void handleMousePos(Glfw.Window window, double x, double y)
         {
-            int newX = (int)x;
-            int newY = (Height - 1) - (int)y;
+            float newX = (float)x;
+            float newY = (Height - 1.0f) - (float)y;
 
             if (newX == cursorX && newY == cursorY) return;
 
@@ -144,8 +144,7 @@ namespace EMinor
                 {
                     TouchEvent = new TouchEvent
                     {
-                        X = cursorX,
-                        Y = cursorY,
+                        Point = new Point(cursorX, cursorY),
                         Pressed = cursorPressed
                     }
                 });
@@ -160,8 +159,7 @@ namespace EMinor
             {
                 TouchEvent = new TouchEvent
                 {
-                    X = cursorX,
-                    Y = cursorY,
+                    Point = new Point(cursorX, cursorY),
                     Pressed = cursorPressed
                 }
             });

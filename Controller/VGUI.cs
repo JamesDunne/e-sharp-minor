@@ -88,8 +88,7 @@ namespace EMinor
 
         TouchEvent touch = new TouchEvent
         {
-            X = 0,
-            Y = 0,
+            Point = new Point(0, 0),
             Pressed = false
         };
 
@@ -130,6 +129,10 @@ namespace EMinor
         public void Render()
         {
             // Render our pre-made paths each frame:
+            if (touch.Pressed && btnSong.IsPointInside(touch.Point))
+            {
+
+            }
             btnSong.Render();
             btnScene.Render();
 
@@ -138,7 +141,7 @@ namespace EMinor
             {
                 vg.Seti(ParamType.VG_MATRIX_MODE, (int)MatrixMode.VG_MATRIX_PATH_USER_TO_SURFACE);
                 vg.PushMatrix();
-                vg.Translate(touch.X, touch.Y);
+                vg.Translate(touch.Point.X, touch.Point.Y);
                 vg.FillPaint = pointColor;
                 point.Render(PaintMode.VG_FILL_PATH);
                 vg.PopMatrix();

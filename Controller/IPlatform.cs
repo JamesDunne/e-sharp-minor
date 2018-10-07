@@ -27,8 +27,7 @@ namespace EMinor
 
     public struct TouchEvent
     {
-        public int X;
-        public int Y;
+        public Point Point;
         public bool Pressed;
     }
 

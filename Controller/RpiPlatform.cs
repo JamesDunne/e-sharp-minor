@@ -203,11 +203,11 @@ namespace EMinor
                 switch (ev.Code)
                 {
                     case ABS_MT_POSITION_X:
-                        lastEvent.X = ev.Value;
+                        lastEvent.Point.X = ev.Value;
                         changed = true;
                         break;
                     case ABS_MT_POSITION_Y:
-                        lastEvent.Y = (Height - 1) - ev.Value;
+                        lastEvent.Point.Y = (Height - 1.0f) - ev.Value;
                         changed = true;
                         break;
                     case ABS_MT_TRACKING_ID:
