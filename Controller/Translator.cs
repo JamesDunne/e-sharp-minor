@@ -23,20 +23,26 @@ namespace EMinor
                 .WithNamingConvention(new UnderscoredNamingConvention())
                 .Build();
 
+            Console.WriteLine("Reading 'all-programs-v5.yml'");
             using (var tr = OpenText("all-programs-v5.yml"))
                 v5programs = de.Deserialize<V5.AllPrograms>(tr);
 
+            Console.WriteLine("Reading 'song-names.yml'");
             using (var tr = OpenText("song-names.yml"))
                 songNames = de.Deserialize<V5.SongNames>(tr);
 
+            Console.WriteLine("Translating V5 to V6...");
             var v6programs = convertV5toV6();
 
             var se = new SerializerBuilder()
                 .WithNamingConvention(new UnderscoredNamingConvention())
                 .Build();
 
+            Console.WriteLine("Writing 'all-programs-v6.yml'");
             using (var tw = CreateText("all-programs-v6.yml"))
                 se.Serialize(tw, v6programs);
+
+            Console.WriteLine("Done");
         }
 
         private int logTaper(int b)

@@ -14,10 +14,13 @@ namespace EMinor
     {
         static void Main(string[] args)
         {
-#if false
-            var translator = new Translator();
-            translator.Translate();
-#endif
+            if (args.Length != 0 && args[0] == "translate")
+            {
+                Console.WriteLine("Running v5 to v6 translator...");
+                var translator = new Translator();
+                translator.Translate();
+                return;
+            }
 
             try
             {
