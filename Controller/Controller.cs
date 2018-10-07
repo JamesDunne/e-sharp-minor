@@ -46,7 +46,10 @@ namespace EMinor
         public int CurrentSetlistIndex { get { return currentSetlistIdx; } }
         public int LastSetlistIndex { get { return (currentSetlist?.Songs?.Count ?? 1) - 1; } }
 
-        public string CurrentSongName => CurrentSong?.Name ?? "";
+        public string CurrentSongName => (CurrentSetlist != null
+            ? (currentSetlistIdx + 1).ToString()
+            : (currentSongIdx + 1).ToString())
+            + ". " + CurrentSong?.Name ?? "";
 
         public int LastSongIndex => Songs.Count - 1;
 

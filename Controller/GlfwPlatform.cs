@@ -24,10 +24,6 @@ namespace EMinor
         {
             midi = new MidiConsoleOut();
 
-            // Window dimensions (aspect ratio) in VG coordinate space (non-retina):
-            this.Width = width;
-            this.Height = height;
-
             // Handle Glfw errors:
             Glfw.SetErrorCallback((code, desc) => throw new Exception(String.Format("GLFW error code {0}: {1}", code, desc)));
 
@@ -39,17 +35,23 @@ namespace EMinor
             // Enable multi-sampling
             Glfw.WindowHint(Glfw.Hint.Samples, 8);
 
+            Glfw.Monitor monitor = fullscreen ? Glfw.GetPrimaryMonitor() : Glfw.Monitor.None;
+
             Debug.WriteLine("window = glfw.CreateWindow()");
             window = Glfw.CreateWindow(
                 width,
                 height,
                 "e-sharp-minor",
-                fullscreen ? Glfw.GetPrimaryMonitor() : Glfw.Monitor.None,
+                monitor,
                 Glfw.Window.None
             );
 
-            Debug.WriteLine("glfw.MakeContextCurrent(window)");
-            Glfw.MakeContextCurrent(window);
+            // Fetch the real window size:
+            Glfw.GetWindowSize(window, out width, out height);
+
+            // Window dimensions (aspect ratio) in VG coordinate space (non-retina):
+            this.Width = width;
+            this.Height = height;
 
             // Get the real framebuffer size for OpenGL pixels; should work with Retina:
             int fbWidth, fbHeight;
@@ -58,6 +60,9 @@ namespace EMinor
             // These are needed for vgClear since it works in framebuffer pixels.
             FramebufferWidth = fbWidth;
             FramebufferHeight = fbHeight;
+
+            Debug.WriteLine("glfw.MakeContextCurrent(window)");
+            Glfw.MakeContextCurrent(window);
 
             // create an OpenVG context
             Debug.WriteLine("vgContext = vgPrivContextCreateAM(0)");

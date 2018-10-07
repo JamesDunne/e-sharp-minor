@@ -57,7 +57,7 @@ namespace EMinor
                 // Root panel bounds:
                 root = new Panel(platform, new Point(0, 0), new Bounds(platform.Width, platform.Height)),
                 strokePaint = new PaintColor(vg, new float[] { 1.0f, 1.0f, 1.0f, 1.0f }),
-                fillPaint = new PaintColor(vg, new float[] { 0.6f, 0.6f, 0.6f, 1.0f }),
+                fillPaint = new PaintColor(vg, new float[] { 0.3f, 0.3f, 0.3f, 1.0f }),
                 btnSong = new Button(
                     platform,
                     new Point(0, platform.Height - 33),
@@ -89,7 +89,6 @@ namespace EMinor
                     Fill = fillPaint
                 }
             );
-
         }
 
         TouchEvent touch = new TouchEvent
