@@ -369,9 +369,9 @@ namespace EMinor
                 // Convert volume to MIDI value:
                 var volumeMIDI = DBtoMIDI(volume);
 
-                Console.WriteLine("Amp[{0}]: gain   (CC {1:X2}h) to {2:X2}h", i + 1, toneDefinition.AmpDefinition.GainControllerCC, gain);
+                Console.WriteLine("Amp[{0}]: gain   val (CC {1:X2}h) to {2:X2}h", i + 1, toneDefinition.AmpDefinition.GainControllerCC, gain);
                 midi.SetController(channel, toneDefinition.AmpDefinition.GainControllerCC, gain);
-                Console.WriteLine("Amp[{0}]: volume (CC {1:X2}h) to {2:X2}h ({3} dB)", i + 1, toneDefinition.AmpDefinition.VolumeControllerCC, volumeMIDI, volume);
+                Console.WriteLine("Amp[{0}]: volume val (CC {1:X2}h) to {2:X2}h ({3} dB)", i + 1, toneDefinition.AmpDefinition.VolumeControllerCC, volumeMIDI, volume);
                 midi.SetController(channel, toneDefinition.AmpDefinition.VolumeControllerCC, volumeMIDI);
             }
 
