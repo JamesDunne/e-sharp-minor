@@ -62,10 +62,7 @@ namespace EMinor
                 btnSong = new Button(
                     platform,
                     new Point(0, platform.Height - 32),
-                    new RoundRect(vg, new Bounds(platform.Width - 80, 32), 16, 16)
-                    {
-                        StrokeLineWidth = 1.0f
-                    },
+                    new RoundRect(vg, new Bounds(platform.Width - 80, 32), 16, 16),
                     vera,
                     white,
                     () => controller.CurrentSongName
@@ -77,10 +74,7 @@ namespace EMinor
                 btnScene = new Button(
                     platform,
                     new Point(platform.Width - 80, platform.Height - 32),
-                    new RoundRect(vg, new Bounds(80, 32), 16, 16)
-                    {
-                        StrokeLineWidth = 1.0f
-                    },
+                    new RoundRect(vg, new Bounds(80, 32), 16, 16),
                     vera,
                     white,
                     () => controller.CurrentSceneDisplay

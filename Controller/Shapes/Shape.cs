@@ -13,6 +13,7 @@ namespace Shapes
         {
             this.vg = vg;
             this.PaintModes = PaintMode.VG_STROKE_PATH;
+            this.StrokeLineWidth = 1.0f;
 
             // Create an OpenVG path resource:
             this.path = vg.CreatePathStandardFloat();
