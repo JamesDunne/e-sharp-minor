@@ -191,6 +191,18 @@ namespace EMinor
                     foreach (var tone in ampDefinition.Tones.Values)
                     {
                         tone.AmpDefinition = ampDefinition;
+                        foreach (var blockName in ampDefinition.Blocks.Keys)
+                        {
+                            if (!tone.Blocks.ContainsKey(blockName))
+                            {
+                                // Enforce default on/off X/Y state for all blocks defined for the amp:
+                                tone.Blocks.Add(blockName, new FXBlock
+                                {
+                                    On = false,
+                                    XY = XYSwitch.X
+                                });
+                            }
+                        }
                     }
                 }
 
@@ -316,11 +328,15 @@ namespace EMinor
                 // Figure out the song-specific override of tone:
                 AmpToneOverride toneOverride = currentSong.Amps?[i].Tones?.GetValueOrDefault(toneSelection.Tone);
 
+                // Combine tone definition with scene tone override:
+                var blockNames = toneDefinition.Blocks.Keys.ToHashSet();
+                blockNames.UnionWith(toneSelection.Blocks?.Keys ?? Enumerable.Empty<string>());
+
                 // Set all the controller values for the selected tone:
-                foreach (var pair in toneDefinition.Blocks)
+                foreach (string blockName in blockNames)
                 {
-                    FXBlock blockDefault = pair.Value;
-                    string blockName = pair.Key;
+                    FXBlock blockDefault;
+                    toneDefinition.Blocks.TryGetValue(blockName, out blockDefault);
                     FXBlockDefinition blockDefinition = ampDefinition.Blocks[blockName];
 
                     int enabledCC = blockDefinition.EnabledSwitchCC;
@@ -331,17 +347,17 @@ namespace EMinor
                     // Follow inheritance chain to determine enabled and X/Y switch values:
                     var sceneBlockOverride = toneSelection.Blocks?.GetValueOrDefault(blockName);
 
-                    var enabled = sceneBlockOverride?.On ?? songBlockOverride?.On ?? blockDefault.On;
-                    var xy = sceneBlockOverride?.XY ?? songBlockOverride?.XY ?? blockDefault.XY;
+                    var enabled = sceneBlockOverride?.On ?? songBlockOverride?.On ?? blockDefault?.On;
+                    var xy = sceneBlockOverride?.XY ?? songBlockOverride?.XY ?? blockDefault?.XY;
 
                     if (enabled.HasValue)
                     {
-                        Console.WriteLine("Amp[{0}]: {1} = {2}", i + 1, blockName, enabled.Value ? "on" : "off");
+                        Console.WriteLine("Amp[{0}]: {1}   1/0 (CC {2:X2}h) to {3}", i + 1, blockName, enabledCC, enabled.Value ? "on" : "off");
                         midi.SetController(channel, enabledCC, enabled.Value ? 0x7F : 0x00);
                     }
                     if (xy.HasValue && xySwitchCC.HasValue)
                     {
-                        Console.WriteLine("Amp[{0}]: {1} to {2}", i + 1, blockName, enabled.Value ? "X" : "Y");
+                        Console.WriteLine("Amp[{0}]: {1}   X/Y (CC {2:X2}h) to {3}", i + 1, blockName, xySwitchCC.Value, enabled.Value ? "X" : "Y");
                         midi.SetController(channel, xySwitchCC.Value, xy.Value == XYSwitch.X ? 0x7F : 0x00);
                     }
                 }
