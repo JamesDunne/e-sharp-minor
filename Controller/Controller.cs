@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using EMinor.V6;
 using YamlDotNet.Serialization;
@@ -299,9 +300,9 @@ namespace EMinor
 
         public void ActivateSong(Song newSong, int scene)
         {
-            Console.WriteLine("Activate song '{0}'", newSong.Name);
+            Trace.WriteLine($"Activate song '{newSong.Name}'");
 
-            Console.WriteLine("Change MIDI program {0}", newSong.MidiProgram.ProgramNumber);
+            Trace.WriteLine($"Change MIDI program {newSong.MidiProgram.ProgramNumber}");
             midi.SetProgram(channel, newSong.MidiProgram.ProgramNumber);
 
             this.currentSong = newSong;
@@ -311,7 +312,7 @@ namespace EMinor
         public void ActivateScene(int scene)
         {
             this.currentScene = scene;
-            Console.WriteLine("Activate song '{0}' scene {1}", currentSong.Name, currentScene);
+            Trace.WriteLine($"Activate song '{currentSong.Name}' scene {currentScene}");
 
             if (currentScene >= currentSong.SceneDescriptors.Count)
             {
@@ -352,12 +353,12 @@ namespace EMinor
 
                     if (enabled.HasValue)
                     {
-                        Console.WriteLine("Amp[{0}]: {1}   1/0 (CC {2:X2}h) to {3}", i + 1, blockName, enabledCC, enabled.Value ? "on" : "off");
+                        Trace.WriteLine($"Amp[{i + 1}]: {blockName}   1/0 (CC {enabledCC:X2}h) to {(enabled.Value ? "on" : "off")}");
                         midi.SetController(channel, enabledCC, enabled.Value ? 0x7F : 0x00);
                     }
                     if (xy.HasValue && xySwitchCC.HasValue)
                     {
-                        Console.WriteLine("Amp[{0}]: {1}   X/Y (CC {2:X2}h) to {3}", i + 1, blockName, xySwitchCC.Value, enabled.Value ? "X" : "Y");
+                        Trace.WriteLine($"Amp[{i + 1}]: {blockName}   X/Y (CC {xySwitchCC.Value:X2}h) to {(enabled.Value ? "X" : "Y")}");
                         midi.SetController(channel, xySwitchCC.Value, xy.Value == XYSwitch.X ? 0x7F : 0x00);
                     }
                 }
@@ -369,9 +370,9 @@ namespace EMinor
                 // Convert volume to MIDI value:
                 var volumeMIDI = DBtoMIDI(volume);
 
-                Console.WriteLine("Amp[{0}]: gain   val (CC {1:X2}h) to {2:X2}h", i + 1, toneDefinition.AmpDefinition.GainControllerCC, gain);
+                Trace.WriteLine($"Amp[{i + 1}]: gain   val (CC {toneDefinition.AmpDefinition.GainControllerCC:X2}h) to {gain:X2}h");
                 midi.SetController(channel, toneDefinition.AmpDefinition.GainControllerCC, gain);
-                Console.WriteLine("Amp[{0}]: volume val (CC {1:X2}h) to {2:X2}h ({3} dB)", i + 1, toneDefinition.AmpDefinition.VolumeControllerCC, volumeMIDI, volume);
+                Trace.WriteLine($"Amp[{i + 1}]: volume val (CC {toneDefinition.AmpDefinition.VolumeControllerCC:X2}h) to {volumeMIDI:X2}h ({volume} dB)");
                 midi.SetController(channel, toneDefinition.AmpDefinition.VolumeControllerCC, volumeMIDI);
             }
 

@@ -34,7 +34,7 @@ namespace EMinor
                 using (IPlatform platform = new GlfwPlatform(800, 480))
 #endif
                 {
-                    Console.WriteLine("Display[0] = {0}x{1} ({2}x{3})", platform.Width, platform.Height, platform.FramebufferWidth, platform.FramebufferHeight);
+                    Console.WriteLine($"Display[0] = {platform.Width}x{platform.Height} ({platform.FramebufferWidth}x{platform.FramebufferHeight})");
 
                     var controller = new Controller(platform.MIDI, channel: 2);
                     controller.LoadData();
