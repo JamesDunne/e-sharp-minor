@@ -6,34 +6,50 @@ namespace EMinor
     public class MidiAlsaOut : IMIDI, IDisposable
     {
         private readonly string devicePath;
-        private readonly FileStream device;
-        private readonly byte[] cmdbuf;
+        private readonly int fd;
 
         public MidiAlsaOut(string devicePath = "/dev/snd/midiC1D0")
         {
             this.devicePath = devicePath;
-            this.device = System.IO.File.OpenWrite(this.devicePath);
-            this.cmdbuf = new byte[3];
+            this.fd = LinuxEventDevice.open(this.devicePath, LinuxEventDevice.OpenFlags.WriteOnly | LinuxEventDevice.OpenFlags.NonBlock);
         }
 
         public void Dispose()
         {
-            this.device.Dispose();
+            LinuxEventDevice.close(fd);
         }
 
         public void SetController(int channel, int controller, int value)
         {
-            this.cmdbuf[0] = (byte)(0xB0 | (channel & 15));
-            this.cmdbuf[1] = (byte)controller;
-            this.cmdbuf[2] = (byte)value;
-            this.device.Write(this.cmdbuf, 0, 3);
+            var cmdbuf = new byte[3];
+            cmdbuf[0] = (byte)(0xB0 | (channel & 15));
+            cmdbuf[1] = (byte)controller;
+            cmdbuf[2] = (byte)value;
+            unsafe
+            {
+                fixed (byte* buf = cmdbuf)
+                {
+                    LinuxEventDevice.write(fd, buf, 3);
+                }
+            }
+            //this.device.Write(cmdbuf, 0, 3);
+            Console.WriteLine("MIDI: {0:X02} {1:X02} {2:X02}", 0xB0 | (channel & 15), controller, value);
         }
 
         public void SetProgram(int channel, int program)
         {
-            this.cmdbuf[0] = (byte)(0xC0 | (channel & 15));
-            this.cmdbuf[1] = (byte)program;
-            this.device.Write(this.cmdbuf, 0, 2);
+            var cmdbuf = new byte[2];
+            cmdbuf[0] = (byte)(0xC0 | (channel & 15));
+            cmdbuf[1] = (byte)program;
+            unsafe
+            {
+                fixed (byte* buf = cmdbuf)
+                {
+                    LinuxEventDevice.write(fd, buf, 2);
+                }
+            }
+            //this.device.Write(cmdbuf, 0, 2);
+            Console.WriteLine("MIDI: {0:X02} {1:X02}", 0xC0 | (channel & 15), program);
         }
     }
 }

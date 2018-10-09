@@ -163,16 +163,19 @@ namespace EMinor
         private static extern int ioctl(int d, uint request, [Out] IntPtr data);
 
         [DllImport(lib)]
-        private static extern int open([MarshalAs(UnmanagedType.LPStr)]string pathname, OpenFlags flags);
+        internal static extern int open([MarshalAs(UnmanagedType.LPStr)]string pathname, OpenFlags flags);
 
         [DllImport(lib)]
-        private static extern int close(int fd);
+        internal static extern int close(int fd);
 
         [DllImport(lib)]
-        unsafe private static extern IntPtr read(int fd, void* buffer, UIntPtr count);
+        internal unsafe static extern IntPtr read(int fd, void* buffer, UIntPtr count);
 
         [DllImport(lib)]
-        unsafe private static extern IntPtr select(int nfds, ulong* readfds, ulong* writefds, ulong* exceptfds, IntPtr timeout);
+        internal unsafe static extern int write(int fd, void* buffer, uint count);
+
+        [DllImport(lib)]
+        private unsafe static extern IntPtr select(int nfds, ulong* readfds, ulong* writefds, ulong* exceptfds, IntPtr timeout);
 
         private enum EvdevIoctl : uint
         {
@@ -190,7 +193,7 @@ namespace EMinor
 #endif
 
         [Flags]
-        private enum OpenFlags
+        internal enum OpenFlags
         {
             ReadOnly = 0x0000,
             WriteOnly = 0x0001,
