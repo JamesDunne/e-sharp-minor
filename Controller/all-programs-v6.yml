@@ -26,7 +26,7 @@ midi_programs:
     volume_controller_cc: 16
     tones:
       clean:
-        gain: 18
+        gain: 112
         blocks:
           amp1:
             on: true
@@ -56,7 +56,7 @@ midi_programs:
             on: true
             xy: X
       acoustic:
-        gain: 18
+        gain: 112
         blocks:
           amp1:
             on: false
@@ -96,7 +96,7 @@ midi_programs:
     volume_controller_cc: 17
     tones:
       clean:
-        gain: 18
+        gain: 112
         blocks:
           amp2:
             on: true
@@ -126,7 +126,7 @@ midi_programs:
             on: true
             xy: X
       acoustic:
-        gain: 18
+        gain: 112
         blocks:
           amp2:
             on: false
@@ -1830,7 +1830,7 @@ midi_programs:
     volume_controller_cc: 17
     tones:
       clean:
-        gain: 18
+        gain: 112
         blocks:
           amp2:
             on: true
@@ -1860,7 +1860,7 @@ midi_programs:
             on: true
             xy: X
       acoustic:
-        gain: 18
+        gain: 112
         blocks:
           amp2:
             on: false

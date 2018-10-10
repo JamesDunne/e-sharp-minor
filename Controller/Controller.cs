@@ -303,7 +303,8 @@ namespace EMinor
             Trace.WriteLine($"Activate song '{newSong.Name}'");
 
             Trace.WriteLine($"Change MIDI program {newSong.MidiProgram.ProgramNumber}");
-            midi.SetProgram(channel, newSong.MidiProgram.ProgramNumber);
+            // HACK: add 10 for new scenes
+            midi.SetProgram(channel, newSong.MidiProgram.ProgramNumber + 10);
 
             this.currentSong = newSong;
             ActivateScene(scene);

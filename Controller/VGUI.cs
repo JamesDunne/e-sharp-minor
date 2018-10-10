@@ -147,6 +147,10 @@ namespace EMinor
             }
             btnSong.Render();
             btnScene.Render();
+            // TODO: add RESET button
+            // TODO: add +/- buttons for scene
+            // TODO: select scene button to have footswitches control prev/next scene
+            // TODO: select amp control to have footswitches control +/- value of control
 
             // Draw touch cursor:
             if (touch.Pressed)
