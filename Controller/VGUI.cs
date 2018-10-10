@@ -59,29 +59,53 @@ namespace EMinor
                 root = new Panel(platform, new Point(0, 0), new Bounds(platform.Width, platform.Height)),
                 strokePaint = new PaintColor(vg, new float[] { 1.0f, 1.0f, 1.0f, 1.0f }),
                 fillPaint = new PaintColor(vg, new float[] { 0.3f, 0.3f, 0.3f, 1.0f }),
-                btnSong = new Button(
+                btnReset = new Button(
                     platform,
                     new Point(0, platform.Height - 32),
-                    new RoundRect(vg, new Bounds(platform.Width - 80, 32), 16, 16),
-                    vera,
-                    white,
-                    () => controller.CurrentSongName
+                    new RoundRect(vg, new Bounds(80, 32), 16, 16)
                 )
                 {
                     Stroke = strokePaint,
-                    Fill = fillPaint
+                    Fill = fillPaint,
+                    TextFont = vera,
+                    TextColor = white,
+                    Text = () => "RESET"
+                },
+                btnSong = new Button(
+                    platform,
+                    new Point(80, platform.Height - 32),
+                    new RoundRect(vg, new Bounds(platform.Width - 80 - 160, 32), 16, 16)
+                )
+                {
+                    Stroke = strokePaint,
+                    Fill = fillPaint,
+                    TextFont = vera,
+                    TextColor = white,
+                    Text = () => controller.CurrentSongName
                 },
                 btnScene = new Button(
                     platform,
-                    new Point(platform.Width - 80, platform.Height - 32),
-                    new RoundRect(vg, new Bounds(80, 32), 16, 16),
-                    vera,
-                    white,
-                    () => controller.CurrentSceneDisplay
+                    new Point(platform.Width - 160, platform.Height - 32),
+                    new RoundRect(vg, new Bounds(80, 32), 16, 16)
                 )
                 {
                     Stroke = strokePaint,
-                    Fill = fillPaint
+                    Fill = fillPaint,
+                    TextFont = vera,
+                    TextColor = white,
+                    Text = () => controller.CurrentSceneDisplay
+                },
+                btnMode = new Button(
+                    platform,
+                    new Point(platform.Width - 80, platform.Height - 32),
+                    new RoundRect(vg, new Bounds(80, 32), 16, 16)
+                )
+                {
+                    Stroke = strokePaint,
+                    Fill = fillPaint,
+                    TextFont = vera,
+                    TextColor = white,
+                    Text = () => "MODE"
                 }
             );
         }
@@ -91,6 +115,8 @@ namespace EMinor
             Point = new Point(0, 0),
             Pressed = false
         };
+        private Button btnReset;
+        private Button btnMode;
 
         void Platform_InputEvent(InputEvent ev)
         {
@@ -141,12 +167,14 @@ namespace EMinor
         public void Render()
         {
             // Render our pre-made paths each frame:
+            btnReset.Render();
             if (touch.Pressed && btnSong.IsPointInside(touch.Point))
             {
                 // todo
             }
             btnSong.Render();
             btnScene.Render();
+            btnMode.Render();
             // TODO: add RESET button
             // TODO: add +/- buttons for scene
             // TODO: select scene button to have footswitches control prev/next scene
