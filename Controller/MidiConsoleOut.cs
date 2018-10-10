@@ -1,7 +1,7 @@
 ﻿using System;
 namespace EMinor
 {
-	public class MidiConsoleOut : IMIDI
+    public class MidiConsoleOut : IMIDI
     {
         public MidiConsoleOut()
         {
@@ -9,6 +9,16 @@ namespace EMinor
 
         public void Dispose()
         {
+        }
+
+        public void StartBatch()
+        {
+
+        }
+
+        public void EndBatch()
+        {
+
         }
 
         public void SetController(int channel, int controller, int value)

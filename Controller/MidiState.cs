@@ -41,7 +41,7 @@ namespace EMinor
         {
             public bool ProgramChanged;
             public int ProgramValue;
-            public Dictionary<int, int> ControllersModified;
+            public OrderedDictionary<int, int> ControllersModified;
         }
 
         private bool batchMode = false;
@@ -65,6 +65,7 @@ namespace EMinor
             batchMode = false;
 
             // Send out minimal MIDI updates comparing against pre-batch state:
+            midi.StartBatch();
             foreach (var channel in batchChannels.Keys)
             {
                 var channelState = batchChannels[channel];
@@ -80,6 +81,7 @@ namespace EMinor
                     this.SetController(channel, controller, channelState.ControllersModified[controller]);
                 }
             }
+            midi.EndBatch();
         }
 
         public void SetController(int channel, int controller, int value)
@@ -91,7 +93,7 @@ namespace EMinor
                 {
                     channelState = new ChannelBatchState()
                     {
-                        ControllersModified = new Dictionary<int, int>()
+                        ControllersModified = new OrderedDictionary<int, int>()
                     };
                     batchChannels.Add(channel, channelState);
                 }
@@ -120,7 +122,7 @@ namespace EMinor
                 }
 
                 // Clear the state and indicate program changed:
-                controllerSet.ControllersModified = new Dictionary<int, int>();
+                controllerSet.ControllersModified = new OrderedDictionary<int, int>();
                 controllerSet.ProgramChanged = true;
                 controllerSet.ProgramValue = program;
                 return;

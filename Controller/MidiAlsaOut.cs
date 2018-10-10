@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace EMinor
@@ -7,6 +8,8 @@ namespace EMinor
     {
         private readonly string devicePath;
         private readonly int fd;
+        private bool batchMode;
+        private List<byte> batch;
 
         public MidiAlsaOut(string devicePath = "/dev/snd/midiC1D0")
         {
@@ -19,34 +22,54 @@ namespace EMinor
             LinuxEventDevice.close(fd);
         }
 
-        public void SetController(int channel, int controller, int value)
+        public void StartBatch()
         {
-            var cmdbuf = new byte[3];
+            this.batchMode = true;
+            this.batch = new List<byte>();
+        }
+
+        public unsafe void EndBatch()
+        {
+            this.batchMode = false;
+            fixed (byte* buf = this.batch.ToArray())
+            {
+                writeBytes(buf, this.batch.Count);
+            }
+        }
+
+        private unsafe void writeBytes(byte* buf, int count)
+        {
+            LinuxEventDevice.write(fd, buf, (uint)count);
+        }
+
+        public unsafe void SetController(int channel, int controller, int value)
+        {
+            var cmdbuf = stackalloc byte[3];
             cmdbuf[0] = (byte)(0xB0 | (channel & 15));
             cmdbuf[1] = (byte)controller;
             cmdbuf[2] = (byte)value;
-            unsafe
+
+            if (batchMode)
             {
-                fixed (byte* buf = cmdbuf)
-                {
-                    LinuxEventDevice.write(fd, buf, 3);
-                }
+                this.batch.Add(cmdbuf[0]);
+                this.batch.Add(cmdbuf[1]);
+                this.batch.Add(cmdbuf[2]);
             }
+            else
+            {
+                writeBytes(cmdbuf, 3);
+            }
+
             Console.Out.WriteLineAsync($"MIDI: {0xB0 | (channel & 15):X02} {controller:X02} {value:X02}");
         }
 
-        public void SetProgram(int channel, int program)
+        public unsafe void SetProgram(int channel, int program)
         {
-            var cmdbuf = new byte[2];
+            var cmdbuf = stackalloc byte[2];
             cmdbuf[0] = (byte)(0xC0 | (channel & 15));
             cmdbuf[1] = (byte)program;
-            unsafe
-            {
-                fixed (byte* buf = cmdbuf)
-                {
-                    LinuxEventDevice.write(fd, buf, 2);
-                }
-            }
+            writeBytes(cmdbuf, 2);
+
             Console.Out.WriteLineAsync($"MIDI: {0xC0 | (channel & 15):X02} {program:X02}");
         }
     }
