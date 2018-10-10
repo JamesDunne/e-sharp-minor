@@ -68,7 +68,16 @@ namespace EMinor
             var cmdbuf = stackalloc byte[2];
             cmdbuf[0] = (byte)(0xC0 | (channel & 15));
             cmdbuf[1] = (byte)program;
-            writeBytes(cmdbuf, 2);
+
+            if (batchMode)
+            {
+                this.batch.Add(cmdbuf[0]);
+                this.batch.Add(cmdbuf[1]);
+            }
+            else
+            {
+                writeBytes(cmdbuf, 2);
+            }
 
             Console.Out.WriteLineAsync($"MIDI: {0xC0 | (channel & 15):X02} {program:X02}");
         }
