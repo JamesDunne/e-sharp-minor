@@ -394,6 +394,7 @@ namespace EMinor
                 throw new Exception("Invalid scene number!");
             }
 
+            // TODO: move this state to class level so it can be reported to UI.
             for (int i = 0; i < currentSong.MidiProgram.Amps.Count; i++)
             {
                 SceneDescriptor sceneDescriptor = currentSong.SceneDescriptors[currentScene];

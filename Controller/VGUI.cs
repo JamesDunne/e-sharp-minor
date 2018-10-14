@@ -13,9 +13,9 @@ namespace EMinor
         private readonly IPlatform platform;
         private readonly IOpenVG vg;
         private readonly DisposalContainer disposalContainer;
-        private readonly PaintColor strokePaint;
-        private readonly PaintColor fillPaint;
-        private readonly PaintColor selectedPaint;
+        private readonly PaintColor clrBtnOutline;
+        private readonly PaintColor clrBtnBg;
+        private readonly PaintColor clrBtnOutlineSelected;
         private readonly PaintColor white;
         private readonly PaintColor pointColor;
         private readonly Ellipse point;
@@ -41,6 +41,7 @@ namespace EMinor
             Left = controller.PreviousSong,
             Right = controller.NextSong
         };
+        private readonly PaintColor clrBtnBgSelected;
         private FootSwitchMapping footswitchMapping;
 
         public VGUI(IPlatform platform, Controller controller)
@@ -77,9 +78,10 @@ namespace EMinor
                 // For the touch point:
                 pointColor = new PaintColor(vg, new float[] { 0.0f, 1.0f, 0.0f, 0.5f }),
                 point = new Ellipse(vg, 24, 24),
-                strokePaint = new PaintColor(vg, new float[] { 1.0f, 1.0f, 1.0f, 1.0f }),
-                fillPaint = new PaintColor(vg, new float[] { 0.3f, 0.3f, 0.3f, 1.0f }),
-                selectedPaint = new PaintColor(vg, new float[] { 1.0f, 1.0f, 0.0f, 1.0f })
+                clrBtnOutline = new PaintColor(vg, new float[] { 1.0f, 1.0f, 1.0f, 1.0f }),
+                clrBtnBg = new PaintColor(vg, new float[] { 0.3f, 0.3f, 0.3f, 1.0f }),
+                clrBtnBgSelected = new PaintColor(vg, new float[] { 0.3f, 0.3f, 0.6f, 1.0f }),
+                clrBtnOutlineSelected = new PaintColor(vg, new float[] { 1.0f, 1.0f, 0.0f, 1.0f })
             );
 
             // Root of component tree:
@@ -96,8 +98,8 @@ namespace EMinor
                                     new Button(platform) {
                                         Dock = Dock.Left,
                                         Width = 80,
-                                        Stroke = strokePaint,
-                                        Fill = fillPaint,
+                                        Stroke = clrBtnOutline,
+                                        Fill = clrBtnBg,
                                         OnPress = (cmp, p) => controller.MidiReset(),
                                         Children = {
                                             new Label(platform)
@@ -110,18 +112,20 @@ namespace EMinor
                                     },
                                     // Song display:
                                     new Button(platform) {
-                                        Stroke = strokePaint,
-                                        Fill = fillPaint,
-                                        StrokeLineWidth = 5.0f,
+                                        Stroke = clrBtnOutline,
+                                        Fill = clrBtnBg,
+                                        StrokeLineWidth = 3.0f,
                                         OnPress = (cmp, p) => {
                                             var btn = (Button)cmp;
 
                                             // Footswitch controls song prev/next.
                                             footswitchMapping = FootSwitchSong(controller);
                                             if (selectedComponent is Button selectedBtn) {
-                                                selectedBtn.Stroke = strokePaint;
+                                                selectedBtn.Stroke = clrBtnOutline;
+                                                selectedBtn.Fill = clrBtnBg;
                                             }
-                                            btn.Stroke = selectedPaint;
+                                            btn.Stroke = clrBtnOutlineSelected;
+                                            btn.Fill = clrBtnBgSelected;
                                             selectedComponent = cmp;
                                         },
                                         Children = {
@@ -137,18 +141,20 @@ namespace EMinor
                                     (selectedComponent = new Button(platform) {
                                         Dock = Dock.Right,
                                         Width = 138,
-                                        Stroke = selectedPaint,
-                                        Fill = fillPaint,
-                                        StrokeLineWidth = 5.0f,
+                                        Stroke = clrBtnOutlineSelected,
+                                        Fill = clrBtnBgSelected,
+                                        StrokeLineWidth = 3.0f,
                                         OnPress = (cmp, p) => {
                                             var btn = (Button)cmp;
 
                                             // Footswitch controls scene prev/next.
                                             footswitchMapping = FootSwitchScene(controller);
                                             if (selectedComponent is Button selectedBtn) {
-                                                selectedBtn.Stroke = strokePaint;
+                                                selectedBtn.Stroke = clrBtnOutline;
+                                                selectedBtn.Fill = clrBtnBg;
                                             }
-                                            btn.Stroke = selectedPaint;
+                                            btn.Stroke = clrBtnOutlineSelected;
+                                            btn.Fill = clrBtnBgSelected;
                                             selectedComponent = cmp;
                                         },
                                         Children = {
@@ -163,8 +169,8 @@ namespace EMinor
                                 }
                             },
                             new Button(platform) {
-                                Fill = fillPaint,
-                                Stroke = strokePaint,
+                                Fill = clrBtnBg,
+                                Stroke = clrBtnOutline,
                             }
                         }
                     }
