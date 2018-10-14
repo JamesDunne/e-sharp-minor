@@ -61,6 +61,8 @@ namespace OpenVG
         void DrawGlyph(FontHandle font, uint glyphIndex, PaintMode paintModes, bool allowAutoHinting);
         void DrawGlyphs(FontHandle font, string text, PaintMode paintModes, bool allowAutoHinting);
 
+        void DrawText(FontHandle textFont, string text, PaintMode paintModes, bool allowAutoHinting, float size);
+
         #endregion
 
         #region VG Properties

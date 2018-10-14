@@ -5,13 +5,24 @@ namespace EMinor.UI
 {
     public class Panel : Component
     {
-        public Panel(IPlatform platform, Point point, Bounds bounds)
-            : base(platform, point, bounds)
+        public Panel(IPlatform platform)
+            : base(platform)
         {
         }
 
-        public override void Render()
+        public override void RenderSelf()
         {
+            // No render.
+        }
+
+        public override void CalculateChildrenLayout()
+        {
+            foreach (var child in this.Children)
+            {
+                child.ComputedPoint = Point.Zero;
+                child.ComputedBounds = Bounds;
+                child.CalculateChildrenLayout();
+            }
         }
     }
 }

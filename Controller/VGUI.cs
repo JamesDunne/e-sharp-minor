@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using EMinor.UI;
 using OpenVG;
@@ -12,7 +13,7 @@ namespace EMinor
         private readonly IPlatform platform;
         private readonly IOpenVG vg;
         private readonly DisposalContainer disposalContainer;
-
+        private List<Component> components;
         private readonly PaintColor strokePaint;
         private readonly PaintColor fillPaint;
         private readonly Button btnSong;
@@ -22,6 +23,8 @@ namespace EMinor
         private readonly Ellipse point;
         private readonly FontHandle vera;
         private readonly Button btnScene;
+        private Button btnReset;
+        private Button btnMode;
 
         public VGUI(IPlatform platform, Controller controller)
         {
@@ -55,59 +58,77 @@ namespace EMinor
                 // For the touch point:
                 pointColor = new PaintColor(vg, new float[] { 0.0f, 1.0f, 0.0f, 0.5f }),
                 point = new Ellipse(vg, 24, 24),
-                // Root panel bounds:
-                root = new Panel(platform, new Point(0, 0), new Bounds(platform.Width, platform.Height)),
                 strokePaint = new PaintColor(vg, new float[] { 1.0f, 1.0f, 1.0f, 1.0f }),
-                fillPaint = new PaintColor(vg, new float[] { 0.3f, 0.3f, 0.3f, 1.0f }),
-                btnReset = new Button(
-                    platform,
-                    new Point(0, platform.Height - 32),
-                    new RoundRect(vg, new Bounds(80, 32), 16, 16)
-                )
-                {
-                    Stroke = strokePaint,
-                    Fill = fillPaint,
-                    TextFont = vera,
-                    TextColor = white,
-                    Text = () => "RESET"
-                },
-                btnSong = new Button(
-                    platform,
-                    new Point(80, platform.Height - 32),
-                    new RoundRect(vg, new Bounds(platform.Width - 80 - 160, 32), 16, 16)
-                )
-                {
-                    Stroke = strokePaint,
-                    Fill = fillPaint,
-                    TextFont = vera,
-                    TextColor = white,
-                    Text = () => controller.CurrentSongName
-                },
-                btnScene = new Button(
-                    platform,
-                    new Point(platform.Width - 160, platform.Height - 32),
-                    new RoundRect(vg, new Bounds(80, 32), 16, 16)
-                )
-                {
-                    Stroke = strokePaint,
-                    Fill = fillPaint,
-                    TextFont = vera,
-                    TextColor = white,
-                    Text = () => controller.CurrentSceneDisplay
-                },
-                btnMode = new Button(
-                    platform,
-                    new Point(platform.Width - 80, platform.Height - 32),
-                    new RoundRect(vg, new Bounds(80, 32), 16, 16)
-                )
-                {
-                    Stroke = strokePaint,
-                    Fill = fillPaint,
-                    TextFont = vera,
-                    TextColor = white,
-                    Text = () => "MODE"
-                }
+                fillPaint = new PaintColor(vg, new float[] { 0.3f, 0.3f, 0.3f, 1.0f })
             );
+
+            // Root panel bounds:
+            this.root = new Panel(platform)
+            {
+                ExplicitPoint = Point.Zero,
+                ExplicitBounds = platform.Bounds,
+                Children = {
+                    new VerticalStack(platform) {
+                        Children = {
+                            new HorizontalStack(platform) {
+                                Children = {
+                                    new Button(platform) {
+                                        //ExplicitBounds = new Bounds(80, 32),
+                                        Stroke = strokePaint,
+                                        Fill = fillPaint,
+                                        OnPress = () => {
+                                            // todo
+                                        },
+                                        Children = {
+                                            new Label(platform)
+                                            {
+                                                TextFont = vera,
+                                                TextColor = white,
+                                                Text = () => "RESET"
+                                            }
+                                        }
+                                    },
+                                    new Button(platform) {
+                                        //Dock = Dock.Fill,
+                                        Stroke = strokePaint,
+                                        Fill = fillPaint,
+                                        OnPress = () => {
+                                            // todo
+                                        },
+                                        Children = {
+                                            new Label(platform)
+                                            {
+                                                TextFont = vera,
+                                                TextColor = white,
+                                                Text = () => controller.CurrentSongName
+                                            }
+                                        }
+                                    },
+                                    new Button(platform) {
+                                        Stroke = strokePaint,
+                                        Fill = fillPaint,
+                                        Children = {
+                                            new Label(platform)
+                                            {
+                                                TextFont = vera,
+                                                TextColor = white,
+                                                Text = () => controller.CurrentSceneDisplay
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+
+            // TODO: add RESET button
+            // TODO: add +/- buttons for scene
+            // TODO: select scene button to have footswitches control prev/next scene
+            // TODO: select amp control to have footswitches control +/- value of control
+
+            this.root.CalculateChildrenLayout();
         }
 
         TouchEvent touch = new TouchEvent
@@ -115,8 +136,6 @@ namespace EMinor
             Point = new Point(0, 0),
             Pressed = false
         };
-        private Button btnReset;
-        private Button btnMode;
 
         void Platform_InputEvent(InputEvent ev)
         {
@@ -166,19 +185,12 @@ namespace EMinor
 
         public void Render()
         {
-            // Render our pre-made paths each frame:
-            btnReset.Render();
-            if (touch.Pressed && btnSong.IsPointInside(touch.Point))
-            {
-                // todo
-            }
-            btnSong.Render();
-            btnScene.Render();
-            btnMode.Render();
-            // TODO: add RESET button
-            // TODO: add +/- buttons for scene
-            // TODO: select scene button to have footswitches control prev/next scene
-            // TODO: select amp control to have footswitches control +/- value of control
+            vg.Seti(ParamType.VG_MATRIX_MODE, (int)MatrixMode.VG_MATRIX_PATH_USER_TO_SURFACE);
+            this.root.Render();
+            //if (touch.Pressed && btnReset.IsPointInside(touch.Point))
+            //{
+            //    controller.ActivateSong(controller.CurrentSong, controller.CurrentScene);
+            //}
 
             // Draw touch cursor:
             if (touch.Pressed)

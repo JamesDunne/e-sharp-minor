@@ -17,6 +17,8 @@ namespace EMinor
         float MaxX { get; }
         float MaxY { get; }
 
+        Bounds Bounds { get; }
+
         int FramebufferWidth { get; }
         int FramebufferHeight { get; }
 

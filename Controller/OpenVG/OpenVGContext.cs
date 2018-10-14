@@ -370,6 +370,38 @@ namespace OpenVG
             LoadMatrix(m);
         }
 
+        public void DrawText(FontHandle textFont, string text, PaintMode paintModes, bool allowAutoHinting, float size)
+        {
+            int mm = Geti(ParamType.VG_MATRIX_MODE);
+
+            // Get current matrix:
+            var m = new float[9];
+            GetMatrix(m);
+
+            // Switch to glyph matrix if not already:
+            if (mm != (int)MatrixMode.VG_MATRIX_GLYPH_USER_TO_SURFACE)
+            {
+                Seti(ParamType.VG_MATRIX_MODE, (int)MatrixMode.VG_MATRIX_GLYPH_USER_TO_SURFACE);
+                LoadMatrix(m);
+            }
+
+            // Render text:
+            Scale(size, size);
+            // TODO: restore VG_GLYPH_ORIGIN afterwards?
+            Setfv(ParamType.VG_GLYPH_ORIGIN, new float[] { 0.0f, 0.0f });
+            DrawGlyphs(textFont, text, PaintMode.VG_FILL_PATH, false);
+
+            // Restore matrix mode:
+            if (mm != (int)MatrixMode.VG_MATRIX_GLYPH_USER_TO_SURFACE)
+            {
+                // TODO: restore glyph matrix before switching back?
+                Seti(ParamType.VG_MATRIX_MODE, mm);
+            }
+
+            // Restore old matrix:
+            LoadMatrix(m);
+        }
+
         #endregion
 
         #region VG Properties

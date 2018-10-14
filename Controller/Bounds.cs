@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Shapes
+namespace EMinor
 {
     public struct Bounds
     {

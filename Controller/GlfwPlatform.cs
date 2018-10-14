@@ -206,6 +206,8 @@ namespace EMinor
         public int FramebufferWidth { get; }
         public int FramebufferHeight { get; }
 
+        public Bounds Bounds => new Bounds(Width, Height);
+
         public void Dispose()
         {
             Glfw.HideWindow(window);
