@@ -9,11 +9,15 @@ namespace EMinor.UI
     public class Button : Component
     {
         private RoundRect rect;
+        private bool pressed;
         private readonly float arcWidth;
         private readonly float arcHeight;
 
         public PaintColor Stroke { get; set; }
         public PaintColor Fill { get; set; }
+
+        public PaintColor StrokePressed { get; set; }
+        public PaintColor FillPressed { get; set; }
 
         public Button(IPlatform platform, float arcWidth = 16.0f, float arcHeight = 16.0f)
             : base(platform)
@@ -44,15 +48,41 @@ namespace EMinor.UI
 
         protected override void RenderSelf()
         {
-            if (Stroke != null)
+            if (pressed)
             {
-                vg.StrokePaint = Stroke;
+                if (Stroke != null)
+                {
+                    vg.StrokePaint = StrokePressed ?? Stroke;
+                }
+                if (Fill != null)
+                {
+                    vg.FillPaint = FillPressed ?? Fill;
+                }
             }
-            if (Fill != null)
+            else
             {
-                vg.FillPaint = Fill;
+                if (Stroke != null)
+                {
+                    vg.StrokePaint = Stroke;
+                }
+                if (Fill != null)
+                {
+                    vg.FillPaint = Fill;
+                }
             }
             rect.Render(PaintMode.VG_STROKE_PATH | PaintMode.VG_FILL_PATH);
+        }
+
+        protected override void BeforeAction(Point point, TouchAction action)
+        {
+            if (action == TouchAction.Pressed)
+            {
+                pressed = true;
+            }
+            else if (action == TouchAction.Released)
+            {
+                pressed = false;
+            }
         }
     }
 }

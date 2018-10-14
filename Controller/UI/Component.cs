@@ -144,11 +144,23 @@ namespace EMinor.UI
 
         protected abstract void RenderSelf();
 
-        public Action<Component, Point> OnPress { get; set; }
+        protected virtual void BeforeAction(Point point, TouchAction action)
+        {
+        }
+
+        protected virtual void AfterAction(Point point, TouchAction action)
+        {
+        }
+
+        public delegate bool ActionHandler(Component cmp, Point p);
+
+        public ActionHandler OnPress { get; set; }
+        public ActionHandler OnMove { get; set; }
+        public ActionHandler OnRelease { get; set; }
 
         public bool IsPointInside(Point p) => p.X >= Point.X && p.Y >= Point.Y && p.X < Point.X + Bounds.W && p.Y < Point.Y + Bounds.H;
 
-        public bool HandlePress(Point point)
+        public bool HandleAction(Point point, TouchAction action)
         {
             if (!IsPointInside(point))
             {
@@ -156,16 +168,27 @@ namespace EMinor.UI
                 return false;
             }
 
+            // Make sure the most descendent child gets a chance to react first:
             Point relPoint = point - Point;
             foreach (var child in Children)
             {
-                if (child.HandlePress(relPoint)) return true;
+                if (child.HandleAction(relPoint, action)) return true;
             }
 
-            if (OnPress == null) return false;
+            // Determine which handler function to invoke:
+            ActionHandler fn = null;
+            switch (action)
+            {
+                case TouchAction.Pressed: fn = OnPress; break;
+                case TouchAction.Moved: fn = OnMove; break;
+                case TouchAction.Released: fn = OnRelease; break;
+            }
 
-            OnPress(this, point);
-            return true;
+            BeforeAction(point, action);
+            bool handled = fn?.Invoke(this, point) ?? false;
+            AfterAction(point, action);
+
+            return handled;
         }
     }
 

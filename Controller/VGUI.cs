@@ -78,7 +78,7 @@ namespace EMinor
                 // For the touch point:
                 pointColor = new PaintColor(vg, new float[] { 0.0f, 1.0f, 0.0f, 0.5f }),
                 point = new Ellipse(vg, 24, 24),
-                clrBtnOutline = new PaintColor(vg, new float[] { 1.0f, 1.0f, 1.0f, 1.0f }),
+                clrBtnOutline = new PaintColor(vg, new float[] { 0.6f, 0.6f, 0.6f, 1.0f }),
                 clrBtnBg = new PaintColor(vg, new float[] { 0.3f, 0.3f, 0.3f, 1.0f }),
                 clrBtnBgSelected = new PaintColor(vg, new float[] { 0.3f, 0.3f, 0.6f, 1.0f }),
                 clrBtnOutlineSelected = new PaintColor(vg, new float[] { 1.0f, 1.0f, 0.0f, 1.0f })
@@ -100,7 +100,12 @@ namespace EMinor
                                         Width = 80,
                                         Stroke = clrBtnOutline,
                                         Fill = clrBtnBg,
-                                        OnPress = (cmp, p) => controller.MidiReset(),
+                                        StrokePressed = clrBtnBg,
+                                        FillPressed = clrBtnOutline,
+                                        OnPress = (cmp, p) => {
+                                            controller.MidiReset();
+                                            return true;
+                                        },
                                         Children = {
                                             new Label(platform)
                                             {
@@ -127,6 +132,7 @@ namespace EMinor
                                             btn.Stroke = clrBtnOutlineSelected;
                                             btn.Fill = clrBtnBgSelected;
                                             selectedComponent = cmp;
+                                            return true;
                                         },
                                         Children = {
                                             new Label(platform)
@@ -156,6 +162,7 @@ namespace EMinor
                                             btn.Stroke = clrBtnOutlineSelected;
                                             btn.Fill = clrBtnBgSelected;
                                             selectedComponent = cmp;
+                                            return true;
                                         },
                                         Children = {
                                             new Label(platform)
@@ -168,9 +175,9 @@ namespace EMinor
                                     })
                                 }
                             },
-                            new Button(platform) {
-                                Fill = clrBtnBg,
-                                Stroke = clrBtnOutline,
+                            new Panel(platform) {
+                                //Fill = clrBtnBg,
+                                //Stroke = clrBtnOutline,
                             }
                         }
                     }
@@ -200,10 +207,7 @@ namespace EMinor
 
                 //Console.WriteLine($"{touch.Point.X}, {touch.Point.Y}, {touch.Action}");
 
-                if (touch.Action == TouchAction.Pressed)
-                {
-                    this.root.HandlePress(touch.Point);
-                }
+                this.root.HandleAction(touch.Point, touch.Action);
             }
             else if (ev.FootSwitchEvent.HasValue)
             {
