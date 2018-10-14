@@ -50,7 +50,7 @@ namespace EMinor
     public struct FootSwitchEvent
     {
         public FootSwitch FootSwitch;
-        public FootSwitchAction WhatAction;
+        public FootSwitchAction Action;
     }
 
     public struct InputEvent

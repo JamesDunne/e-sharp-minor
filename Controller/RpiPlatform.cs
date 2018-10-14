@@ -237,7 +237,7 @@ namespace EMinor
                     FootSwitchEvent = new FootSwitchEvent
                     {
                         FootSwitch = (ev.Code == 0x1E) ? FootSwitch.Left : (ev.Code == 0x30) ? FootSwitch.Right : FootSwitch.None,
-                        WhatAction = (FootSwitchAction)ev.Value
+                        Action = (FootSwitchAction)ev.Value
                     }
                 });
             }

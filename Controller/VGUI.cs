@@ -150,13 +150,13 @@ namespace EMinor
                 FootSwitchEvent fsw = ev.FootSwitchEvent.Value;
                 //Console.WriteLine("{0} {1}", fsw.FootSwitch, fsw.WhatAction);
 
-                if (fsw.WhatAction == FootSwitchAction.Pressed)
+                if (fsw.Action == FootSwitchAction.Pressed)
                 {
                     // Start batching up MIDI updates while the footswitch is held:
                     controller.StartMidiBatch();
                 }
 
-                if (fsw.WhatAction != FootSwitchAction.Released)
+                if (fsw.Action != FootSwitchAction.Released)
                 {
                     if (fsw.FootSwitch == FootSwitch.Left)
                     {
@@ -168,7 +168,7 @@ namespace EMinor
                     }
                 }
 
-                if (fsw.WhatAction == FootSwitchAction.Released)
+                if (fsw.Action == FootSwitchAction.Released)
                 {
                     // Finish the batch and send out the most recent MIDI updates:
                     controller.EndMidiBatch();

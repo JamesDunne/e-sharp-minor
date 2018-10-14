@@ -174,7 +174,7 @@ namespace EMinor
                     FootSwitchEvent = new FootSwitchEvent
                     {
                         FootSwitch = FootSwitch.Left,
-                        WhatAction = (FootSwitchAction)(int)action  // conveniently, the enum values line up.
+                        Action = (FootSwitchAction)(int)action  // conveniently, the enum values line up.
                     }
                 });
             }
@@ -185,7 +185,7 @@ namespace EMinor
                     FootSwitchEvent = new FootSwitchEvent
                     {
                         FootSwitch = FootSwitch.Right,
-                        WhatAction = (FootSwitchAction)(int)action  // conveniently, the enum values line up.
+                        Action = (FootSwitchAction)(int)action  // conveniently, the enum values line up.
                     }
                 });
             }
