@@ -102,7 +102,7 @@ namespace EMinor
                                         Fill = clrBtnBg,
                                         StrokePressed = clrBtnBg,
                                         FillPressed = clrBtnOutline,
-                                        OnPress = (cmp, p) => {
+                                        OnRelease = (cmp, p) => {
                                             controller.MidiReset();
                                             return true;
                                         },
