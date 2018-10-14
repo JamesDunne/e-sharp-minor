@@ -409,6 +409,18 @@ namespace EMinor
                 var blockNames = toneDefinition.Blocks.Keys.ToHashSet();
                 blockNames.UnionWith(toneSelection.Blocks?.Keys ?? Enumerable.Empty<string>());
 
+                // Set the gain and volume:
+                var gain = toneSelection.Gain ?? toneOverride?.Gain ?? toneDefinition.Gain;
+                var volume = toneSelection.Volume ?? toneOverride?.Volume ?? toneDefinition.Volume;
+
+                // Convert volume to MIDI value:
+                var volumeMIDI = DBtoMIDI(volume);
+
+                Trace.WriteLine($"Amp[{i + 1}]: gain   val (CC {toneDefinition.AmpDefinition.GainControllerCC:X2}h) to {gain:X2}h");
+                midi.SetController(channel, toneDefinition.AmpDefinition.GainControllerCC, gain);
+                Trace.WriteLine($"Amp[{i + 1}]: volume val (CC {toneDefinition.AmpDefinition.VolumeControllerCC:X2}h) to {volumeMIDI:X2}h ({volume} dB)");
+                midi.SetController(channel, toneDefinition.AmpDefinition.VolumeControllerCC, volumeMIDI);
+
                 // Set all the controller values for the selected tone:
                 foreach (string blockName in blockNames)
                 {
@@ -439,17 +451,6 @@ namespace EMinor
                     }
                 }
 
-                // Set the gain and volume:
-                var gain = toneSelection.Gain ?? toneOverride?.Gain ?? toneDefinition.Gain;
-                var volume = toneSelection.Volume ?? toneOverride?.Volume ?? toneDefinition.Volume;
-
-                // Convert volume to MIDI value:
-                var volumeMIDI = DBtoMIDI(volume);
-
-                Trace.WriteLine($"Amp[{i + 1}]: gain   val (CC {toneDefinition.AmpDefinition.GainControllerCC:X2}h) to {gain:X2}h");
-                midi.SetController(channel, toneDefinition.AmpDefinition.GainControllerCC, gain);
-                Trace.WriteLine($"Amp[{i + 1}]: volume val (CC {toneDefinition.AmpDefinition.VolumeControllerCC:X2}h) to {volumeMIDI:X2}h ({volume} dB)");
-                midi.SetController(channel, toneDefinition.AmpDefinition.VolumeControllerCC, volumeMIDI);
             }
 
             // TODO: send tempo SysEx message.
