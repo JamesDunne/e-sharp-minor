@@ -16,18 +16,13 @@ namespace EMinor.UI
             TextSize = 18.0f;
         }
 
-        public override void RenderSelf()
+        protected override void RenderSelf()
         {
             if (Text != null)
             {
                 vg.FillPaint = TextColor;
                 vg.DrawText(TextFont, Text(), PaintMode.VG_FILL_PATH, false, TextSize);
             }
-        }
-
-        public override void CalculateChildrenLayout()
-        {
-            // No children.
         }
     }
 }

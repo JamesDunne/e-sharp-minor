@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using EMinor;
 using OpenVG;
 using Shapes;
@@ -21,19 +22,19 @@ namespace EMinor.UI
             this.arcHeight = arcHeight;
         }
 
-        public override void CalculateChildrenLayout()
+        protected override void CalculateChildrenLayout(Point point, Bounds bounds, List<Component> fillChildren)
         {
             this.rect = new RoundRect(vg, this.Bounds, arcWidth, arcHeight);
 
-            foreach (var child in Children)
+            foreach (var child in fillChildren)
             {
                 child.ComputedPoint = new Point(arcWidth * 0.5f, arcHeight * 0.5f);
-                child.ComputedBounds = new Bounds(Bounds.W - arcWidth, Bounds.H - arcHeight);
-                child.CalculateChildrenLayout();
+                child.ComputedBounds = new Bounds(bounds.W - arcWidth, bounds.H - arcHeight);
+                child.CalculateLayout();
             }
         }
 
-        public override void RenderSelf()
+        protected override void RenderSelf()
         {
             vg.StrokePaint = Stroke;
             vg.FillPaint = Fill;

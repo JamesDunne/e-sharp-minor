@@ -65,12 +65,12 @@ namespace EMinor
             // Root panel bounds:
             this.root = new Panel(platform)
             {
-                ExplicitPoint = Point.Zero,
-                ExplicitBounds = platform.Bounds,
                 Children = {
                     new VerticalStack(platform) {
                         Children = {
                             new HorizontalStack(platform) {
+                                Dock = Dock.Top,
+                                Height = 32,
                                 Children = {
                                     new Button(platform) {
                                         //ExplicitBounds = new Bounds(80, 32),
@@ -117,7 +117,8 @@ namespace EMinor
                                         }
                                     }
                                 }
-                            }
+                            },
+                            new Panel(platform)
                         }
                     }
                 }
@@ -128,7 +129,7 @@ namespace EMinor
             // TODO: select scene button to have footswitches control prev/next scene
             // TODO: select amp control to have footswitches control +/- value of control
 
-            this.root.CalculateChildrenLayout();
+            this.root.CalculateLayout();
         }
 
         TouchEvent touch = new TouchEvent

@@ -48,16 +48,77 @@ namespace EMinor.UI
 
         public Dock Dock { get; set; }
 
-        public Point? ExplicitPoint { get; set; }
-        public Bounds? ExplicitBounds { get; set; }
+        public float? Width { get; set; }
+        public float? Height { get; set; }
 
         public Point? ComputedPoint { get; set; }
         public Bounds? ComputedBounds { get; set; }
 
-        public Point Point => ExplicitPoint ?? ComputedPoint ?? EMinor.Point.Zero;
-        public Bounds Bounds => ExplicitBounds ?? ComputedBounds ?? Parent?.Bounds ?? new Bounds(0, 0);
+        public Point Point => ComputedPoint ?? EMinor.Point.Zero;
+        public Bounds Bounds => ComputedBounds ?? Parent?.Bounds ?? platform.Bounds;
 
-        public abstract void CalculateChildrenLayout();
+        protected virtual void CalculateChildrenLayout(Point point, Bounds bounds, List<Component> fillChildren)
+        {
+            // Naive fill implementation that merely overlaps all children:
+            foreach (var child in fillChildren)
+            {
+                child.ComputedPoint = Point.Zero;
+                child.ComputedBounds = bounds;
+                child.CalculateLayout();
+            }
+        }
+
+        public void CalculateLayout()
+        {
+            Point point = Point.Zero;
+            Bounds bounds = Bounds;
+            var fillChildren = new List<Component>(Children.Count);
+
+            // Process docked children first and close up outer bounds:
+            foreach (var child in Children)
+            {
+                if (child.Dock == Dock.Fill)
+                {
+                    fillChildren.Add(child);
+                    continue;
+                }
+
+                if (child.Dock == Dock.Top)
+                {
+                    bounds.H -= child.Height.Value;
+                    child.ComputedPoint = point + new Point(0, bounds.H - 1.0f);
+                    child.ComputedBounds = new Bounds(bounds.W, child.Height.Value);
+                }
+                else if (child.Dock == Dock.Right)
+                {
+                    bounds.W -= child.Width.Value;
+                    child.ComputedPoint = point + new Point(bounds.W - 1.0f, 0);
+                    child.ComputedBounds = new Bounds(child.Width.Value, bounds.H);
+                }
+                else if (child.Dock == Dock.Bottom)
+                {
+                    bounds.H -= child.Height.Value;
+                    point += new Point(0, child.Height.Value - 1.0f);
+                    child.ComputedPoint = point;
+                    child.ComputedBounds = new Bounds(bounds.W, child.Height.Value);
+                }
+                else if (child.Dock == Dock.Left)
+                {
+                    bounds.W -= child.Width.Value;
+                    point += new Point(child.Width.Value, 0);
+                    child.ComputedPoint = point;
+                    child.ComputedBounds = new Bounds(child.Width.Value, bounds.H);
+                }
+
+                child.CalculateLayout();
+            }
+
+            // Fill in remaining children:
+            if (fillChildren.Count > 0)
+            {
+                CalculateChildrenLayout(point, bounds, fillChildren);
+            }
+        }
 
         public virtual void Render()
         {
@@ -74,7 +135,7 @@ namespace EMinor.UI
             vg.PopMatrix();
         }
 
-        public abstract void RenderSelf();
+        protected abstract void RenderSelf();
 
         public Action OnPress { get; set; }
 
@@ -83,7 +144,6 @@ namespace EMinor.UI
 
     public enum Dock
     {
-        None,
         Fill,
         Left,
         Top,

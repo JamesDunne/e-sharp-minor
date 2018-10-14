@@ -10,19 +10,9 @@ namespace EMinor.UI
         {
         }
 
-        public override void RenderSelf()
+        protected override void RenderSelf()
         {
             // No render.
-        }
-
-        public override void CalculateChildrenLayout()
-        {
-            foreach (var child in this.Children)
-            {
-                child.ComputedPoint = Point.Zero;
-                child.ComputedBounds = Bounds;
-                child.CalculateChildrenLayout();
-            }
         }
     }
 }

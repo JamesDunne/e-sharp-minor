@@ -11,28 +11,25 @@ namespace EMinor.UI
         {
         }
 
-        public override void RenderSelf()
+        protected override void RenderSelf()
         {
             foreach (var child in Children)
             {
-                child.RenderSelf();
+                child.Render();
             }
         }
 
-        public override void CalculateChildrenLayout()
+        protected override void CalculateChildrenLayout(Point point, Bounds bounds, List<Component> fillChildren)
         {
-            if (Children.Count == 0) return;
-
-            float step = this.Bounds.W / (float)Children.Count;
+            float step = bounds.W / (float)fillChildren.Count;
 
             // Arrange children horizontally:
-            Point p = Point.Zero;
-            foreach (var child in Children)
+            foreach (var child in fillChildren)
             {
-                child.ComputedPoint = p;
-                child.ComputedBounds = new Bounds(step, Bounds.H);
-                child.CalculateChildrenLayout();
-                p.X += step;
+                child.ComputedPoint = point;
+                child.ComputedBounds = new Bounds(step, bounds.H);
+                child.CalculateLayout();
+                point.X += step;
             }
         }
     }
