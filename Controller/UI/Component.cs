@@ -93,13 +93,13 @@ namespace EMinor.UI
                 if (child.Dock == Dock.Top)
                 {
                     bounds.H -= child.Height.Value;
-                    child.ComputedPoint = point + new Point(0, bounds.H - 1.0f);
+                    child.ComputedPoint = point + new Point(0, bounds.H);
                     child.ComputedBounds = new Bounds(bounds.W, child.Height.Value);
                 }
                 else if (child.Dock == Dock.Right)
                 {
                     bounds.W -= child.Width.Value;
-                    child.ComputedPoint = point + new Point(bounds.W - 1.0f, 0);
+                    child.ComputedPoint = point + new Point(bounds.W, 0);
                     child.ComputedBounds = new Bounds(child.Width.Value, bounds.H);
                 }
                 else if (child.Dock == Dock.Bottom)
@@ -107,7 +107,7 @@ namespace EMinor.UI
                     bounds.H -= child.Height.Value;
                     child.ComputedPoint = point;
                     child.ComputedBounds = new Bounds(bounds.W, child.Height.Value);
-                    point += new Point(0, child.Height.Value - 1.0f);
+                    point += new Point(0, child.Height.Value);
                 }
                 else if (child.Dock == Dock.Left)
                 {
