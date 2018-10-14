@@ -30,10 +30,13 @@ namespace EMinor.UI
 
         protected override void CreateShape()
         {
-            this.rect = new RoundRect(vg, this.Bounds, arcWidth, arcHeight)
-            {
-                StrokeLineWidth = StrokeLineWidth
-            };
+            float effLineWidth = (StrokeLineWidth ?? 1.0f) - 1.0f;
+            this.disposalContainer.Add(
+                this.rect = new RoundRect(vg, this.Bounds - new Bounds(effLineWidth * 0.5f, effLineWidth * 0.5f), arcWidth, arcHeight)
+                {
+                    StrokeLineWidth = StrokeLineWidth
+                }
+            );
         }
 
         protected override void CalculateChildrenLayout(Point point, Bounds bounds, List<Component> fillChildren)
@@ -70,6 +73,8 @@ namespace EMinor.UI
                     vg.FillPaint = Fill;
                 }
             }
+            float effLineWidth = (StrokeLineWidth ?? 1.0f) - 1.0f;
+            vg.Translate(effLineWidth * 0.5f, effLineWidth * 0.5f);
             rect.Render(PaintMode.VG_STROKE_PATH | PaintMode.VG_FILL_PATH);
         }
 
