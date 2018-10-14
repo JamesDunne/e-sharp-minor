@@ -197,21 +197,27 @@ namespace EMinor
         {
             bool changed = false;
 
+            TouchEvent newEvent = lastEvent;
+            // Default is Moved action for X and Y position changed events:
+            newEvent.Action = TouchAction.Moved;
+
             foreach (var ev in events)
             {
                 if (ev.Type != LinuxEventDevice.EV_ABS) continue;
                 switch (ev.Code)
                 {
                     case ABS_MT_POSITION_X:
-                        lastEvent.Point.X = ev.Value;
+                        newEvent.Point.X = ev.Value;
                         changed = true;
                         break;
                     case ABS_MT_POSITION_Y:
-                        lastEvent.Point.Y = (Height - 1.0f) - ev.Value;
+                        newEvent.Point.Y = (Height - 1.0f) - ev.Value;
                         changed = true;
                         break;
                     case ABS_MT_TRACKING_ID:
-                        lastEvent.Pressed = ev.Value != -1;
+                        // NOTE: To support multiple touch points we should listen to MT_SLOT as well.
+                        // Tracking ID only changes when pressed or released:
+                        newEvent.Action = ev.Value != -1 ? TouchAction.Pressed : TouchAction.Released;
                         changed = true;
                         break;
                 }
@@ -220,7 +226,8 @@ namespace EMinor
             if (!changed) return;
 
             // Fire touch input event:
-            InputEvent(new InputEvent { TouchEvent = lastEvent });
+            InputEvent(new InputEvent { TouchEvent = newEvent });
+            lastEvent = newEvent;
         }
 
         void Fsw_EventListener(List<LinuxEventDevice.Event> events)

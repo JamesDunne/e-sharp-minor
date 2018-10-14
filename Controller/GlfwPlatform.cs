@@ -145,7 +145,7 @@ namespace EMinor
                     TouchEvent = new TouchEvent
                     {
                         Point = new Point(cursorX, cursorY),
-                        Pressed = cursorPressed
+                        Action = TouchAction.Moved
                     }
                 });
             }
@@ -160,7 +160,7 @@ namespace EMinor
                 TouchEvent = new TouchEvent
                 {
                     Point = new Point(cursorX, cursorY),
-                    Pressed = cursorPressed
+                    Action = cursorPressed ? TouchAction.Pressed : TouchAction.Released
                 }
             });
         }

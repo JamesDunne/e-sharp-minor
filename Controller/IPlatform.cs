@@ -27,10 +27,17 @@ namespace EMinor
         void WaitEvents();
     }
 
+    public enum TouchAction
+    {
+        Released,
+        Pressed,
+        Moved
+    }
+
     public struct TouchEvent
     {
         public Point Point;
-        public bool Pressed;
+        public TouchAction Action;
     }
 
     public enum FootSwitchAction

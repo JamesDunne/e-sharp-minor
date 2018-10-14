@@ -133,7 +133,7 @@ namespace EMinor
         TouchEvent touch = new TouchEvent
         {
             Point = new Point(0, 0),
-            Pressed = false
+            Action = TouchAction.Released
         };
 
         void Platform_InputEvent(InputEvent ev)
@@ -142,13 +142,10 @@ namespace EMinor
             {
                 // Record last touch point:
                 touch = ev.TouchEvent.Value;
-
-                //Console.WriteLine("{0},{1},{2}", touch.X, touch.Y, touch.Pressed);
             }
             else if (ev.FootSwitchEvent.HasValue)
             {
                 FootSwitchEvent fsw = ev.FootSwitchEvent.Value;
-                //Console.WriteLine("{0} {1}", fsw.FootSwitch, fsw.WhatAction);
 
                 if (fsw.Action == FootSwitchAction.Pressed)
                 {
@@ -192,7 +189,7 @@ namespace EMinor
             //}
 
             // Draw touch cursor:
-            if (touch.Pressed)
+            if (touch.Action != TouchAction.Released)
             {
                 vg.Seti(ParamType.VG_MATRIX_MODE, (int)MatrixMode.VG_MATRIX_PATH_USER_TO_SURFACE);
                 vg.PushMatrix();
