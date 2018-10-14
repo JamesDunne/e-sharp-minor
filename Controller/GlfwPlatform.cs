@@ -128,8 +128,8 @@ namespace EMinor
 
         void handleMousePos(Glfw.Window window, double x, double y)
         {
-            float newX = (float)x;
-            float newY = (Height - 1.0f) - (float)y;
+            float newX = ((float)x - 1.0f);
+            float newY = (Height - 1.0f) - ((float)y - 1.0f);
 
             if (newX == cursorX && newY == cursorY) return;
 

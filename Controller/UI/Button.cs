@@ -32,7 +32,7 @@ namespace EMinor.UI
         {
             float effLineWidth = (StrokeLineWidth ?? 1.0f) - 1.0f;
             this.disposalContainer.Add(
-                this.rect = new RoundRect(vg, this.Bounds - new Bounds(effLineWidth * 0.5f, effLineWidth * 0.5f), arcWidth, arcHeight)
+                this.rect = new RoundRect(vg, this.Bounds - new Bounds(effLineWidth, effLineWidth), arcWidth, arcHeight)
                 {
                     StrokeLineWidth = StrokeLineWidth
                 }
