@@ -540,6 +540,7 @@ public static class Glfw
     public static void SetErrorCallback(ErrorFunc callback)
     {
         glfwSetErrorCallback(Marshal.GetFunctionPointerForDelegate(callback));
+        GC.KeepAlive(callback);
     }
 
     [DllImport(dll, CallingConvention = CallingConvention.Cdecl)]
@@ -593,6 +594,7 @@ public static class Glfw
     public static void SetMonitorCallback(MonitorFunc callback)
     {
         glfwSetMonitorCallback(Marshal.GetFunctionPointerForDelegate(callback));
+        GC.KeepAlive(callback);
     }
 
     [DllImport(dll, CallingConvention = CallingConvention.Cdecl)]
@@ -841,6 +843,7 @@ public static class Glfw
     {
         var ptr = Marshal.GetFunctionPointerForDelegate(callback);
         glfwSetWindowPosCallback(window.Ptr, ptr);
+        GC.KeepAlive(callback);
     }
 
     [DllImport(dll, CallingConvention = CallingConvention.Cdecl)]
@@ -849,6 +852,7 @@ public static class Glfw
     {
         var ptr = Marshal.GetFunctionPointerForDelegate(callback);
         glfwSetWindowSizeCallback(window.Ptr, ptr);
+        GC.KeepAlive(callback);
     }
 
     [DllImport(dll, CallingConvention = CallingConvention.Cdecl)]
@@ -857,6 +861,7 @@ public static class Glfw
     {
         var ptr = Marshal.GetFunctionPointerForDelegate(callback);
         glfwSetWindowCloseCallback(window.Ptr, ptr);
+        GC.KeepAlive(callback);
     }
 
     [DllImport(dll, CallingConvention = CallingConvention.Cdecl)]
@@ -865,6 +870,7 @@ public static class Glfw
     {
         var ptr = Marshal.GetFunctionPointerForDelegate(callback);
         glfwSetWindowRefreshCallback(window.Ptr, ptr);
+        GC.KeepAlive(callback);
     }
 
     [DllImport(dll, CallingConvention = CallingConvention.Cdecl)]
@@ -873,6 +879,7 @@ public static class Glfw
     {
         var ptr = Marshal.GetFunctionPointerForDelegate(callback);
         glfwSetWindowFocusCallback(window.Ptr, ptr);
+        GC.KeepAlive(callback);
     }
 
     [DllImport(dll, CallingConvention = CallingConvention.Cdecl)]
@@ -881,6 +888,7 @@ public static class Glfw
     {
         var ptr = Marshal.GetFunctionPointerForDelegate(callback);
         glfwSetWindowIconifyCallback(window.Ptr, ptr);
+        GC.KeepAlive(callback);
     }
 
     [DllImport(dll, CallingConvention = CallingConvention.Cdecl)]
@@ -889,6 +897,7 @@ public static class Glfw
     {
         var ptr = Marshal.GetFunctionPointerForDelegate(callback);
         glfwSetFramebufferSizeCallback(window.Ptr, ptr);
+        GC.KeepAlive(callback);
     }
 
     [DllImport(dll, CallingConvention = CallingConvention.Cdecl, EntryPoint = "glfwPollEvents")]
@@ -999,6 +1008,7 @@ public static class Glfw
     {
         var ptr = Marshal.GetFunctionPointerForDelegate(callback);
         glfwSetKeyCallback(window.Ptr, ptr);
+        GC.KeepAlive(callback);
     }
 
     [DllImport(dll, CallingConvention = CallingConvention.Cdecl)]
@@ -1007,6 +1017,7 @@ public static class Glfw
     {
         var ptr = Marshal.GetFunctionPointerForDelegate(callback);
         glfwSetCharCallback(window.Ptr, ptr);
+        GC.KeepAlive(callback);
     }
 
     [DllImport(dll, CallingConvention = CallingConvention.Cdecl)]
@@ -1015,6 +1026,7 @@ public static class Glfw
     {
         var ptr = Marshal.GetFunctionPointerForDelegate(callback);
         glfwSetCharModsCallback(window.Ptr, ptr);
+        GC.KeepAlive(callback);
     }
 
     [DllImport(dll, CallingConvention = CallingConvention.Cdecl)]
@@ -1023,6 +1035,7 @@ public static class Glfw
     {
         var ptr = Marshal.GetFunctionPointerForDelegate(callback);
         glfwSetMouseButtonCallback(window.Ptr, ptr);
+        GC.KeepAlive(callback);
     }
 
     [DllImport(dll, CallingConvention = CallingConvention.Cdecl)]
@@ -1031,6 +1044,7 @@ public static class Glfw
     {
         var ptr = Marshal.GetFunctionPointerForDelegate(callback);
         glfwSetCursorPosCallback(window.Ptr, ptr);
+        GC.KeepAlive(callback);
     }
 
     [DllImport(dll, CallingConvention = CallingConvention.Cdecl)]
@@ -1039,6 +1053,7 @@ public static class Glfw
     {
         var ptr = Marshal.GetFunctionPointerForDelegate(callback);
         glfwSetCursorEnterCallback(window.Ptr, ptr);
+        GC.KeepAlive(callback);
     }
 
     [DllImport(dll, CallingConvention = CallingConvention.Cdecl)]
@@ -1047,6 +1062,7 @@ public static class Glfw
     {
         var ptr = Marshal.GetFunctionPointerForDelegate(callback);
         glfwSetScrollCallback(window.Ptr, ptr);
+        GC.KeepAlive(callback);
     }
 
     [DllImport(dll, CallingConvention = CallingConvention.Cdecl)]
@@ -1066,6 +1082,7 @@ public static class Glfw
           });
         var callPtr = Marshal.GetFunctionPointerForDelegate(call);
         glfwSetDropCallback(window.Ptr, callPtr);
+        GC.KeepAlive(callback);
     }
 
     [DllImport(dll, CallingConvention = CallingConvention.Cdecl, EntryPoint = "glfwJoystickPresent")]
