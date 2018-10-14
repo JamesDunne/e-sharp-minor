@@ -54,7 +54,7 @@ namespace EMinor
 
         public int LastSongIndex => Songs.Count - 1;
 
-        public string CurrentSceneDisplay => String.Format("{0}/{1}", CurrentScene + 1, LastScene + 1);
+        public string CurrentSceneDisplay => String.Format("{0,2}/{1,2}", CurrentScene + 1, LastScene + 1);
 
         public void ActivateSetlist(Setlist setlist)
         {

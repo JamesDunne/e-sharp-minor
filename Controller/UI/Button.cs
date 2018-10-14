@@ -22,9 +22,14 @@ namespace EMinor.UI
             this.arcHeight = arcHeight;
         }
 
+        public float? StrokeLineWidth { get; set; }
+
         protected override void CreateShape()
         {
-            this.rect = new RoundRect(vg, this.Bounds, arcWidth, arcHeight);
+            this.rect = new RoundRect(vg, this.Bounds, arcWidth, arcHeight)
+            {
+                StrokeLineWidth = StrokeLineWidth
+            };
         }
 
         protected override void CalculateChildrenLayout(Point point, Bounds bounds, List<Component> fillChildren)

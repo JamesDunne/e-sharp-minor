@@ -38,7 +38,7 @@ namespace Shapes
 
         protected virtual void setRenderState()
         {
-            setContextParam(StrokeLineWidth, ParamType.VG_STROKE_LINE_WIDTH);
+            setContextParam(StrokeLineWidth ?? 1.0f, ParamType.VG_STROKE_LINE_WIDTH);
         }
 
         public void Render(PaintMode? paintModes)

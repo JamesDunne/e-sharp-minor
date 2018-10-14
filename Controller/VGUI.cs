@@ -92,6 +92,7 @@ namespace EMinor
                                 Dock = Dock.Top,
                                 Height = 32,
                                 Children = {
+                                    // RESET button:
                                     new Button(platform) {
                                         Dock = Dock.Left,
                                         Width = 80,
@@ -107,9 +108,11 @@ namespace EMinor
                                             }
                                         }
                                     },
+                                    // Song display:
                                     new Button(platform) {
                                         Stroke = strokePaint,
                                         Fill = fillPaint,
+                                        StrokeLineWidth = 5.0f,
                                         OnPress = (cmp, p) => {
                                             var btn = (Button)cmp;
 
@@ -126,15 +129,17 @@ namespace EMinor
                                             {
                                                 TextFont = vera,
                                                 TextColor = white,
-                                                Text = () => controller.CurrentSongName
+                                                Text = () => $"SONG: {controller.CurrentSongName}"
                                             }
                                         }
                                     },
+                                    // Scene display:
                                     (selectedComponent = new Button(platform) {
                                         Dock = Dock.Right,
-                                        Width = 80,
+                                        Width = 138,
                                         Stroke = selectedPaint,
                                         Fill = fillPaint,
+                                        StrokeLineWidth = 5.0f,
                                         OnPress = (cmp, p) => {
                                             var btn = (Button)cmp;
 
@@ -151,7 +156,7 @@ namespace EMinor
                                             {
                                                 TextFont = vera,
                                                 TextColor = white,
-                                                Text = () => controller.CurrentSceneDisplay
+                                                Text = () => $"SCENE:  {controller.CurrentSceneDisplay}"
                                             }
                                         }
                                     })
@@ -159,7 +164,7 @@ namespace EMinor
                             },
                             new Button(platform) {
                                 Fill = fillPaint,
-                                Stroke = strokePaint
+                                Stroke = strokePaint,
                             }
                         }
                     }
