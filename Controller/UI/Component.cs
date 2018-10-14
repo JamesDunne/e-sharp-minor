@@ -148,13 +148,18 @@ namespace EMinor.UI
 
         public bool IsPointInside(Point p) => p.X >= Point.X && p.Y >= Point.Y && p.X < Point.X + Bounds.W && p.Y < Point.Y + Bounds.H;
 
-        public bool HandlePress(TouchEvent touch)
+        public bool HandlePress(Point point)
         {
-            if (!IsPointInside(touch.Point)) return false;
+            if (!IsPointInside(point))
+            {
+                //Console.WriteLine($"{point} NOT in ({Point} .. {Point + Bounds})");
+                return false;
+            }
 
+            Point relPoint = point - Point;
             foreach (var child in Children)
             {
-                if (child.HandlePress(touch)) return true;
+                if (child.HandlePress(relPoint)) return true;
             }
 
             if (OnPress == null) return false;

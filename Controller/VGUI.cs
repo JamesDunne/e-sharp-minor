@@ -74,6 +74,7 @@ namespace EMinor
                                         Fill = fillPaint,
                                         OnPress = () => {
                                             // Reset button:
+                                            Console.WriteLine("RESET PRESSED");
                                             controller.ActivateSong(controller.CurrentSong, controller.CurrentScene);
                                         },
                                         Children = {
@@ -146,9 +147,11 @@ namespace EMinor
                 // Record last touch point:
                 touch = ev.TouchEvent.Value;
 
+                //Console.WriteLine($"{touch.Point.X}, {touch.Point.Y}, {touch.Action}");
+
                 if (touch.Action == TouchAction.Pressed)
                 {
-                    this.root.HandlePress(touch);
+                    this.root.HandlePress(touch.Point);
                 }
             }
             else if (ev.FootSwitchEvent.HasValue)
