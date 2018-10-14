@@ -22,10 +22,13 @@ namespace EMinor.UI
             this.arcHeight = arcHeight;
         }
 
-        protected override void CalculateChildrenLayout(Point point, Bounds bounds, List<Component> fillChildren)
+        protected override void CreateShape()
         {
             this.rect = new RoundRect(vg, this.Bounds, arcWidth, arcHeight);
+        }
 
+        protected override void CalculateChildrenLayout(Point point, Bounds bounds, List<Component> fillChildren)
+        {
             foreach (var child in fillChildren)
             {
                 child.ComputedPoint = new Point(arcWidth * 0.5f, arcHeight * 0.5f);
@@ -36,8 +39,14 @@ namespace EMinor.UI
 
         protected override void RenderSelf()
         {
-            vg.StrokePaint = Stroke;
-            vg.FillPaint = Fill;
+            if (Stroke != null)
+            {
+                vg.StrokePaint = Stroke;
+            }
+            if (Fill != null)
+            {
+                vg.FillPaint = Fill;
+            }
             rect.Render(PaintMode.VG_STROKE_PATH | PaintMode.VG_FILL_PATH);
         }
     }

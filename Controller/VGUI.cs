@@ -13,18 +13,13 @@ namespace EMinor
         private readonly IPlatform platform;
         private readonly IOpenVG vg;
         private readonly DisposalContainer disposalContainer;
-        private List<Component> components;
         private readonly PaintColor strokePaint;
         private readonly PaintColor fillPaint;
-        private readonly Button btnSong;
-        private readonly Component root;
         private readonly PaintColor white;
         private readonly PaintColor pointColor;
         private readonly Ellipse point;
         private readonly FontHandle vera;
-        private readonly Button btnScene;
-        private Button btnReset;
-        private Button btnMode;
+        private readonly Component root;
 
         public VGUI(IPlatform platform, Controller controller)
         {
@@ -62,7 +57,7 @@ namespace EMinor
                 fillPaint = new PaintColor(vg, new float[] { 0.3f, 0.3f, 0.3f, 1.0f })
             );
 
-            // Root panel bounds:
+            // Root of component tree:
             this.root = new Panel(platform)
             {
                 Children = {
@@ -118,7 +113,10 @@ namespace EMinor
                                     }
                                 }
                             },
-                            new Panel(platform)
+                            new Button(platform) {
+                                Fill = fillPaint,
+                                Stroke = strokePaint
+                            }
                         }
                     }
                 }

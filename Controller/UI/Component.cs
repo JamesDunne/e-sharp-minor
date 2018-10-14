@@ -68,8 +68,15 @@ namespace EMinor.UI
             }
         }
 
+        protected virtual void CreateShape()
+        {
+            // Override me to create OpenVG paths for the component.
+        }
+
         public void CalculateLayout()
         {
+            CreateShape();
+
             Point point = Point.Zero;
             Bounds bounds = Bounds;
             var fillChildren = new List<Component>(Children.Count);
