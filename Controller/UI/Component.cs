@@ -144,7 +144,7 @@ namespace EMinor.UI
 
         protected abstract void RenderSelf();
 
-        public Action OnPress { get; set; }
+        public Action<Component, Point> OnPress { get; set; }
 
         public bool IsPointInside(Point p) => p.X >= Point.X && p.Y >= Point.Y && p.X < Point.X + Bounds.W && p.Y < Point.Y + Bounds.H;
 
@@ -164,7 +164,7 @@ namespace EMinor.UI
 
             if (OnPress == null) return false;
 
-            OnPress();
+            OnPress(this, point);
             return true;
         }
     }

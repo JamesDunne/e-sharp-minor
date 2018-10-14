@@ -66,6 +66,14 @@ namespace EMinor
             }
         }
 
+        public void MidiReset()
+        {
+            midi.Reset();
+            midi.StartBatch();
+            ActivateSong(CurrentSong, CurrentScene);
+            midi.EndBatch();
+        }
+
         public void NextScene()
         {
             if (CurrentScene < LastScene)
@@ -104,14 +112,6 @@ namespace EMinor
             }
 
             ActivateSong(nextSong, 0);
-        }
-
-        public void MidiReset()
-        {
-            midi.Reset();
-            midi.StartBatch();
-            ActivateSong(CurrentSong, CurrentScene);
-            midi.EndBatch();
         }
 
         public void PreviousScene()
@@ -153,6 +153,72 @@ namespace EMinor
             // Select last scene in previous song:
             int nextScene = nextSong.SceneDescriptors.Count - 1;
             ActivateSong(nextSong, nextScene);
+        }
+
+        public void NextSong()
+        {
+            var nextSong = (Song)null;
+
+            if (CurrentSetlist != null)
+            {
+                // setlist mode:
+                currentSetlistIdx++;
+                if (currentSetlistIdx > LastSetlistIndex)
+                {
+                    // Don't wrap; end of setlist:
+                    currentSetlistIdx = LastSetlistIndex;
+                    return;
+                }
+
+                nextSong = CurrentSetlist.Songs[currentSetlistIdx];
+            }
+            else
+            {
+                // song mode:
+                currentSongIdx++;
+                if (currentSongIdx > LastSongIndex)
+                {
+                    // Wrap around to first song:
+                    currentSongIdx = 0;
+                }
+
+                nextSong = Songs[currentSongIdx];
+            }
+
+            ActivateSong(nextSong, 0);
+        }
+
+        public void PreviousSong()
+        {
+            var nextSong = (Song)null;
+
+            if (CurrentSetlist != null)
+            {
+                // setlist mode:
+                currentSetlistIdx--;
+                if (currentSetlistIdx < 0)
+                {
+                    currentSetlistIdx = 0;
+                    return;
+                }
+
+                nextSong = CurrentSetlist.Songs[currentSetlistIdx];
+            }
+            else
+            {
+                // song mode:
+                currentSongIdx--;
+                if (currentSongIdx < 0)
+                {
+                    // wrap around to last song:
+                    currentSongIdx = LastSongIndex;
+                }
+
+                nextSong = Songs[currentSongIdx];
+            }
+
+            // Select first scene in previous song:
+            ActivateSong(nextSong, 0);
         }
 
         public void StartMidiBatch()

@@ -15,17 +15,41 @@ namespace EMinor
         private readonly DisposalContainer disposalContainer;
         private readonly PaintColor strokePaint;
         private readonly PaintColor fillPaint;
+        private readonly PaintColor selectedPaint;
         private readonly PaintColor white;
         private readonly PaintColor pointColor;
         private readonly Ellipse point;
         private readonly FontHandle vera;
         private readonly Component root;
 
+        private Component selectedComponent;
+
+        public struct FootSwitchMapping
+        {
+            public Action Left;
+            public Action Right;
+        }
+
+        private static readonly Func<Controller, FootSwitchMapping> FootSwitchScene = (controller) => new FootSwitchMapping
+        {
+            Left = controller.PreviousScene,
+            Right = controller.NextScene
+        };
+
+        private static readonly Func<Controller, FootSwitchMapping> FootSwitchSong = (controller) => new FootSwitchMapping
+        {
+            Left = controller.PreviousSong,
+            Right = controller.NextSong
+        };
+        private FootSwitchMapping footswitchMapping;
+
         public VGUI(IPlatform platform, Controller controller)
         {
             this.controller = controller;
             this.platform = platform;
             vg = platform.VG;
+            footswitchMapping = FootSwitchScene(controller);
+            selectedComponent = null;
 
             vg.ClearColor = new float[] { 0.0f, 0.0f, 0.2f, 1.0f };
 
@@ -54,7 +78,8 @@ namespace EMinor
                 pointColor = new PaintColor(vg, new float[] { 0.0f, 1.0f, 0.0f, 0.5f }),
                 point = new Ellipse(vg, 24, 24),
                 strokePaint = new PaintColor(vg, new float[] { 1.0f, 1.0f, 1.0f, 1.0f }),
-                fillPaint = new PaintColor(vg, new float[] { 0.3f, 0.3f, 0.3f, 1.0f })
+                fillPaint = new PaintColor(vg, new float[] { 0.3f, 0.3f, 0.3f, 1.0f }),
+                selectedPaint = new PaintColor(vg, new float[] { 1.0f, 1.0f, 0.0f, 1.0f })
             );
 
             // Root of component tree:
@@ -72,11 +97,7 @@ namespace EMinor
                                         Width = 80,
                                         Stroke = strokePaint,
                                         Fill = fillPaint,
-                                        OnPress = () => {
-                                            // Reset button:
-                                            Console.WriteLine("RESET PRESSED");
-                                            controller.MidiReset();
-                                        },
+                                        OnPress = (cmp, p) => controller.MidiReset(),
                                         Children = {
                                             new Label(platform)
                                             {
@@ -89,8 +110,16 @@ namespace EMinor
                                     new Button(platform) {
                                         Stroke = strokePaint,
                                         Fill = fillPaint,
-                                        OnPress = () => {
-                                            // todo
+                                        OnPress = (cmp, p) => {
+                                            var btn = (Button)cmp;
+
+                                            // Footswitch controls song prev/next.
+                                            footswitchMapping = FootSwitchSong(controller);
+                                            if (selectedComponent is Button selectedBtn) {
+                                                selectedBtn.Stroke = strokePaint;
+                                            }
+                                            btn.Stroke = selectedPaint;
+                                            selectedComponent = cmp;
                                         },
                                         Children = {
                                             new Label(platform)
@@ -101,11 +130,22 @@ namespace EMinor
                                             }
                                         }
                                     },
-                                    new Button(platform) {
+                                    (selectedComponent = new Button(platform) {
                                         Dock = Dock.Right,
                                         Width = 80,
-                                        Stroke = strokePaint,
+                                        Stroke = selectedPaint,
                                         Fill = fillPaint,
+                                        OnPress = (cmp, p) => {
+                                            var btn = (Button)cmp;
+
+                                            // Footswitch controls scene prev/next.
+                                            footswitchMapping = FootSwitchScene(controller);
+                                            if (selectedComponent is Button selectedBtn) {
+                                                selectedBtn.Stroke = strokePaint;
+                                            }
+                                            btn.Stroke = selectedPaint;
+                                            selectedComponent = cmp;
+                                        },
                                         Children = {
                                             new Label(platform)
                                             {
@@ -114,7 +154,7 @@ namespace EMinor
                                                 Text = () => controller.CurrentSceneDisplay
                                             }
                                         }
-                                    }
+                                    })
                                 }
                             },
                             new Button(platform) {
@@ -168,11 +208,11 @@ namespace EMinor
                 {
                     if (fsw.FootSwitch == FootSwitch.Left)
                     {
-                        controller.PreviousScene();
+                        footswitchMapping.Left?.Invoke();
                     }
                     else if (fsw.FootSwitch == FootSwitch.Right)
                     {
-                        controller.NextScene();
+                        footswitchMapping.Right?.Invoke();
                     }
                 }
 
