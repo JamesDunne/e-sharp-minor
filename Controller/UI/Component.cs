@@ -105,16 +105,16 @@ namespace EMinor.UI
                 else if (child.Dock == Dock.Bottom)
                 {
                     bounds.H -= child.Height.Value;
-                    point += new Point(0, child.Height.Value - 1.0f);
                     child.ComputedPoint = point;
                     child.ComputedBounds = new Bounds(bounds.W, child.Height.Value);
+                    point += new Point(0, child.Height.Value - 1.0f);
                 }
                 else if (child.Dock == Dock.Left)
                 {
                     bounds.W -= child.Width.Value;
-                    point += new Point(child.Width.Value, 0);
                     child.ComputedPoint = point;
                     child.ComputedBounds = new Bounds(child.Width.Value, bounds.H);
+                    point += new Point(child.Width.Value, 0);
                 }
 
                 child.CalculateLayout();
@@ -148,6 +148,20 @@ namespace EMinor.UI
 
         public bool IsPointInside(Point p) => p.X >= Point.X && p.Y >= Point.Y && p.X < Point.X + Bounds.W && p.Y < Point.Y + Bounds.H;
 
+        public bool HandlePress(TouchEvent touch)
+        {
+            if (!IsPointInside(touch.Point)) return false;
+
+            foreach (var child in Children)
+            {
+                if (child.HandlePress(touch)) return true;
+            }
+
+            if (OnPress == null) return false;
+
+            OnPress();
+            return true;
+        }
     }
 
     public enum Dock

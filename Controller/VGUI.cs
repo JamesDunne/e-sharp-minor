@@ -68,11 +68,13 @@ namespace EMinor
                                 Height = 32,
                                 Children = {
                                     new Button(platform) {
-                                        //ExplicitBounds = new Bounds(80, 32),
+                                        Dock = Dock.Left,
+                                        Width = 80,
                                         Stroke = strokePaint,
                                         Fill = fillPaint,
                                         OnPress = () => {
-                                            // todo
+                                            // Reset button:
+                                            controller.ActivateSong(controller.CurrentSong, controller.CurrentScene);
                                         },
                                         Children = {
                                             new Label(platform)
@@ -84,7 +86,6 @@ namespace EMinor
                                         }
                                     },
                                     new Button(platform) {
-                                        //Dock = Dock.Fill,
                                         Stroke = strokePaint,
                                         Fill = fillPaint,
                                         OnPress = () => {
@@ -100,6 +101,8 @@ namespace EMinor
                                         }
                                     },
                                     new Button(platform) {
+                                        Dock = Dock.Right,
+                                        Width = 80,
                                         Stroke = strokePaint,
                                         Fill = fillPaint,
                                         Children = {
@@ -142,6 +145,11 @@ namespace EMinor
             {
                 // Record last touch point:
                 touch = ev.TouchEvent.Value;
+
+                if (touch.Action == TouchAction.Pressed)
+                {
+                    this.root.HandlePress(touch);
+                }
             }
             else if (ev.FootSwitchEvent.HasValue)
             {
