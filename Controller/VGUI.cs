@@ -173,14 +173,14 @@ namespace EMinor
                                             }
                                         }
                                     })
-                                }
-                            },
+                                } // Children
+                            }, // HorizontalStack
                             new Panel(platform) {
                                 //Fill = clrBtnBg,
                                 //Stroke = clrBtnOutline,
                             }
-                        }
-                    }
+                        } // Children
+                    }  // VerticalStack
                 }
             };
 
