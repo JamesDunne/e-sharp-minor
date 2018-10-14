@@ -75,7 +75,7 @@ namespace EMinor
                                         OnPress = () => {
                                             // Reset button:
                                             Console.WriteLine("RESET PRESSED");
-                                            controller.ActivateSong(controller.CurrentSong, controller.CurrentScene);
+                                            controller.MidiReset();
                                         },
                                         Children = {
                                             new Label(platform)

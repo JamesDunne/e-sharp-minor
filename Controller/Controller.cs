@@ -106,6 +106,14 @@ namespace EMinor
             ActivateSong(nextSong, 0);
         }
 
+        public void MidiReset()
+        {
+            midi.Reset();
+            midi.StartBatch();
+            ActivateSong(CurrentSong, CurrentScene);
+            midi.EndBatch();
+        }
+
         public void PreviousScene()
         {
             if (CurrentScene > 0)
