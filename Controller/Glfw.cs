@@ -535,10 +535,13 @@ public static class Glfw
         return Marshal.PtrToStringAnsi(version);
     }
 
+    private static ErrorFunc errorFunc = null;
+
     [DllImport(dll, CallingConvention = CallingConvention.Cdecl)]
     static extern IntPtr glfwSetErrorCallback(IntPtr callback);
     public static void SetErrorCallback(ErrorFunc callback)
     {
+        errorFunc = callback;
         glfwSetErrorCallback(Marshal.GetFunctionPointerForDelegate(callback));
         GC.KeepAlive(callback);
     }
@@ -1002,10 +1005,13 @@ public static class Glfw
     [DllImport(dll, CallingConvention = CallingConvention.Cdecl, EntryPoint = "glfwSetCursor")]
     public static extern void SetCursor([MarshalAs(UnmanagedType.Struct)] Window window, [MarshalAs(UnmanagedType.Struct)] Cursor cursor);
 
+    private static KeyFunc keyFunc = null;
+
     [DllImport(dll, CallingConvention = CallingConvention.Cdecl)]
     static extern IntPtr glfwSetKeyCallback(IntPtr window, IntPtr callback);
     public static void SetKeyCallback(Window window, KeyFunc callback)
     {
+        keyFunc = callback;
         var ptr = Marshal.GetFunctionPointerForDelegate(callback);
         glfwSetKeyCallback(window.Ptr, ptr);
         GC.KeepAlive(callback);
@@ -1029,19 +1035,25 @@ public static class Glfw
         GC.KeepAlive(callback);
     }
 
+    private static MouseButtonFunc mouseButtonFunc = null;
+
     [DllImport(dll, CallingConvention = CallingConvention.Cdecl)]
     static extern IntPtr glfwSetMouseButtonCallback(IntPtr window, IntPtr callback);
     public static void SetMouseButtonCallback(Window window, MouseButtonFunc callback)
     {
+        mouseButtonFunc = callback;
         var ptr = Marshal.GetFunctionPointerForDelegate(callback);
         glfwSetMouseButtonCallback(window.Ptr, ptr);
         GC.KeepAlive(callback);
     }
 
+    private static CursorPosFunc cursorPosFunc = null;
+
     [DllImport(dll, CallingConvention = CallingConvention.Cdecl)]
     static extern IntPtr glfwSetCursorPosCallback(IntPtr window, IntPtr callback);
     public static void SetCursorPosCallback(Window window, CursorPosFunc callback)
     {
+        cursorPosFunc = callback;
         var ptr = Marshal.GetFunctionPointerForDelegate(callback);
         glfwSetCursorPosCallback(window.Ptr, ptr);
         GC.KeepAlive(callback);
