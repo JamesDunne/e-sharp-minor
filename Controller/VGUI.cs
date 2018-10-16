@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using EMinor.UI;
+using EMinor.V6;
 using OpenVG;
 using Shapes;
 
@@ -14,13 +16,15 @@ namespace EMinor
         private readonly IOpenVG vg;
         private readonly DisposalContainer disposalContainer;
         private readonly PaintColor clrBtnOutline;
-        private readonly PaintColor clrBtnBg;
         private readonly PaintColor clrBtnOutlineSelected;
+        private readonly PaintColor clrBtnBg;
+        private readonly PaintColor clrBtnBgSelected;
         private readonly PaintColor white;
         private readonly PaintColor pointColor;
         private readonly Ellipse point;
         private readonly FontHandle vera;
         private readonly Component root;
+        private readonly VerticalStack ampStack;
 
         private Component selectedComponent;
 
@@ -41,7 +45,6 @@ namespace EMinor
             Left = controller.PreviousSong,
             Right = controller.NextSong
         };
-        private readonly PaintColor clrBtnBgSelected;
         private FootSwitchMapping footswitchMapping;
 
         public VGUI(IPlatform platform, Controller controller)
@@ -172,24 +175,46 @@ namespace EMinor
                                                 Text = () => $"SCENE:  {controller.CurrentSceneDisplay}"
                                             }
                                         }
+                                        // TODO: add +/- buttons for scene
                                     })
                                 } // Children
                             }, // HorizontalStack
-                            new Panel(platform) {
-                                //Fill = clrBtnBg,
-                                //Stroke = clrBtnOutline,
-                            }
+                            (ampStack = new VerticalStack(platform) {
+                                Children = controller.LiveAmps.Select(amp => createAmpComponents(platform, amp)).ToList()
+                            })
                         } // Children
                     }  // VerticalStack
                 }
             };
 
-            // TODO: add RESET button
-            // TODO: add +/- buttons for scene
-            // TODO: select scene button to have footswitches control prev/next scene
-            // TODO: select amp control to have footswitches control +/- value of control
-
             this.root.CalculateLayout();
+        }
+
+        private Component createAmpComponents(IPlatform platform, LiveAmp amp)
+        {
+            return new VerticalStack(platform)
+            {
+                Children = {
+                    new HorizontalStack(platform) {
+                        Dock = Dock.Top,
+                        Height = 32,
+                        Children = {
+                            new Label(platform) {
+                                Text = () => amp.AmpDefinition.Name,
+                                TextFont = vera,
+                                TextColor = white
+                            }
+                        }
+                    },
+                    new HorizontalStack(platform) {
+
+                    },
+                    new HorizontalStack(platform) {
+                        Dock = Dock.Bottom,
+                        Height = 32,
+                    }
+                }
+            };
         }
 
         TouchEvent touch = new TouchEvent

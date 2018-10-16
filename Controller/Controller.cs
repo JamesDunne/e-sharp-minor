@@ -57,6 +57,8 @@ namespace EMinor
 
         public string CurrentSceneDisplay => String.Format("{0,2}/{1,2}", CurrentScene + 1, LastScene + 1);
 
+        public List<LiveAmp> LiveAmps { get { return liveAmps; } }
+
         public void ActivateSetlist(Setlist setlist)
         {
             currentSetlist = setlist;
