@@ -449,21 +449,20 @@ namespace EMinor
                     // Follow inheritance chain to determine enabled and X/Y switch values:
                     var sceneBlockOverride = sceneTone.Blocks?.GetValueOrDefault(blockName);
 
-                    var enabled = sceneBlockOverride?.On ?? songBlockOverride?.On ?? blockDefault?.On;
-                    var xy = sceneBlockOverride?.XY ?? songBlockOverride?.XY ?? blockDefault?.XY;
-
+                    bool? enabled = sceneBlockOverride?.On ?? songBlockOverride?.On ?? blockDefault?.On;
                     if (enabled.HasValue)
                     {
                         Debug.WriteLine($"Amp[{i + 1}]: {blockName}   1/0 (CC {enabledCC:X2}h) to {(enabled.Value ? "on" : "off")}");
                         midi.SetController(channel, enabledCC, enabled.Value ? 0x7F : 0x00);
                     }
+
+                    XYSwitch? xy = sceneBlockOverride?.XY ?? songBlockOverride?.XY ?? blockDefault?.XY;
                     if (xy.HasValue && xySwitchCC.HasValue)
                     {
                         Debug.WriteLine($"Amp[{i + 1}]: {blockName}   X/Y (CC {xySwitchCC.Value:X2}h) to {(enabled.Value ? "X" : "Y")}");
                         midi.SetController(channel, xySwitchCC.Value, xy.Value == XYSwitch.X ? 0x7F : 0x00);
                     }
                 }
-
             }
 
             // TODO: send tempo SysEx message.

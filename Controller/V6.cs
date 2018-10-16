@@ -172,5 +172,32 @@ namespace EMinor
 
             public string Tone { get; set; }
         }
+
+        public class LiveFX
+        {
+            public string BlockName;
+
+            public int EnabledCC;
+            public int? XYSwitchCC;
+
+            public bool? Enabled;
+            public XYSwitch? XY;
+        }
+
+        public class LiveAmp
+        {
+            public AmpDefinition AmpDefinition;
+            public AmpToneDefinition ToneDefinition;
+
+            public SongAmpToneOverride SongTone;
+
+            public SceneDescriptor SceneDescriptor;
+            public SceneAmpToneSelection SceneTone;
+
+            public int Gain;
+            public int VolumeMIDI;
+
+            public List<LiveFX> FX;
+        }
     }
 }
