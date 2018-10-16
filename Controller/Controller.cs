@@ -414,20 +414,20 @@ namespace EMinor
             for (int i = 0; i < currentSong.MidiProgram.Amps.Count; i++)
             {
                 SceneDescriptor sceneDescriptor = currentSong.SceneDescriptors[currentScene];
-                SceneAmpToneSelection toneSelection = sceneDescriptor.Amps[i];
-                AmpToneDefinition toneDefinition = toneSelection.AmpToneDefinition;
+                SceneAmpToneSelection sceneTone = sceneDescriptor.Amps[i];
+                AmpToneDefinition toneDefinition = sceneTone.AmpToneDefinition;
                 AmpDefinition ampDefinition = toneDefinition.AmpDefinition;
 
                 // Figure out the song-specific override of tone:
-                SongAmpToneOverride toneOverride = currentSong.Amps?[i].Tones?.GetValueOrDefault(toneSelection.Tone);
+                SongAmpToneOverride songTone = currentSong.Amps?[i].Tones?.GetValueOrDefault(sceneTone.Tone);
 
                 // Combine tone definition with scene tone override:
                 var blockNames = toneDefinition.Blocks.Keys.ToHashSet();
-                blockNames.UnionWith(toneSelection.Blocks?.Keys ?? Enumerable.Empty<string>());
+                blockNames.UnionWith(sceneTone.Blocks?.Keys ?? Enumerable.Empty<string>());
 
                 // Set the gain and volume:
-                var gain = toneSelection.Gain ?? toneOverride?.Gain ?? toneDefinition.Gain;
-                var volumeMIDI = toneSelection.Volume ?? toneOverride?.Volume ?? toneDefinition.Volume;
+                var gain = sceneTone.Gain ?? songTone?.Gain ?? toneDefinition.Gain;
+                var volumeMIDI = sceneTone.Volume ?? songTone?.Volume ?? toneDefinition.Volume;
 
                 Debug.WriteLine($"Amp[{i + 1}]: gain   val (CC {toneDefinition.AmpDefinition.GainControllerCC:X2}h) to {gain:X2}h");
                 midi.SetController(channel, toneDefinition.AmpDefinition.GainControllerCC, gain);
@@ -444,10 +444,10 @@ namespace EMinor
                     int enabledCC = blockDefinition.EnabledSwitchCC;
                     int? xySwitchCC = blockDefinition.XYSwitchCC;
 
-                    SongFXBlockOverride songBlockOverride = toneOverride?.Blocks?.GetValueOrDefault(blockName);
+                    SongFXBlockOverride songBlockOverride = songTone?.Blocks?.GetValueOrDefault(blockName);
 
                     // Follow inheritance chain to determine enabled and X/Y switch values:
-                    var sceneBlockOverride = toneSelection.Blocks?.GetValueOrDefault(blockName);
+                    var sceneBlockOverride = sceneTone.Blocks?.GetValueOrDefault(blockName);
 
                     var enabled = sceneBlockOverride?.On ?? songBlockOverride?.On ?? blockDefault?.On;
                     var xy = sceneBlockOverride?.XY ?? songBlockOverride?.XY ?? blockDefault?.XY;
