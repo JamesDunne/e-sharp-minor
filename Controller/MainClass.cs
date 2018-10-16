@@ -82,8 +82,12 @@ namespace EMinor
                     using (var ui = new VGUI(platform, controller))
                     {
                         bool quit = false;
+                        var sw = new Stopwatch();
+                        sw.Start();
                         do
                         {
+                            double start = sw.Elapsed.TotalMilliseconds;
+
                             vg.Clear(0, 0, platform.FramebufferWidth, platform.FramebufferHeight);
 
                             // Render UI screen:
@@ -91,6 +95,8 @@ namespace EMinor
 
                             // Swap buffers to display and vsync:
                             platform.SwapBuffers();
+
+                            Console.Out.WriteLineAsync($"{sw.Elapsed.TotalMilliseconds - start:N2} ms");
 
                             // Wait for next event:
                             platform.WaitEvents();
