@@ -57,7 +57,7 @@ namespace EMinor
             {
                 Tone = amp.Channel,
                 Gain = amp.Gain == 0 ? (amp.GainLog == 0 ? (int?)null : logTaper(amp.GainLog)) : amp.Gain,
-                Volume = amp.Level == 0 ? (double?)null : amp.Level,
+                VolumeDB = amp.Level == 0 ? (double?)null : amp.Level,
                 Blocks = amp.FX?.ToDictionary(
                     fx => fx,
                     fx => new V6.SongFXBlockOverride
@@ -102,7 +102,7 @@ namespace EMinor
                                 {
                                     { "clean", new V6.AmpToneDefinition {
                                         Gain = 0x12,
-                                        Volume = 0,
+                                        VolumeDB = 0,
                                         Blocks = new Dictionary<string, V6.FXBlock>
                                         {
                                             { "amp1", new V6.FXBlock { On = true, XY = V6.XYSwitch.Y } },
@@ -113,7 +113,7 @@ namespace EMinor
                                     } },
                                     { "dirty", new V6.AmpToneDefinition {
                                         Gain = 0x40,
-                                        Volume = 0,
+                                        VolumeDB = 0,
                                         Blocks = new Dictionary<string, V6.FXBlock>
                                         {
                                             { "amp1", new V6.FXBlock { On = true, XY = V6.XYSwitch.X } },
@@ -124,7 +124,7 @@ namespace EMinor
                                     } },
                                     { "acoustic", new V6.AmpToneDefinition {
                                         Gain = 0x12,
-                                        Volume = 0,
+                                        VolumeDB = 0,
                                         Blocks = new Dictionary<string, V6.FXBlock>
                                         {
                                             { "amp1", new V6.FXBlock { On = false, XY = V6.XYSwitch.Y } },
@@ -157,7 +157,7 @@ namespace EMinor
                                 {
                                     { "clean", new V6.AmpToneDefinition {
                                         Gain = 0x12,
-                                        Volume = 0,
+                                        VolumeDB = 0,
                                         Blocks = new Dictionary<string, V6.FXBlock>
                                         {
                                             { "amp2", new V6.FXBlock { On = true, XY = V6.XYSwitch.Y } },
@@ -168,7 +168,7 @@ namespace EMinor
                                     } },
                                     { "dirty", new V6.AmpToneDefinition {
                                         Gain = 0x40,
-                                        Volume = 0,
+                                        VolumeDB = 0,
                                         Blocks = new Dictionary<string, V6.FXBlock>
                                         {
                                             { "amp2", new V6.FXBlock { On = true, XY = V6.XYSwitch.X } },
@@ -179,7 +179,7 @@ namespace EMinor
                                     } },
                                     { "acoustic", new V6.AmpToneDefinition {
                                         Gain = 0x12,
-                                        Volume = 0,
+                                        VolumeDB = 0,
                                         Blocks = new Dictionary<string, V6.FXBlock>
                                         {
                                             { "amp2", new V6.FXBlock { On = false, XY = V6.XYSwitch.Y } },

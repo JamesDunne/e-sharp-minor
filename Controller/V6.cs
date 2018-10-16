@@ -126,7 +126,10 @@ namespace EMinor
             public AmpDefinition AmpDefinition { get; set; }
 
             public int Gain { get; set; }
-            public double Volume { get; set; }
+            [YamlMember(Alias = "Volume")]
+            public double VolumeDB { get; set; }
+            [YamlIgnore]
+            public int Volume { get; set; }
 
             public Dictionary<string, FXBlock> Blocks { get; set; }
         }
@@ -144,7 +147,10 @@ namespace EMinor
             public AmpToneDefinition AmpToneDefinition { get; set; }
 
             public int? Gain { get; set; }
-            public double? Volume { get; set; }
+            [YamlMember(Alias = "Volume")]
+            public double? VolumeDB { get; set; }
+            [YamlIgnore]
+            public int? Volume { get; set; }
 
             public Dictionary<string, SongFXBlockOverride> Blocks { get; set; }
         }

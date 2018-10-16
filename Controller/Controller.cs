@@ -266,6 +266,8 @@ namespace EMinor
                     foreach (var tone in ampDefinition.Tones.Values)
                     {
                         tone.AmpDefinition = ampDefinition;
+                        tone.Volume = DBtoMIDI(tone.VolumeDB);
+
                         foreach (var blockName in ampDefinition.Blocks.Keys)
                         {
                             if (!tone.Blocks.ContainsKey(blockName))
@@ -294,15 +296,20 @@ namespace EMinor
 
                         for (int i = 0; i < song.Amps.Count; i++)
                         {
-                            song.Amps[i].AmpNumber = i;
-                            song.Amps[i].AmpDefinition = midiProgram.Amps[i];
+                            SongAmpOverrides amp = song.Amps[i];
+                            amp.AmpNumber = i;
+                            amp.AmpDefinition = midiProgram.Amps[i];
 
-                            foreach (var toneKey in song.Amps[i].Tones.Keys)
+                            foreach (var toneKey in amp.Tones.Keys)
                             {
+                                var tone = amp.Tones[toneKey];
                                 if (!midiProgram.Amps[i].Tones.ContainsKey(toneKey))
                                 {
                                     throw new Exception(String.Format("Song '{0}' amp {1} tone '{2}' must exist in MIDI program amp definition!", song.Name, i + 1, toneKey));
                                 }
+
+                                // Convert dB to MIDI:
+                                tone.Volume = tone.VolumeDB.HasValue ? DBtoMIDI(tone.VolumeDB.Value) : (int?)null;
                             }
                         }
                     }
@@ -316,13 +323,17 @@ namespace EMinor
 
                         for (int i = 0; i < scene.Amps.Count; i++)
                         {
-                            if (!midiProgram.Amps[i].Tones.ContainsKey(scene.Amps[i].Tone))
+                            SceneAmpToneSelection amp = scene.Amps[i];
+                            if (!midiProgram.Amps[i].Tones.ContainsKey(amp.Tone))
                             {
-                                throw new Exception(String.Format("Song '{0}' scene '{1}' amp {2} tone '{3}' must exist in MIDI program amp definition!", song.Name, scene.Name, i + 1, scene.Amps[i].Tone));
+                                throw new Exception(string.Format("Song '{0}' scene '{1}' amp {2} tone '{3}' must exist in MIDI program amp definition!", song.Name, scene.Name, i + 1, amp.Tone));
                             }
 
-                            scene.Amps[i].AmpNumber = i;
-                            scene.Amps[i].AmpToneDefinition = midiProgram.Amps[i].Tones[scene.Amps[i].Tone];
+                            amp.AmpNumber = i;
+                            amp.AmpToneDefinition = midiProgram.Amps[i].Tones[amp.Tone];
+
+                            // Convert dB to MIDI:
+                            amp.Volume = amp.VolumeDB.HasValue ? DBtoMIDI(amp.VolumeDB.Value) : (int?)null;
                         }
                     }
                 }
@@ -363,7 +374,12 @@ namespace EMinor
             }
         }
 
-        int DBtoMIDI(double db)
+        static double MIDItoDB(int volume)
+        {
+            return 0;
+        }
+
+        static int DBtoMIDI(double db)
         {
             db = db - 6.0;
             double p = Pow(10.0, (db / 20.0));
@@ -411,14 +427,11 @@ namespace EMinor
 
                 // Set the gain and volume:
                 var gain = toneSelection.Gain ?? toneOverride?.Gain ?? toneDefinition.Gain;
-                var volume = toneSelection.Volume ?? toneOverride?.Volume ?? toneDefinition.Volume;
-
-                // Convert volume to MIDI value:
-                var volumeMIDI = DBtoMIDI(volume);
+                var volumeMIDI = toneSelection.Volume ?? toneOverride?.Volume ?? toneDefinition.Volume;
 
                 Trace.WriteLine($"Amp[{i + 1}]: gain   val (CC {toneDefinition.AmpDefinition.GainControllerCC:X2}h) to {gain:X2}h");
                 midi.SetController(channel, toneDefinition.AmpDefinition.GainControllerCC, gain);
-                Trace.WriteLine($"Amp[{i + 1}]: volume val (CC {toneDefinition.AmpDefinition.VolumeControllerCC:X2}h) to {volumeMIDI:X2}h ({volume} dB)");
+                Trace.WriteLine($"Amp[{i + 1}]: volume val (CC {toneDefinition.AmpDefinition.VolumeControllerCC:X2}h) to {volumeMIDI:X2}h ({MIDItoDB(volumeMIDI)} dB)");
                 midi.SetController(channel, toneDefinition.AmpDefinition.VolumeControllerCC, volumeMIDI);
 
                 // Set all the controller values for the selected tone:
