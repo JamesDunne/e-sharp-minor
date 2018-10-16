@@ -390,9 +390,9 @@ namespace EMinor
 
         public void ActivateSong(Song newSong, int scene)
         {
-            Trace.WriteLine($"Activate song '{newSong.Name}'");
+            Debug.WriteLine($"Activate song '{newSong.Name}'");
 
-            Trace.WriteLine($"Change MIDI program {newSong.MidiProgram.ProgramNumber}");
+            Debug.WriteLine($"Change MIDI program {newSong.MidiProgram.ProgramNumber}");
             // HACK: add 10 for new scenes
             midi.SetProgram(channel, newSong.MidiProgram.ProgramNumber + 10);
 
@@ -403,7 +403,7 @@ namespace EMinor
         public void ActivateScene(int scene)
         {
             this.currentScene = scene;
-            Trace.WriteLine($"Activate song '{currentSong.Name}' scene {currentScene}");
+            Debug.WriteLine($"Activate song '{currentSong.Name}' scene {currentScene}");
 
             if (currentScene >= currentSong.SceneDescriptors.Count)
             {
@@ -429,9 +429,9 @@ namespace EMinor
                 var gain = toneSelection.Gain ?? toneOverride?.Gain ?? toneDefinition.Gain;
                 var volumeMIDI = toneSelection.Volume ?? toneOverride?.Volume ?? toneDefinition.Volume;
 
-                Trace.WriteLine($"Amp[{i + 1}]: gain   val (CC {toneDefinition.AmpDefinition.GainControllerCC:X2}h) to {gain:X2}h");
+                Debug.WriteLine($"Amp[{i + 1}]: gain   val (CC {toneDefinition.AmpDefinition.GainControllerCC:X2}h) to {gain:X2}h");
                 midi.SetController(channel, toneDefinition.AmpDefinition.GainControllerCC, gain);
-                Trace.WriteLine($"Amp[{i + 1}]: volume val (CC {toneDefinition.AmpDefinition.VolumeControllerCC:X2}h) to {volumeMIDI:X2}h ({MIDItoDB(volumeMIDI)} dB)");
+                Debug.WriteLine($"Amp[{i + 1}]: volume val (CC {toneDefinition.AmpDefinition.VolumeControllerCC:X2}h) to {volumeMIDI:X2}h ({MIDItoDB(volumeMIDI)} dB)");
                 midi.SetController(channel, toneDefinition.AmpDefinition.VolumeControllerCC, volumeMIDI);
 
                 // Set all the controller values for the selected tone:
@@ -454,12 +454,12 @@ namespace EMinor
 
                     if (enabled.HasValue)
                     {
-                        Trace.WriteLine($"Amp[{i + 1}]: {blockName}   1/0 (CC {enabledCC:X2}h) to {(enabled.Value ? "on" : "off")}");
+                        Debug.WriteLine($"Amp[{i + 1}]: {blockName}   1/0 (CC {enabledCC:X2}h) to {(enabled.Value ? "on" : "off")}");
                         midi.SetController(channel, enabledCC, enabled.Value ? 0x7F : 0x00);
                     }
                     if (xy.HasValue && xySwitchCC.HasValue)
                     {
-                        Trace.WriteLine($"Amp[{i + 1}]: {blockName}   X/Y (CC {xySwitchCC.Value:X2}h) to {(enabled.Value ? "X" : "Y")}");
+                        Debug.WriteLine($"Amp[{i + 1}]: {blockName}   X/Y (CC {xySwitchCC.Value:X2}h) to {(enabled.Value ? "X" : "Y")}");
                         midi.SetController(channel, xySwitchCC.Value, xy.Value == XYSwitch.X ? 0x7F : 0x00);
                     }
                 }
