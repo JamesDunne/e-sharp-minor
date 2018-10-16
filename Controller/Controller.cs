@@ -20,6 +20,7 @@ namespace EMinor
         private int currentSongIdx;
         private Setlist currentSetlist;
         private int currentSetlistIdx;
+        private List<LiveAmp> liveAmps;
 
         public Controller(IMIDI midi, int channel)
         {
@@ -410,57 +411,66 @@ namespace EMinor
                 throw new Exception("Invalid scene number!");
             }
 
-            // TODO: move this state to class level so it can be reported to UI.
+            liveAmps = new List<LiveAmp>(currentSong.MidiProgram.Amps.Count);
             for (int i = 0; i < currentSong.MidiProgram.Amps.Count; i++)
             {
-                SceneDescriptor sceneDescriptor = currentSong.SceneDescriptors[currentScene];
-                SceneAmpToneSelection sceneTone = sceneDescriptor.Amps[i];
-                AmpToneDefinition toneDefinition = sceneTone.AmpToneDefinition;
-                AmpDefinition ampDefinition = toneDefinition.AmpDefinition;
+                var liveAmp = new LiveAmp();
+                liveAmps.Add(liveAmp);
+
+                liveAmp.SceneDescriptor = currentSong.SceneDescriptors[currentScene];
+                liveAmp.SceneTone = liveAmp.SceneDescriptor.Amps[i];
+                liveAmp.ToneDefinition = liveAmp.SceneTone.AmpToneDefinition;
+                liveAmp.AmpDefinition = liveAmp.ToneDefinition.AmpDefinition;
 
                 // Figure out the song-specific override of tone:
-                SongAmpToneOverride songTone = currentSong.Amps?[i].Tones?.GetValueOrDefault(sceneTone.Tone);
+                liveAmp.SongTone = currentSong.Amps?[i].Tones?.GetValueOrDefault(liveAmp.SceneTone.Tone);
 
                 // Combine tone definition with scene tone override:
-                var blockNames = toneDefinition.Blocks.Keys.ToHashSet();
-                blockNames.UnionWith(sceneTone.Blocks?.Keys ?? Enumerable.Empty<string>());
+                var blockNames = liveAmp.ToneDefinition.Blocks.Keys.ToHashSet();
+                //blockNames.UnionWith(sceneTone.Blocks?.Keys ?? Enumerable.Empty<string>());
 
                 // Set the gain and volume:
-                var gain = sceneTone.Gain ?? songTone?.Gain ?? toneDefinition.Gain;
-                var volumeMIDI = sceneTone.Volume ?? songTone?.Volume ?? toneDefinition.Volume;
+                var gain = liveAmp.SceneTone.Gain ?? liveAmp.SongTone?.Gain ?? liveAmp.ToneDefinition.Gain;
+                var volumeMIDI = liveAmp.SceneTone.Volume ?? liveAmp.SongTone?.Volume ?? liveAmp.ToneDefinition.Volume;
 
-                Debug.WriteLine($"Amp[{i + 1}]: gain   val (CC {toneDefinition.AmpDefinition.GainControllerCC:X2}h) to {gain:X2}h");
-                midi.SetController(channel, toneDefinition.AmpDefinition.GainControllerCC, gain);
-                Debug.WriteLine($"Amp[{i + 1}]: volume val (CC {toneDefinition.AmpDefinition.VolumeControllerCC:X2}h) to {volumeMIDI:X2}h ({MIDItoDB(volumeMIDI)} dB)");
-                midi.SetController(channel, toneDefinition.AmpDefinition.VolumeControllerCC, volumeMIDI);
+                Debug.WriteLine($"Amp[{i + 1}]: gain   val (CC {liveAmp.AmpDefinition.GainControllerCC:X2}h) to {gain:X2}h");
+                midi.SetController(channel, liveAmp.AmpDefinition.GainControllerCC, gain);
+                Debug.WriteLine($"Amp[{i + 1}]: volume val (CC {liveAmp.AmpDefinition.VolumeControllerCC:X2}h) to {volumeMIDI:X2}h ({MIDItoDB(volumeMIDI)} dB)");
+                midi.SetController(channel, liveAmp.AmpDefinition.VolumeControllerCC, volumeMIDI);
 
                 // Set all the controller values for the selected tone:
+                liveAmp.FX = new List<LiveFX>(blockNames.Count);
                 foreach (string blockName in blockNames)
                 {
-                    FXBlock blockDefault;
-                    toneDefinition.Blocks.TryGetValue(blockName, out blockDefault);
-                    FXBlockDefinition blockDefinition = ampDefinition.Blocks[blockName];
+                    var liveFX = new LiveFX
+                    {
+                        BlockName = blockName
+                    };
+                    liveAmp.FX.Add(liveFX);
 
-                    int enabledCC = blockDefinition.EnabledSwitchCC;
-                    int? xySwitchCC = blockDefinition.XYSwitchCC;
+                    FXBlock blockDefault = liveAmp.ToneDefinition.Blocks[blockName];
+                    FXBlockDefinition blockDefinition = liveAmp.AmpDefinition.Blocks[blockName];
 
-                    SongFXBlockOverride songBlockOverride = songTone?.Blocks?.GetValueOrDefault(blockName);
+                    liveFX.EnabledCC = blockDefinition.EnabledSwitchCC;
+                    liveFX.XYSwitchCC = blockDefinition.XYSwitchCC;
+
+                    SongFXBlockOverride songBlockOverride = liveAmp.SongTone?.Blocks?.GetValueOrDefault(blockName);
 
                     // Follow inheritance chain to determine enabled and X/Y switch values:
-                    var sceneBlockOverride = sceneTone.Blocks?.GetValueOrDefault(blockName);
+                    var sceneBlockOverride = liveAmp.SceneTone.Blocks?.GetValueOrDefault(blockName);
 
-                    bool? enabled = sceneBlockOverride?.On ?? songBlockOverride?.On ?? blockDefault?.On;
-                    if (enabled.HasValue)
+                    liveFX.Enabled = sceneBlockOverride?.On ?? songBlockOverride?.On ?? blockDefault.On;
+                    if (liveFX.Enabled.HasValue)
                     {
-                        Debug.WriteLine($"Amp[{i + 1}]: {blockName}   1/0 (CC {enabledCC:X2}h) to {(enabled.Value ? "on" : "off")}");
-                        midi.SetController(channel, enabledCC, enabled.Value ? 0x7F : 0x00);
+                        Debug.WriteLine($"Amp[{i + 1}]: {blockName}   1/0 (CC {liveFX.EnabledCC:X2}h) to {(liveFX.Enabled.Value ? "on" : "off")}");
+                        midi.SetController(channel, liveFX.EnabledCC, liveFX.Enabled.Value ? 0x7F : 0x00);
                     }
 
-                    XYSwitch? xy = sceneBlockOverride?.XY ?? songBlockOverride?.XY ?? blockDefault?.XY;
-                    if (xy.HasValue && xySwitchCC.HasValue)
+                    liveFX.XY = sceneBlockOverride?.XY ?? songBlockOverride?.XY ?? blockDefault.XY;
+                    if (liveFX.XY.HasValue && liveFX.XYSwitchCC.HasValue)
                     {
-                        Debug.WriteLine($"Amp[{i + 1}]: {blockName}   X/Y (CC {xySwitchCC.Value:X2}h) to {(enabled.Value ? "X" : "Y")}");
-                        midi.SetController(channel, xySwitchCC.Value, xy.Value == XYSwitch.X ? 0x7F : 0x00);
+                        Debug.WriteLine($"Amp[{i + 1}]: {blockName}   X/Y (CC {liveFX.XYSwitchCC.Value:X2}h) to {(liveFX.XY.Value == XYSwitch.X ? "X" : "Y")}");
+                        midi.SetController(channel, liveFX.XYSwitchCC.Value, liveFX.XY.Value == XYSwitch.X ? 0x7F : 0x00);
                     }
                 }
             }
