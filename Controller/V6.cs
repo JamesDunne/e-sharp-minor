@@ -52,7 +52,7 @@ namespace EMinor
 
             public int Tempo { get; set; }
 
-            public List<AmpOverrides> Amps { get; set; }
+            public List<SongAmpOverrides> Amps { get; set; }
 
             [YamlMember(Alias = "scenes", ApplyNamingConventions = false)]
             public List<SceneDescriptor> SceneDescriptors { get; set; }
@@ -73,7 +73,7 @@ namespace EMinor
             public int SceneNumber { get; set; }
 
             public string Name { get; set; }
-            public List<AmpToneSelection> Amps { get; set; }
+            public List<SceneAmpToneSelection> Amps { get; set; }
         }
 
         public class AmpDefinition
@@ -131,14 +131,14 @@ namespace EMinor
             public Dictionary<string, FXBlock> Blocks { get; set; }
         }
 
-        public class FXBlockOverride
+        public class SongFXBlockOverride
         {
             public bool? On { get; set; }
             [YamlMember(Alias = "Xy")]
             public XYSwitch? XY { get; set; }
         }
 
-        public class AmpToneOverride
+        public class SongAmpToneOverride
         {
             [YamlIgnore]
             public AmpToneDefinition AmpToneDefinition { get; set; }
@@ -146,20 +146,20 @@ namespace EMinor
             public int? Gain { get; set; }
             public double? Volume { get; set; }
 
-            public Dictionary<string, FXBlockOverride> Blocks { get; set; }
+            public Dictionary<string, SongFXBlockOverride> Blocks { get; set; }
         }
 
-        public class AmpOverrides
+        public class SongAmpOverrides
         {
             [YamlIgnore]
             public AmpDefinition AmpDefinition { get; set; }
             [YamlIgnore]
             public int AmpNumber { get; set; }
 
-            public Dictionary<string, AmpToneOverride> Tones { get; set; }
+            public Dictionary<string, SongAmpToneOverride> Tones { get; set; }
         }
 
-        public class AmpToneSelection : AmpToneOverride
+        public class SceneAmpToneSelection : SongAmpToneOverride
         {
             [YamlIgnore]
             public int AmpNumber { get; set; }

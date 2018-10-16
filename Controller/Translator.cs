@@ -51,16 +51,16 @@ namespace EMinor
             return (int)(127.0 * Pow(Math.Log((double)(b) + 1.0), 2) / Pow(Log(127.0 + 1.0), 2));
         }
 
-        private V6.AmpToneSelection convertAmp(V5.Amp amp)
+        private V6.SceneAmpToneSelection convertAmp(V5.Amp amp)
         {
-            return new V6.AmpToneSelection
+            return new V6.SceneAmpToneSelection
             {
                 Tone = amp.Channel,
                 Gain = amp.Gain == 0 ? (amp.GainLog == 0 ? (int?)null : logTaper(amp.GainLog)) : amp.Gain,
                 Volume = amp.Level == 0 ? (double?)null : amp.Level,
                 Blocks = amp.FX?.ToDictionary(
                     fx => fx,
-                    fx => new V6.FXBlockOverride
+                    fx => new V6.SongFXBlockOverride
                     {
                         On = true
                     }
@@ -213,7 +213,7 @@ namespace EMinor
                                     select new V6.SceneDescriptor
                                     {
                                         Name = s.Name,
-                                        Amps = new List<V6.AmpToneSelection>
+                                        Amps = new List<V6.SceneAmpToneSelection>
                                         {
                                             convertAmp(s.MG),
                                             convertAmp(s.JD)
@@ -227,34 +227,34 @@ namespace EMinor
             };
         }
 
-        private List<V6.AmpOverrides> defaultAmps(V5.Program p)
+        private List<V6.SongAmpOverrides> defaultAmps(V5.Program p)
         {
             int? g = p.Gain == 0 ? (p.GainLog == 0 ? (int?)null : logTaper(p.GainLog)) : p.Gain;
             if (!g.HasValue) return null;
 
             // These instances must be separate to avoid YAML serializer aliasing:
-            return new List<V6.AmpOverrides>
+            return new List<V6.SongAmpOverrides>
             {
-                new V6.AmpOverrides
+                new V6.SongAmpOverrides
                 {
-                    Tones = new Dictionary<string, V6.AmpToneOverride>
+                    Tones = new Dictionary<string, V6.SongAmpToneOverride>
                     {
                         {
                             "dirty",
-                            new V6.AmpToneOverride
+                            new V6.SongAmpToneOverride
                             {
                                 Gain = g
                             }
                         }
                     }
                 },
-                new V6.AmpOverrides
+                new V6.SongAmpOverrides
                 {
-                    Tones = new Dictionary<string, V6.AmpToneOverride>
+                    Tones = new Dictionary<string, V6.SongAmpToneOverride>
                     {
                         {
                             "dirty",
-                            new V6.AmpToneOverride
+                            new V6.SongAmpToneOverride
                             {
                                 Gain = g
                             }

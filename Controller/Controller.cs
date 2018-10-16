@@ -398,12 +398,12 @@ namespace EMinor
             for (int i = 0; i < currentSong.MidiProgram.Amps.Count; i++)
             {
                 SceneDescriptor sceneDescriptor = currentSong.SceneDescriptors[currentScene];
-                AmpToneSelection toneSelection = sceneDescriptor.Amps[i];
+                SceneAmpToneSelection toneSelection = sceneDescriptor.Amps[i];
                 AmpToneDefinition toneDefinition = toneSelection.AmpToneDefinition;
                 AmpDefinition ampDefinition = toneDefinition.AmpDefinition;
 
                 // Figure out the song-specific override of tone:
-                AmpToneOverride toneOverride = currentSong.Amps?[i].Tones?.GetValueOrDefault(toneSelection.Tone);
+                SongAmpToneOverride toneOverride = currentSong.Amps?[i].Tones?.GetValueOrDefault(toneSelection.Tone);
 
                 // Combine tone definition with scene tone override:
                 var blockNames = toneDefinition.Blocks.Keys.ToHashSet();
@@ -431,7 +431,7 @@ namespace EMinor
                     int enabledCC = blockDefinition.EnabledSwitchCC;
                     int? xySwitchCC = blockDefinition.XYSwitchCC;
 
-                    FXBlockOverride songBlockOverride = toneOverride?.Blocks?.GetValueOrDefault(blockName);
+                    SongFXBlockOverride songBlockOverride = toneOverride?.Blocks?.GetValueOrDefault(blockName);
 
                     // Follow inheritance chain to determine enabled and X/Y switch values:
                     var sceneBlockOverride = toneSelection.Blocks?.GetValueOrDefault(blockName);
