@@ -78,7 +78,7 @@ namespace EMinor.UI
             rect.Render(PaintMode.VG_STROKE_PATH | PaintMode.VG_FILL_PATH);
         }
 
-        protected override void BeforeAction(Point point, TouchAction action)
+        protected override void BeforeAction(in Point point, TouchAction action)
         {
             if (action == TouchAction.Pressed)
             {

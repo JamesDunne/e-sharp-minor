@@ -144,11 +144,11 @@ namespace EMinor.UI
 
         protected abstract void RenderSelf();
 
-        protected virtual void BeforeAction(Point point, TouchAction action)
+        protected virtual void BeforeAction(in Point point, TouchAction action)
         {
         }
 
-        protected virtual void AfterAction(Point point, TouchAction action)
+        protected virtual void AfterAction(in Point point, TouchAction action)
         {
         }
 
@@ -158,9 +158,9 @@ namespace EMinor.UI
         public ActionHandler OnMove { get; set; }
         public ActionHandler OnRelease { get; set; }
 
-        public bool IsPointInside(Point p) => p.X >= Point.X && p.Y >= Point.Y && p.X < Point.X + Bounds.W && p.Y < Point.Y + Bounds.H;
+        public bool IsPointInside(in Point p) => p.X >= Point.X && p.Y >= Point.Y && p.X < Point.X + Bounds.W && p.Y < Point.Y + Bounds.H;
 
-        public bool HandleAction(Point point, TouchAction action)
+        public bool HandleAction(in Point point, TouchAction action)
         {
             if (!IsPointInside(point))
             {

@@ -268,8 +268,8 @@ namespace EMinor
                     }
 
                     // Recreate UI components after scene activation:
-                    ampStack.Children = controller.LiveAmps.Select(amp => createAmpComponents(platform, amp)).ToList();
-                    ampStack.CalculateLayout();
+                    //ampStack.Children = controller.LiveAmps.Select(amp => createAmpComponents(platform, amp)).ToList();
+                    //ampStack.CalculateLayout();
                 }
 
                 if (fsw.Action == FootSwitchAction.Released)

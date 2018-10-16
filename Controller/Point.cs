@@ -15,17 +15,17 @@ namespace EMinor
 
         public static readonly Point Zero = new Point(0, 0);
 
-        public static Point operator +(Point a, Bounds b)
+        public static Point operator +(in Point a, in Bounds b)
         {
             return new Point(a.X + b.W, a.Y + b.H);
         }
 
-        public static Point operator +(Point a, Point b)
+        public static Point operator +(in Point a, in Point b)
         {
             return new Point(a.X + b.X, a.Y + b.Y);
         }
 
-        public static Point operator -(Point a, Point b)
+        public static Point operator -(in Point a, in Point b)
         {
             return new Point(a.X - b.X, a.Y - b.Y);
         }
