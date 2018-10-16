@@ -116,15 +116,15 @@ namespace EMinor
 
             throwIfError();
 
-            int[] attribs = new int[] {
-                (int)EGL_ATTRIBUTES.EGL_RED_SIZE,           8,
-                (int)EGL_ATTRIBUTES.EGL_GREEN_SIZE,         8,
-                (int)EGL_ATTRIBUTES.EGL_BLUE_SIZE,          8,
-                (int)EGL_ATTRIBUTES.EGL_ALPHA_SIZE,         8,
+            int[] attribs = {
+                (int)EGL_ATTRIBUTES.EGL_RED_SIZE,           5,
+                (int)EGL_ATTRIBUTES.EGL_GREEN_SIZE,         6,
+                (int)EGL_ATTRIBUTES.EGL_BLUE_SIZE,          5,
+                (int)EGL_ATTRIBUTES.EGL_ALPHA_SIZE,         0,
                 (int)EGL_ATTRIBUTES.EGL_LUMINANCE_SIZE,     (int)EGL_ATTRIBUTES.EGL_DONT_CARE,
                 (int)EGL_ATTRIBUTES.EGL_SURFACE_TYPE,       (int)EGL_ATTRIBUTES.EGL_WINDOW_BIT,
                 //(int)EGL_ATTRIBUTES.EGL_COLOR_BUFFER_TYPE,  (int)EGL.EGL_RGB_BUFFER,
-                (int)EGL_ATTRIBUTES.EGL_SAMPLES,            1,
+                (int)EGL_ATTRIBUTES.EGL_SAMPLES,            0,
                 (int)EGL_ATTRIBUTES.EGL_NONE
             };
             int numconfigs;
@@ -170,6 +170,14 @@ namespace EMinor
             if (success == 0)
             {
                 throw new Exception("eglMakeCurrent returned FALSE");
+            }
+            throwIfError();
+
+            Debug.WriteLine("eglSwapInterval(egldisplay, 0)");
+            success = eglSwapInterval(egldisplay, 0);
+            if (success == 0)
+            {
+                throw new Exception("eglSwapInterval returned FALSE");
             }
             throwIfError();
 
@@ -620,6 +628,9 @@ namespace EMinor
 
         [DllImport(eglName, EntryPoint = "eglReleaseThread")]
         extern static uint eglReleaseThread(); // returns EGLBoolean
+
+        [DllImport(eglName, EntryPoint = "eglSwapInterval")]
+        extern static uint eglSwapInterval(uint dpy, int interval); // returns EGLBoolean
 
         [DllImport(eglName, EntryPoint = "eglSwapBuffers")]
         extern static uint eglSwapBuffers(uint dpy, uint surface); // returns EGLBoolean
