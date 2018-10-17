@@ -11,7 +11,6 @@ namespace EMinor.UI
     {
         protected readonly IPlatform platform;
         protected readonly IOpenVG vg;
-        protected readonly DisposalContainer disposalContainer;
 
         private readonly List<Component> children;
 
@@ -19,13 +18,11 @@ namespace EMinor.UI
         {
             this.platform = platform;
             this.vg = platform.VG;
-            this.disposalContainer = new DisposalContainer();
             this.children = new List<Component>();
         }
 
-        public void Dispose()
+        public virtual void Dispose()
         {
-            this.disposalContainer.Dispose();
             this.children.ForEach(c => c.Dispose());
         }
 

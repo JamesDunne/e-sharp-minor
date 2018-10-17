@@ -26,17 +26,29 @@ namespace EMinor.UI
             this.arcHeight = arcHeight;
         }
 
+        public override void Dispose()
+        {
+            if (this.rect != null)
+            {
+                this.rect.Dispose();
+            }
+            base.Dispose();
+        }
+
         public float? StrokeLineWidth { get; set; }
 
         protected override void CreateShape()
         {
+            if (this.rect != null)
+            {
+                this.rect.Dispose();
+            }
+
             float effLineWidth = (StrokeLineWidth ?? 1.0f) - 1.0f;
-            this.disposalContainer.Add(
-                this.rect = new RoundRect(vg, this.Bounds - new Bounds(effLineWidth, effLineWidth), arcWidth, arcHeight)
-                {
-                    StrokeLineWidth = StrokeLineWidth
-                }
-            );
+            this.rect = new RoundRect(vg, this.Bounds - new Bounds(effLineWidth, effLineWidth), arcWidth, arcHeight)
+            {
+                StrokeLineWidth = StrokeLineWidth
+            };
         }
 
         protected override void CalculateChildrenLayout(Point point, Bounds bounds, List<Component> fillChildren)
