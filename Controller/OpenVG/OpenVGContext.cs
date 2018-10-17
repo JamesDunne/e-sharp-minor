@@ -128,17 +128,23 @@ namespace OpenVG
         }
 
         [DllImport(vg)]
-        extern static void vgLoadMatrix(float[] m);
-        public void LoadMatrix(float[] m)
+        extern static unsafe void vgLoadMatrix(float* m);
+        public unsafe void LoadMatrix(float[] m)
         {
-            vgLoadMatrix(m);
+            fixed (float* p = m)
+            {
+                vgLoadMatrix(p);
+            }
         }
 
         [DllImport(vg)]
-        extern static void vgGetMatrix(float[] m);
-        public void GetMatrix(float[] m)
+        extern static unsafe void vgGetMatrix(float* m);
+        public unsafe void GetMatrix(float[] m)
         {
-            vgGetMatrix(m);
+            fixed (float* p = m)
+            {
+                vgGetMatrix(p);
+            }
         }
 
         [DllImport(vg)]
@@ -292,11 +298,14 @@ namespace OpenVG
         }
 
         [DllImport(vg, EntryPoint = "vgDrawGlyphs")]
-        extern static void vgDrawGlyphs(uint font, uint glyphCount, byte[] glyphIndices, float[] adjustmentsX, float[] adjustmentsY, uint paintModes, uint allowAutoHinting);
-        public void DrawGlyphs(FontHandle font, string text, PaintMode paintModes, bool allowAutoHinting)
+        extern static unsafe void vgDrawGlyphs(uint font, uint glyphCount, byte* glyphIndices, float[] adjustmentsX, float[] adjustmentsY, uint paintModes, uint allowAutoHinting);
+        public unsafe void DrawGlyphs(FontHandle font, string text, PaintMode paintModes, bool allowAutoHinting)
         {
-            var glyphIndices = System.Text.Encoding.UTF32.GetBytes(text);
-            vgDrawGlyphs(font, (uint)text.Length, glyphIndices, null, null, (uint)paintModes, allowAutoHinting ? 1U : 0);
+            ReadOnlySpan<char> chars = text.AsSpan();
+            int byteCount = System.Text.Encoding.UTF32.GetByteCount(chars);
+            byte* bytes = stackalloc byte[byteCount];
+            System.Text.Encoding.UTF32.GetBytes(chars, new Span<byte>(bytes, byteCount));
+            vgDrawGlyphs(font, (uint)text.Length, bytes, null, null, (uint)paintModes, allowAutoHinting ? 1U : 0);
         }
 
         public void CheckError()
@@ -342,19 +351,19 @@ namespace OpenVG
             LoadMatrix(m);
         }
 
-        public void DrawText(FontHandle textFont, string text, PaintMode paintModes, bool allowAutoHinting, float size)
+        public unsafe void DrawText(FontHandle textFont, string text, PaintMode paintModes, bool allowAutoHinting, float size)
         {
             int mm = matrixMode;
 
             // Get current matrix:
-            var m = new float[9];
-            GetMatrix(m);
+            float *m = stackalloc float[9];
+            vgGetMatrix(m);
 
             // Switch to glyph matrix if not already:
             if (mm != (int)MatrixMode.VG_MATRIX_GLYPH_USER_TO_SURFACE)
             {
                 Seti(ParamType.VG_MATRIX_MODE, (int)MatrixMode.VG_MATRIX_GLYPH_USER_TO_SURFACE);
-                LoadMatrix(m);
+                vgLoadMatrix(m);
             }
 
             // Render text:
@@ -373,7 +382,7 @@ namespace OpenVG
             }
 
             // Restore old matrix:
-            LoadMatrix(m);
+            vgLoadMatrix(m);
         }
 
         #endregion
