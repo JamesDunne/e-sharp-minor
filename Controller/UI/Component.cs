@@ -36,6 +36,7 @@ namespace EMinor.UI
             get { return this.children; }
             set
             {
+                this.children.ForEach(c => c.Dispose());
                 this.children.Clear();
                 this.children.AddRange(value);
                 this.children.ForEach(c => c.SetParent(this));
