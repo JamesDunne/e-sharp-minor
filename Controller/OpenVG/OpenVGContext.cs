@@ -41,6 +41,10 @@ namespace OpenVG
         public void Seti(ParamType paramType, int value)
         {
             vgSeti(paramType, value);
+            if (paramType == ParamType.VG_MATRIX_MODE)
+            {
+                matrixMode = value;
+            }
         }
 
         [DllImport(vg, EntryPoint = "vgSetf")]
@@ -308,11 +312,11 @@ namespace OpenVG
 
         #region VG fakes
 
+        int matrixMode = (int)MatrixMode.VG_MATRIX_PATH_USER_TO_SURFACE;
         Dictionary<int, Stack<float[]>> matrixStack = new Dictionary<int, Stack<float[]>>();
 
         public void PushMatrix()
         {
-            int matrixMode = Geti(ParamType.VG_MATRIX_MODE);
             Stack<float[]> stack;
             if (!matrixStack.TryGetValue(matrixMode, out stack))
             {
@@ -327,7 +331,6 @@ namespace OpenVG
 
         public void PopMatrix()
         {
-            int matrixMode = Geti(ParamType.VG_MATRIX_MODE);
             Stack<float[]> stack;
             if (!matrixStack.TryGetValue(matrixMode, out stack))
             {
@@ -341,7 +344,7 @@ namespace OpenVG
 
         public void DrawText(FontHandle textFont, string text, PaintMode paintModes, bool allowAutoHinting, float size)
         {
-            int mm = Geti(ParamType.VG_MATRIX_MODE);
+            int mm = matrixMode;
 
             // Get current matrix:
             var m = new float[9];
@@ -358,6 +361,8 @@ namespace OpenVG
             Scale(size, size);
             // TODO: restore VG_GLYPH_ORIGIN afterwards?
             Setfv(ParamType.VG_GLYPH_ORIGIN, new float[] { 0.0f, 0.0f });
+
+            //var glyphIndices = System.Text.Encoding.UTF32.GetBytes(text);
             DrawGlyphs(textFont, text, PaintMode.VG_FILL_PATH, false);
 
             // Restore matrix mode:
