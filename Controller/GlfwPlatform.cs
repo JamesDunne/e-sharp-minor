@@ -91,6 +91,9 @@ namespace EMinor
 
             vg.Seti(ParamType.VG_MATRIX_MODE, (int)MatrixMode.VG_MATRIX_PATH_USER_TO_SURFACE);
 
+            // Disable vsync and show frame immediately after render:
+            Glfw.SwapInterval(0);
+
             Debug.WriteLine("glfw.ShowWindow(window)");
             Glfw.ShowWindow(window);
 
