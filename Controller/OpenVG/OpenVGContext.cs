@@ -326,6 +326,7 @@ namespace OpenVG
             checkError();
         }
 
+        [Conditional("DEBUG")]
         private void checkError()
         {
             int err = GetError();

@@ -11,8 +11,15 @@
     <RuntimeIdentifier>linux-arm</RuntimeIdentifier>
     <DefineConstants>RPI;DEBUG;TRACE</DefineConstants>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'pi-release'">
+    <RuntimeIdentifier>linux-arm</RuntimeIdentifier>
+    <DefineConstants>RPI</DefineConstants>
+  </PropertyGroup>
 
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'pi-debug|AnyCPU' ">
+    <LangVersion>Latest</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'pi-release|AnyCPU' ">
     <LangVersion>Latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
