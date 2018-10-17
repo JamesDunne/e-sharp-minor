@@ -393,29 +393,39 @@ namespace OpenVG
             }
         }
 
+        private PaintHandle strokePaint;
+
         public PaintHandle StrokePaint
         {
             get
             {
-                var handle = GetPaint(PaintMode.VG_STROKE_PATH);
-                return handle;
+                return strokePaint;
+                //var handle = GetPaint(PaintMode.VG_STROKE_PATH);
+                //return handle;
             }
             set
             {
+                if (strokePaint == value) return;
                 SetPaint(value, PaintMode.VG_STROKE_PATH);
+                strokePaint = value;
             }
         }
+
+        private PaintHandle fillPaint;
 
         public PaintHandle FillPaint
         {
             get
             {
-                var handle = GetPaint(PaintMode.VG_FILL_PATH);
-                return handle;
+                return fillPaint;
+                //var handle = GetPaint(PaintMode.VG_FILL_PATH);
+                //return handle;
             }
             set
             {
+                if (fillPaint == value) return;
                 SetPaint(value, PaintMode.VG_FILL_PATH);
+                fillPaint = value;
             }
         }
 
