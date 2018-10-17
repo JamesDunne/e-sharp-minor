@@ -55,10 +55,13 @@ namespace OpenVG
         }
 
         [DllImport(vg, EntryPoint = "vgSetfv")]
-        extern static void vgSetfv(ParamType paramType, int count, float[] values);
-        public void Setfv(ParamType paramType, float[] values)
+        extern static unsafe void vgSetfv(ParamType paramType, int count, float* values);
+        public unsafe void Setfv(ParamType paramType, float[] values)
         {
-            vgSetfv(paramType, values.Length, values);
+            fixed (float* p = values)
+            {
+                vgSetfv(paramType, values.Length, p);
+            }
         }
 
         [DllImport(vg, EntryPoint = "vgGeti")]
@@ -369,7 +372,11 @@ namespace OpenVG
             // Render text:
             Scale(size, size);
             // TODO: restore VG_GLYPH_ORIGIN afterwards?
-            Setfv(ParamType.VG_GLYPH_ORIGIN, new float[] { 0.0f, 0.0f });
+            //Setfv(ParamType.VG_GLYPH_ORIGIN, new float[] { 0.0f, 0.0f });
+            float* origin = stackalloc float[2];
+            origin[0] = 0f;
+            origin[1] = 0f;
+            vgSetfv(ParamType.VG_GLYPH_ORIGIN, 2, origin);
 
             //var glyphIndices = System.Text.Encoding.UTF32.GetBytes(text);
             DrawGlyphs(textFont, text, PaintMode.VG_FILL_PATH, false);
