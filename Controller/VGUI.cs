@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading;
 using EMinor.UI;
 using EMinor.V6;
 using OpenVG;
@@ -27,6 +28,7 @@ namespace EMinor
         private readonly VerticalStack ampStack;
 
         private Component selectedComponent;
+        private readonly AutoResetEvent needFrame;
 
         public struct FootSwitchMapping
         {
@@ -54,6 +56,8 @@ namespace EMinor
             vg = platform.VG;
             footswitchMapping = FootSwitchScene(controller);
             selectedComponent = null;
+
+            needFrame = new AutoResetEvent(false);
 
             vg.ClearColor = new float[] { 0.0f, 0.0f, 0.2f, 1.0f };
 
@@ -290,6 +294,8 @@ namespace EMinor
                     }
                 }
             }
+
+            needFrame.Set();
         }
 
         public void Dispose()
@@ -300,6 +306,8 @@ namespace EMinor
 
         public void Render()
         {
+            vg.Clear(0, 0, platform.FramebufferWidth, platform.FramebufferHeight);
+
             lock (root)
             {
                 vg.Seti(ParamType.VG_MATRIX_MODE, (int)MatrixMode.VG_MATRIX_PATH_USER_TO_SURFACE);
@@ -319,6 +327,15 @@ namespace EMinor
                     vg.PopMatrix();
                 }
             }
+
+            // Swap buffers to display and vsync (if applicable):
+            platform.SwapBuffers();
+        }
+
+        public void EndFrame()
+        {
+            needFrame.WaitOne();
+            needFrame.Reset();
         }
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Threading;
 using OpenVG;
 
 // Don't listen to any "field not assigned" warnings.
@@ -192,6 +193,18 @@ namespace EMinor
             vg.LoadIdentity();
             Debug.WriteLine("vgTranslate()");
             vg.Translate(0.5f, 0.5f);
+        }
+
+        public Thread NewThread(ThreadStart threadStart)
+        {
+            return new Thread(() =>
+            {
+                eglMakeCurrent(egldisplay, eglsurface, eglsurface, eglcontext);
+                threadStart();
+            })
+            {
+                IsBackground = true
+            };
         }
 
         const int ABS_MT_SLOT = 0x2f;

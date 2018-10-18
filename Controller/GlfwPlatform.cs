@@ -2,6 +2,7 @@
 using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using System.Threading;
 using OpenVG;
 
 namespace EMinor
@@ -100,6 +101,18 @@ namespace EMinor
             Glfw.SetKeyCallback(window, handleKeys);
             Glfw.SetMouseButtonCallback(window, handleMouseButton);
             Glfw.SetCursorPosCallback(window, handleMousePos);
+        }
+
+        public Thread NewThread(ThreadStart threadStart)
+        {
+            return new Thread(() =>
+            {
+                Glfw.MakeContextCurrent(window);
+                threadStart();
+            })
+            {
+                IsBackground = true
+            };
         }
 
         public void SetFullscreenMode(bool fullscreen)

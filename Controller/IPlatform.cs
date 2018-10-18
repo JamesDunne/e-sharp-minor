@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using OpenVG;
 
 namespace EMinor
@@ -25,6 +26,8 @@ namespace EMinor
         void SwapBuffers();
         bool ShouldQuit();
         void WaitEvents();
+
+        Thread NewThread(ThreadStart threadStart);
     }
 
     public enum TouchAction

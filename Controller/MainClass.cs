@@ -79,32 +79,38 @@ namespace EMinor
 
                     // Initialize UI:
                     IOpenVG vg = platform.VG;
-                    using (var ui = new VGUI(platform, controller))
+                    // Start a new thread to handle rendering:
+                    var renderThread = platform.NewThread(() =>
                     {
-                        bool quit = false;
-                        var sw = new Stopwatch();
-                        sw.Start();
-                        do
+                        using (var ui = new VGUI(platform, controller))
                         {
-                            double start = sw.Elapsed.TotalMilliseconds;
+                            var sw = new Stopwatch();
+                            sw.Start();
+                            while (true)
+                            {
+                                double start = sw.Elapsed.TotalMilliseconds;
 
-                            vg.Clear(0, 0, platform.FramebufferWidth, platform.FramebufferHeight);
+                                // Render UI screen:
+                                ui.Render();
 
-                            // Render UI screen:
-                            ui.Render();
+                                Console.Out.WriteLineAsync($"{sw.Elapsed.TotalMilliseconds - start:N2} ms");
 
-                            // Swap buffers to display and vsync:
-                            platform.SwapBuffers();
+                                // Wait for next frame:
+                                ui.EndFrame();
+                            }
+                        }
+                    });
+                    renderThread.Start();
 
-                            Console.Out.WriteLineAsync($"{sw.Elapsed.TotalMilliseconds - start:N2} ms");
+                    // Main thread:
+                    bool quit = false;
+                    do
+                    {
+                        platform.WaitEvents();
 
-                            // Wait for next event:
-                            platform.WaitEvents();
-
-                            // Check with the GUI if user indicated app should quit:
-                            quit |= platform.ShouldQuit();
-                        } while (!quit);
-                    }
+                        // Check with the GUI if user indicated app should quit:
+                        quit |= platform.ShouldQuit();
+                    } while (!quit);
                 }
             }
             catch (Exception ex)
