@@ -277,14 +277,14 @@ namespace EMinor
                         Fill = clrBtnBg,
                         Stroke = clrBtnOutline,
                         Children = {
-                                new Label(platform) {
-                                    Text = () => fx.BlockName,
-                                    TextHAlign = TextHAlign.Center,
-                                    TextVAlign = TextVAlign.Middle,
-                                    TextFont = vera,
-                                    TextColor = white
-                                }
+                            new Label(platform) {
+                                Text = () => fx.BlockName,
+                                TextHAlign = TextHAlign.Center,
+                                TextVAlign = TextVAlign.Middle,
+                                TextFont = vera,
+                                TextColor = white
                             }
+                        }
                     }).ToList()
                 }
             }
