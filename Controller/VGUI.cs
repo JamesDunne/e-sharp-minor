@@ -243,42 +243,51 @@ namespace EMinor
             if (ev.TouchEvent.HasValue)
             {
                 // Record last touch point:
-                touch = ev.TouchEvent.Value;
+                lock (point)
+                {
+                    touch = ev.TouchEvent.Value;
+                }
 
                 //Console.WriteLine($"{touch.Point.X}, {touch.Point.Y}, {touch.Action}");
 
-                this.root.HandleAction(touch.Point, touch.Action);
+                lock (root)
+                {
+                    this.root.HandleAction(touch.Point, touch.Action);
+                }
             }
             else if (ev.FootSwitchEvent.HasValue)
             {
                 FootSwitchEvent fsw = ev.FootSwitchEvent.Value;
 
-                if (fsw.Action == FootSwitchAction.Pressed)
+                lock (root)
                 {
-                    // Start batching up MIDI updates while the footswitch is held:
-                    controller.StartMidiBatch();
-                }
-
-                if (fsw.Action != FootSwitchAction.Released)
-                {
-                    if (fsw.FootSwitch == FootSwitch.Left)
+                    if (fsw.Action == FootSwitchAction.Pressed)
                     {
-                        footswitchMapping.Left?.Invoke();
-                    }
-                    else if (fsw.FootSwitch == FootSwitch.Right)
-                    {
-                        footswitchMapping.Right?.Invoke();
+                        // Start batching up MIDI updates while the footswitch is held:
+                        controller.StartMidiBatch();
                     }
 
-                    // Recreate UI components after scene activation:
-                    ampStack.Children = controller.LiveAmps.Select(amp => createAmpComponents(platform, amp)).ToList();
-                    ampStack.CalculateLayout();
-                }
+                    if (fsw.Action != FootSwitchAction.Released)
+                    {
+                        if (fsw.FootSwitch == FootSwitch.Left)
+                        {
+                            footswitchMapping.Left?.Invoke();
+                        }
+                        else if (fsw.FootSwitch == FootSwitch.Right)
+                        {
+                            footswitchMapping.Right?.Invoke();
+                        }
 
-                if (fsw.Action == FootSwitchAction.Released)
-                {
-                    // Finish the batch and send out the most recent MIDI updates:
-                    controller.EndMidiBatch();
+                        // Recreate UI components after scene activation:
+                        ampStack.Children = controller.LiveAmps.Select(amp => createAmpComponents(platform, amp)).ToList();
+                        ampStack.CalculateLayout();
+                    }
+
+                    if (fsw.Action == FootSwitchAction.Released)
+                    {
+                        // Finish the batch and send out the most recent MIDI updates:
+                        controller.EndMidiBatch();
+                    }
                 }
             }
         }
@@ -291,22 +300,24 @@ namespace EMinor
 
         public void Render()
         {
-            vg.Seti(ParamType.VG_MATRIX_MODE, (int)MatrixMode.VG_MATRIX_PATH_USER_TO_SURFACE);
-            this.root.Render();
-            //if (touch.Pressed && btnReset.IsPointInside(touch.Point))
-            //{
-            //    controller.ActivateSong(controller.CurrentSong, controller.CurrentScene);
-            //}
+            lock (root)
+            {
+                vg.Seti(ParamType.VG_MATRIX_MODE, (int)MatrixMode.VG_MATRIX_PATH_USER_TO_SURFACE);
+                root.Render();
+            }
 
             // Draw touch cursor:
             if (touch.Action != TouchAction.Released)
             {
-                vg.Seti(ParamType.VG_MATRIX_MODE, (int)MatrixMode.VG_MATRIX_PATH_USER_TO_SURFACE);
-                vg.PushMatrix();
-                vg.Translate(touch.Point.X, touch.Point.Y);
-                vg.FillPaint = pointColor;
-                point.Render(PaintMode.VG_FILL_PATH);
-                vg.PopMatrix();
+                lock (point)
+                {
+                    vg.Seti(ParamType.VG_MATRIX_MODE, (int)MatrixMode.VG_MATRIX_PATH_USER_TO_SURFACE);
+                    vg.PushMatrix();
+                    vg.Translate(touch.Point.X, touch.Point.Y);
+                    vg.FillPaint = pointColor;
+                    point.Render(PaintMode.VG_FILL_PATH);
+                    vg.PopMatrix();
+                }
             }
         }
     }
