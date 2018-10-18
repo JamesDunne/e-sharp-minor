@@ -169,21 +169,30 @@ namespace EMinor.UI
 
         public bool IsPointInside(in Point p) => p.X >= Point.X && p.Y >= Point.Y && p.X < Point.X + Bounds.W && p.Y < Point.Y + Bounds.H;
 
-        public bool HandleAction(in Point point, TouchAction action)
+        public Component FindPressableComponent(in Point point)
         {
             if (!IsPointInside(point))
             {
-                //Console.WriteLine($"{point} NOT in ({Point} .. {Point + Bounds})");
-                return false;
+                return null;
             }
 
-            // Make sure the most descendent child gets a chance to react first:
+            // Find the most descendent child still containing the point:
             Point relPoint = point - Point;
             foreach (var child in Children)
             {
-                if (child.HandleAction(relPoint, action)) return true;
+                var selected = child.FindPressableComponent(relPoint);
+                if (selected != null)
+                {
+                    return selected;
+                }
             }
 
+            // Only report this component if OnPress or OnRelease is defined:
+            return (OnPress != null || OnRelease != null) ? this : null;
+        }
+
+        public bool HandleAction(in Point point, TouchAction action)
+        {
             // Determine which handler function to invoke:
             ActionHandler fn = null;
             switch (action)

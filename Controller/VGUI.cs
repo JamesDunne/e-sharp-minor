@@ -296,6 +296,7 @@ namespace EMinor
             Point = new Point(0, 0),
             Action = TouchAction.Released
         };
+        private Component componentPressed;
 
         void Platform_InputEvent(InputEvent ev)
         {
@@ -311,7 +312,20 @@ namespace EMinor
 
                 lock (root)
                 {
-                    this.root.HandleAction(touch.Point, touch.Action);
+                    if (touch.Action == TouchAction.Pressed)
+                    {
+                        this.componentPressed = this.root.FindPressableComponent(touch.Point);
+                        this.componentPressed?.HandleAction(touch.Point, touch.Action);
+                    }
+                    else
+                    {
+                        this.componentPressed?.HandleAction(touch.Point, touch.Action);
+
+                        if (touch.Action == TouchAction.Released)
+                        {
+                            this.componentPressed = null;
+                        }
+                    }
                 }
             }
             else if (ev.FootSwitchEvent.HasValue)
