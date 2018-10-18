@@ -113,6 +113,8 @@ namespace EMinor
                                             {
                                                 TextFont = vera,
                                                 TextColor = white,
+                                                TextHAlign = TextHAlign.Center,
+                                                TextVAlign = TextVAlign.Middle,
                                                 Text = () => "RESET"
                                             }
                                         }
@@ -196,8 +198,9 @@ namespace EMinor
                 Children = {
                     new HorizontalStack(platform) {
                         Dock = Dock.Top,
-                        Height = 32,
+                        Height = 18,
                         Children = {
+                            // Amp name label:
                             new Label(platform) {
                                 Text = () => amp.AmpDefinition.Name,
                                 TextFont = vera,
@@ -216,6 +219,7 @@ namespace EMinor
                                         TextFont = vera,
                                         TextColor = white,
                                         TextSize = 16,
+                                        TextVAlign = TextVAlign.Middle,
                                         Text = () => $"Volume"
                                     },
                                     new Label(platform) {
@@ -224,6 +228,7 @@ namespace EMinor
                                         TextFont = vera,
                                         TextColor = white,
                                         TextSize = 16,
+                                        TextVAlign = TextVAlign.Middle,
                                         Text = () => $"{amp.Volume,4:N1} dB"
                                     },
                                     new Panel(platform) {
@@ -246,6 +251,7 @@ namespace EMinor
                                         TextFont = vera,
                                         TextColor = white,
                                         TextSize = 16,
+                                        TextVAlign = TextVAlign.Middle,
                                         Text = () => $"Gain"
                                     },
                                     new Label(platform) {
@@ -254,6 +260,7 @@ namespace EMinor
                                         TextFont = vera,
                                         TextColor = white,
                                         TextSize = 16,
+                                        TextVAlign = TextVAlign.Middle,
                                         Text = () => $"{amp.Gain:X02}"
                                     }
                                 }
@@ -272,6 +279,8 @@ namespace EMinor
                         Children = {
                                 new Label(platform) {
                                     Text = () => fx.BlockName,
+                                    TextHAlign = TextHAlign.Center,
+                                    TextVAlign = TextVAlign.Middle,
                                     TextFont = vera,
                                     TextColor = white
                                 }
