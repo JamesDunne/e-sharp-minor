@@ -131,6 +131,7 @@ namespace EMinor
 
         public void SwapBuffers()
         {
+            vg.Flush();
             Glfw.SwapBuffers(window);
         }
 
