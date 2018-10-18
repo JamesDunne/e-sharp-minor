@@ -80,7 +80,7 @@ namespace EMinor
                     // Initialize UI:
                     IOpenVG vg = platform.VG;
                     // Start a new thread to handle rendering:
-                    var renderThread = platform.NewThread(() =>
+                    var renderThread = platform.NewRenderThread(() =>
                     {
                         using (var ui = new VGUI(platform, controller))
                         {

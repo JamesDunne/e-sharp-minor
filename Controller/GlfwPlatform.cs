@@ -103,7 +103,7 @@ namespace EMinor
             Glfw.SetCursorPosCallback(window, handleMousePos);
         }
 
-        public Thread NewThread(ThreadStart threadStart)
+        public Thread NewRenderThread(ThreadStart threadStart)
         {
             return new Thread(() =>
             {

@@ -104,18 +104,17 @@ namespace EMinor
             success = eglInitialize(egldisplay, out majorVersion, out minorVersion);
             if (success == 0)
             {
+                throwIfError();
                 throw new Exception("eglInitialize returned FALSE");
             }
-            throwIfError();
             Debug.WriteLine("egl majorVersion={0} minorVersion={1}", majorVersion, minorVersion);
             Debug.WriteLine("eglBindAPI(EGL_OPENVG_API)");
             success = eglBindAPI(EGL.EGL_OPENVG_API);
             if (success == 0)
             {
+                throwIfError();
                 throw new Exception("eglBindAPI returned FALSE");
             }
-
-            throwIfError();
 
             int[] attribs = {
                 (int)EGL_ATTRIBUTES.EGL_RED_SIZE,           5,
@@ -135,9 +134,9 @@ namespace EMinor
             success = eglChooseConfig(egldisplay, attribs, out eglconfig, 1, out numconfigs);
             if (success == 0)
             {
+                throwIfError();
                 throw new Exception("eglChooseConfig returned FALSE");
             }
-            throwIfError();
             if (numconfigs != 1)
             {
                 throw new Exception("numconfigs != 1");
@@ -154,33 +153,18 @@ namespace EMinor
             eglsurface = eglCreateWindowSurface(egldisplay, eglconfig, windowHandle.AddrOfPinnedObject(), null);
             if (eglsurface == 0)
             {
+                throwIfError();
                 throw new Exception("eglCreateWindowSurface returned FALSE");
             }
-            throwIfError();
             Debug.WriteLine("eglsurface = {0}", eglsurface);
             Debug.WriteLine("eglCreateContext(egldisplay, ...)");
             eglcontext = eglCreateContext(egldisplay, eglconfig, 0, null);
             if (eglcontext == 0)
             {
+                throwIfError();
                 throw new Exception("eglCreateContext returned FALSE");
             }
-            throwIfError();
             Debug.WriteLine("eglcontext = {0}", eglcontext);
-            Debug.WriteLine("eglMakeCurrent(egldisplay, eglsurface, eglsurface, eglcontext)");
-            success = eglMakeCurrent(egldisplay, eglsurface, eglsurface, eglcontext);
-            if (success == 0)
-            {
-                throw new Exception("eglMakeCurrent returned FALSE");
-            }
-            throwIfError();
-
-            Debug.WriteLine("eglSwapInterval(egldisplay, 0)");
-            success = eglSwapInterval(egldisplay, 0);
-            if (success == 0)
-            {
-                throw new Exception("eglSwapInterval returned FALSE");
-            }
-            throwIfError();
 
             // Create OpenVGContext:
             Debug.WriteLine("new OpenVGContext()");
@@ -195,12 +179,42 @@ namespace EMinor
             vg.Translate(0.5f, 0.5f);
         }
 
-        public Thread NewThread(ThreadStart threadStart)
+        public Thread NewRenderThread(ThreadStart threadStart)
         {
             return new Thread(() =>
             {
-                eglMakeCurrent(egldisplay, eglsurface, eglsurface, eglcontext);
-                threadStart();
+                try
+                {
+                    Debug.WriteLine("eglBindAPI(EGL_OPENVG_API)");
+                    uint success = eglBindAPI(EGL.EGL_OPENVG_API);
+                    if (success == 0)
+                    {
+                        throwIfError();
+                        throw new Exception("eglBindAPI returned FALSE");
+                    }
+
+                    Debug.WriteLine("eglMakeCurrent(egldisplay, eglsurface, eglsurface, eglcontext)");
+                    success = eglMakeCurrent(egldisplay, eglsurface, eglsurface, eglcontext);
+                    if (success == 0)
+                    {
+                        throwIfError();
+                        throw new Exception("eglMakeCurrent returned FALSE");
+                    }
+
+                    Debug.WriteLine("eglSwapInterval(egldisplay, 0)");
+                    success = eglSwapInterval(egldisplay, 0);
+                    if (success == 0)
+                    {
+                        throwIfError();
+                        throw new Exception("eglSwapInterval returned FALSE");
+                    }
+
+                    threadStart();
+                }
+                catch (Exception ex)
+                {
+                    Console.Error.WriteLine(ex);
+                }
             })
             {
                 IsBackground = true
@@ -307,7 +321,7 @@ namespace EMinor
             EGL_ERROR err = eglGetError();
             if (err != EGL_ERROR.EGL_SUCCESS)
             {
-                throw new Exception(String.Format("EGL error code {0:4X}", err));
+                throw new Exception(String.Format("EGL error code {0:X04}", (uint)err));
             }
         }
 

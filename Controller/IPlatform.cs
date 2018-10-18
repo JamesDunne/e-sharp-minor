@@ -27,7 +27,7 @@ namespace EMinor
         bool ShouldQuit();
         void WaitEvents();
 
-        Thread NewThread(ThreadStart threadStart);
+        Thread NewRenderThread(ThreadStart threadStart);
     }
 
     public enum TouchAction
