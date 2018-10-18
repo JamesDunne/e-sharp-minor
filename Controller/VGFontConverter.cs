@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using NRasterizer;
 using OpenVG;
 
 namespace EMinor
 {
-    public class VGGlyphRasterizer : NRasterizer.IGlyphRasterizer
+    public class VGFontConverter : NRasterizer.IGlyphRasterizer
     {
         private readonly IOpenVG vg;
 
@@ -14,20 +15,34 @@ namespace EMinor
         private List<float> coords;
         private float[] escapement;
 
-        public VGGlyphRasterizer(IOpenVG vg)
+        public VGFontConverter(IOpenVG vg)
         {
             this.vg = vg;
         }
 
-        public void ConvertGlyphs(NRasterizer.Typeface typeFace, FontHandle destFont)
+        public VGFont OpenFont(String path)
         {
+            Typeface typeFace;
+            using (var fi = System.IO.File.OpenRead(path))
+            {
+                Debug.WriteLine("OpenTypeReader");
+                typeFace = new OpenTypeReader().Read(fi);
+            }
+
+            // Create OpenVG font object:
+            var destFont = vg.CreateFont(typeFace.Glyphs.Count);
+
             // Create a renderer instance that renders glyphs to OpenVG paths:
             var renderer = new NRasterizer.Renderer(typeFace, this);
+
+            // Run through all glyphs defined and create OpenVG paths for them:
             foreach (var c in typeFace.AllCharacters())
             {
                 renderer.RenderChar(0, 0, c, 1, false);
                 this.SetGlyphToPath(destFont, c);
             }
+
+            return new VGFont(vg, destFont, typeFace);
         }
 
         public void SetGlyphToPath(FontHandle font, uint glyphIndex)

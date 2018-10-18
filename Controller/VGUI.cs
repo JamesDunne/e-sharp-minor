@@ -23,7 +23,7 @@ namespace EMinor
         private readonly PaintColor white;
         private readonly PaintColor pointColor;
         private readonly Ellipse point;
-        private readonly FontHandle vera;
+        private readonly VGFont vera;
         private readonly Component root;
         private readonly VerticalStack ampStack;
 
@@ -63,15 +63,6 @@ namespace EMinor
 
             platform.InputEvent += Platform_InputEvent;
 
-            // Load TTF font:
-            Debug.WriteLine("Load Vera.ttf");
-            NRasterizer.Typeface typeFace;
-            using (var fi = System.IO.File.OpenRead("Vera.ttf"))
-            {
-                Debug.WriteLine("OpenTypeReader");
-                typeFace = new NRasterizer.OpenTypeReader().Read(fi);
-            }
-
             Debug.WriteLine("Set rendering quality and pixel layout");
             //vg.Seti(ParamType.VG_RENDERING_QUALITY, (int)RenderingQuality.VG_RENDERING_QUALITY_BETTER);
             //vg.Seti(ParamType.VG_PIXEL_LAYOUT, (int)PixelLayout.VG_PIXEL_LAYOUT_RGB_HORIZONTAL);
@@ -79,9 +70,10 @@ namespace EMinor
             vg.Seti(ParamType.VG_RENDERING_QUALITY, (int)RenderingQuality.VG_RENDERING_QUALITY_FASTER);
             //vg.Seti(ParamType.VG_RENDERING_QUALITY, (int)RenderingQuality.VG_RENDERING_QUALITY_NONANTIALIASED);
 
-            vera = vg.CreateFont(typeFace.Glyphs.Count);
-            var vgRasterizer = new VGGlyphRasterizer(vg);
-            vgRasterizer.ConvertGlyphs(typeFace, vera);
+            // Load TTF font:
+            Debug.WriteLine("Load Vera.ttf");
+            var vgRasterizer = new VGFontConverter(vg);
+            vera = vgRasterizer.OpenFont("Vera.ttf");
 
             this.disposalContainer = new DisposalContainer(
                 white = new PaintColor(vg, new float[] { 1.0f, 1.0f, 1.0f, 1.0f }),

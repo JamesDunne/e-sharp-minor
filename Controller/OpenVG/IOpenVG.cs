@@ -136,6 +136,8 @@ namespace OpenVG
 
         private FontHandle(uint handle) => Handle = handle;
 
+        public static readonly FontHandle Invalid = (FontHandle)0u;
+
         public static implicit operator uint(FontHandle paint)
         {
             return paint.Handle;
