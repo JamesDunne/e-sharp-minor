@@ -31,6 +31,7 @@ namespace EMinor.UI
             if (this.rect != null)
             {
                 this.rect.Dispose();
+                this.rect = null;
             }
             base.Dispose();
         }

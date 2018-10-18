@@ -40,6 +40,7 @@ namespace EMinor.UI
                 this.children.Clear();
                 this.children.AddRange(value);
                 this.children.ForEach(c => c.SetParent(this));
+                this.LayoutCalculated = false;
             }
         }
         public Component Parent { get; private set; }
@@ -73,6 +74,10 @@ namespace EMinor.UI
 
         public void CalculateLayout()
         {
+            if (LayoutCalculated) return;
+
+            LayoutCalculated = true;
+
             CreateShape();
 
             Point point = Point.Zero;
@@ -125,8 +130,12 @@ namespace EMinor.UI
             }
         }
 
+        public bool LayoutCalculated { get; set; }
+
         public virtual void Render()
         {
+            CalculateLayout();
+
             vg.PushMatrix();
 
             // Translate to point relative to parent:
