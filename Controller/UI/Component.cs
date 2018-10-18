@@ -56,12 +56,14 @@ namespace EMinor.UI
         public Point Point => ComputedPoint ?? EMinor.Point.Zero;
         public Bounds Bounds => ComputedBounds ?? Parent?.Bounds ?? platform.Bounds;
 
+        public Padding Padding { get; set; }
+
         protected virtual void CalculateChildrenLayout(Point point, Bounds bounds, List<Component> fillChildren)
         {
             // Naive fill implementation that merely overlaps all children:
             foreach (var child in fillChildren)
             {
-                child.ComputedPoint = Point.Zero;
+                child.ComputedPoint = point;
                 child.ComputedBounds = bounds;
                 child.CalculateLayout();
             }
@@ -80,8 +82,8 @@ namespace EMinor.UI
 
             CreateShape();
 
-            Point point = Point.Zero;
-            Bounds bounds = Bounds;
+            Point point = new Point(Padding.Left, Padding.Bottom);
+            Bounds bounds = Bounds - new Bounds(Padding.Left + Padding.Right, Padding.Bottom + Padding.Top);
             var fillChildren = new List<Component>(Children.Count);
 
             // Process docked children first and close up outer bounds:

@@ -24,6 +24,7 @@ namespace EMinor.UI
         {
             this.arcWidth = arcWidth;
             this.arcHeight = arcHeight;
+            this.Padding = new Padding(arcHeight * 0.5f, arcWidth * 0.5f, arcHeight * 0.5f, arcWidth * 0.5f);
         }
 
         public override void Dispose()
@@ -50,16 +51,6 @@ namespace EMinor.UI
             {
                 StrokeLineWidth = StrokeLineWidth
             };
-        }
-
-        protected override void CalculateChildrenLayout(Point point, Bounds bounds, List<Component> fillChildren)
-        {
-            foreach (var child in fillChildren)
-            {
-                child.ComputedPoint = new Point(arcWidth * 0.5f, arcHeight * 0.5f);
-                child.ComputedBounds = new Bounds(bounds.W - arcWidth, bounds.H - arcHeight);
-                child.CalculateLayout();
-            }
         }
 
         protected override void RenderSelf()
