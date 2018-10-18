@@ -301,14 +301,44 @@ namespace OpenVG
         }
 
         [DllImport(vg, EntryPoint = "vgDrawGlyphs")]
-        extern static unsafe void vgDrawGlyphs(uint font, uint glyphCount, byte* glyphIndices, float[] adjustmentsX, float[] adjustmentsY, uint paintModes, uint allowAutoHinting);
-        public unsafe void DrawGlyphs(FontHandle font, string text, PaintMode paintModes, bool allowAutoHinting)
+        extern static unsafe void vgDrawGlyphs(uint font, uint glyphCount, uint* glyphIndices, float[] adjustmentsX, float[] adjustmentsY, uint paintModes, uint allowAutoHinting);
+        public unsafe void DrawGlyphs(FontHandle font, uint glyphCount, uint* glyphIndices, PaintMode paintModes, bool allowAutoHinting)
         {
-            ReadOnlySpan<char> chars = text.AsSpan();
-            int byteCount = System.Text.Encoding.UTF32.GetByteCount(chars);
-            byte* bytes = stackalloc byte[byteCount];
-            System.Text.Encoding.UTF32.GetBytes(chars, new Span<byte>(bytes, byteCount));
-            vgDrawGlyphs(font, (uint)text.Length, bytes, null, null, (uint)paintModes, allowAutoHinting ? 1U : 0);
+            vgDrawGlyphs(font, glyphCount, glyphIndices, null, null, (uint)paintModes, allowAutoHinting ? 1U : 0);
+        }
+
+        public void DrawGlyphs(FontHandle font, uint[] glyphIndices, PaintMode paintModes, bool allowAutoHinting)
+        {
+            unsafe
+            {
+                fixed (uint* p = glyphIndices)
+                {
+                    vgDrawGlyphs(font, (uint)glyphIndices.Length, p, null, null, (uint)paintModes, allowAutoHinting ? 1U : 0);
+                }
+            }
+        }
+
+        public void DrawGlyphs(FontHandle font, uint glyphCount, byte[] utf32Text, PaintMode paintModes, bool allowAutoHinting)
+        {
+            unsafe
+            {
+                fixed (byte* bytes = utf32Text)
+                {
+                    vgDrawGlyphs(font, glyphCount, (uint*)bytes, null, null, (uint)paintModes, allowAutoHinting ? 1U : 0);
+                }
+            }
+        }
+
+        public void DrawGlyphString(FontHandle font, string text, PaintMode paintModes, bool allowAutoHinting)
+        {
+            unsafe
+            {
+                ReadOnlySpan<char> chars = text.AsSpan();
+                int byteCount = System.Text.Encoding.UTF32.GetByteCount(chars);
+                byte* bytes = stackalloc byte[byteCount];
+                System.Text.Encoding.UTF32.GetBytes(chars, new Span<byte>(bytes, byteCount));
+                vgDrawGlyphs(font, (uint)text.Length, (uint*)bytes, null, null, (uint)paintModes, allowAutoHinting ? 1U : 0);
+            }
         }
 
         public void CheckError()
@@ -354,42 +384,86 @@ namespace OpenVG
             LoadMatrix(m);
         }
 
-        public unsafe void DrawText(FontHandle textFont, string text, PaintMode paintModes, bool allowAutoHinting, float size)
+        public void DrawText(FontHandle textFont, string text, PaintMode paintModes, bool allowAutoHinting, float size)
         {
-            int mm = matrixMode;
-
-            // Get current matrix:
-            float *m = stackalloc float[9];
-            vgGetMatrix(m);
-
-            // Switch to glyph matrix if not already:
-            if (mm != (int)MatrixMode.VG_MATRIX_GLYPH_USER_TO_SURFACE)
+            unsafe
             {
-                Seti(ParamType.VG_MATRIX_MODE, (int)MatrixMode.VG_MATRIX_GLYPH_USER_TO_SURFACE);
+                int mm = matrixMode;
+
+                // Get current matrix:
+                float* m = stackalloc float[9];
+                vgGetMatrix(m);
+
+                // Switch to glyph matrix if not already:
+                if (mm != (int)MatrixMode.VG_MATRIX_GLYPH_USER_TO_SURFACE)
+                {
+                    Seti(ParamType.VG_MATRIX_MODE, (int)MatrixMode.VG_MATRIX_GLYPH_USER_TO_SURFACE);
+                    vgLoadMatrix(m);
+                }
+
+                // Render text:
+                Scale(size, size);
+
+                // TODO: restore VG_GLYPH_ORIGIN afterwards?
+                float* origin = stackalloc float[2];
+                origin[0] = 0f;
+                origin[1] = 0f;
+                vgSetfv(ParamType.VG_GLYPH_ORIGIN, 2, origin);
+
+                //var glyphIndices = System.Text.Encoding.UTF32.GetBytes(text);
+                DrawGlyphString(textFont, text, PaintMode.VG_FILL_PATH, false);
+
+                // Restore matrix mode:
+                if (mm != (int)MatrixMode.VG_MATRIX_GLYPH_USER_TO_SURFACE)
+                {
+                    // TODO: restore glyph matrix before switching back?
+                    Seti(ParamType.VG_MATRIX_MODE, mm);
+                }
+
+                // Restore old matrix:
                 vgLoadMatrix(m);
             }
+        }
 
-            // Render text:
-            Scale(size, size);
-            // TODO: restore VG_GLYPH_ORIGIN afterwards?
-            //Setfv(ParamType.VG_GLYPH_ORIGIN, new float[] { 0.0f, 0.0f });
-            float* origin = stackalloc float[2];
-            origin[0] = 0f;
-            origin[1] = 0f;
-            vgSetfv(ParamType.VG_GLYPH_ORIGIN, 2, origin);
-
-            //var glyphIndices = System.Text.Encoding.UTF32.GetBytes(text);
-            DrawGlyphs(textFont, text, PaintMode.VG_FILL_PATH, false);
-
-            // Restore matrix mode:
-            if (mm != (int)MatrixMode.VG_MATRIX_GLYPH_USER_TO_SURFACE)
+        public void DrawText(FontHandle textFont, uint glyphCount, byte[] utf32Text, PaintMode paintModes, bool allowAutoHinting, float size)
+        {
+            unsafe
             {
-                // TODO: restore glyph matrix before switching back?
-                Seti(ParamType.VG_MATRIX_MODE, mm);
-            }
+                int mm = matrixMode;
 
-            // Restore old matrix:
-            vgLoadMatrix(m);
+                // Get current matrix:
+                float* m = stackalloc float[9];
+                vgGetMatrix(m);
+
+                // Switch to glyph matrix if not already:
+                if (mm != (int)MatrixMode.VG_MATRIX_GLYPH_USER_TO_SURFACE)
+                {
+                    Seti(ParamType.VG_MATRIX_MODE, (int)MatrixMode.VG_MATRIX_GLYPH_USER_TO_SURFACE);
+                    vgLoadMatrix(m);
+                }
+
+                // Render text:
+                Scale(size, size);
+
+                // TODO: restore VG_GLYPH_ORIGIN afterwards?
+                float* origin = stackalloc float[2];
+                origin[0] = 0f;
+                origin[1] = 0f;
+                vgSetfv(ParamType.VG_GLYPH_ORIGIN, 2, origin);
+
+                //var glyphIndices = System.Text.Encoding.UTF32.GetBytes(text);
+                DrawGlyphs(textFont, glyphCount, utf32Text, PaintMode.VG_FILL_PATH, false);
+
+                // Restore matrix mode:
+                if (mm != (int)MatrixMode.VG_MATRIX_GLYPH_USER_TO_SURFACE)
+                {
+                    // TODO: restore glyph matrix before switching back?
+                    Seti(ParamType.VG_MATRIX_MODE, mm);
+                }
+
+                // Restore old matrix:
+                vgLoadMatrix(m);
+            }
         }
 
         #endregion

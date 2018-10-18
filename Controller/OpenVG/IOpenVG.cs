@@ -59,9 +59,14 @@ namespace OpenVG
         void DestroyFont(FontHandle font);
         void SetGlyphToPath(FontHandle font, uint glyphIndex, PathHandle path, bool isHinted, float[] origin, float[] escapement);
         void DrawGlyph(FontHandle font, uint glyphIndex, PaintMode paintModes, bool allowAutoHinting);
-        void DrawGlyphs(FontHandle font, string text, PaintMode paintModes, bool allowAutoHinting);
+
+        unsafe void DrawGlyphs(FontHandle font, uint glyphCount, uint* glyphIndices, PaintMode paintModes, bool allowAutoHinting);
+        void DrawGlyphs(FontHandle font, uint[] glyphIndices, PaintMode paintModes, bool allowAutoHinting);
+        void DrawGlyphs(FontHandle font, uint glyphCount, byte[] utf32Text, PaintMode paintModes, bool allowAutoHinting);
+        void DrawGlyphString(FontHandle font, string text, PaintMode paintModes, bool allowAutoHinting);
 
         void DrawText(FontHandle textFont, string text, PaintMode paintModes, bool allowAutoHinting, float size);
+        void DrawText(FontHandle textFont, uint glyphCount, byte[] utf32Text, PaintMode paintModes, bool allowAutoHinting, float size);
 
         #endregion
 

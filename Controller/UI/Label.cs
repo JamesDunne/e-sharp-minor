@@ -11,6 +11,10 @@ namespace EMinor.UI
         public FontHandle TextFont { get; set; }
         public float TextSize { get; set; }
 
+        public string LastText { get; private set; }
+        private byte[] lastUTF32Text;
+        private uint lastUTF32Length;
+
         public Label(IPlatform platform) : base(platform)
         {
             TextSize = 18.0f;
@@ -20,8 +24,23 @@ namespace EMinor.UI
         {
             if (Text != null)
             {
+                var text = Text();
+                if (text == null)
+                {
+                    LastText = null;
+                    return;
+                }
+
+                // Only convert UTF32 when we need to:
+                if (text != LastText)
+                {
+                    LastText = text;
+                    lastUTF32Length = (uint)LastText.Length;
+                    lastUTF32Text = System.Text.Encoding.UTF32.GetBytes(LastText);
+                }
+
                 vg.FillPaint = TextColor;
-                vg.DrawText(TextFont, Text(), PaintMode.VG_FILL_PATH, false, TextSize);
+                vg.DrawText(TextFont, lastUTF32Length, lastUTF32Text, PaintMode.VG_FILL_PATH, false, TextSize);
             }
         }
     }
