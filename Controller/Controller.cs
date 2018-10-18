@@ -377,12 +377,24 @@ namespace EMinor
             }
         }
 
-        static double MIDItoDB(int volume)
+        //  p = 10 ^ (dB / 20)
+        // dB = log10(p) * 20
+        // Log20A means 20% percent at half-way point of knob, i.e. dB = 20 * ln(0.20) / ln(10) = -13.98dB
+        public static double dB(double percent)
         {
-            return 0;
+            return Log10(percent) * 20.0;
         }
 
-        static int DBtoMIDI(double db)
+        public static double MIDItoDB(int volume)
+        {
+            double p = (double)volume / 127.0;
+            // log20a taper (50% -> 20%)
+            p = (Pow(15.5, p) - 1.0) / 14.5;
+            double db = dB(p) + 6.0;
+            return db;
+        }
+
+        public static int DBtoMIDI(double db)
         {
             db = db - 6.0;
             double p = Pow(10.0, (db / 20.0));
@@ -432,13 +444,13 @@ namespace EMinor
                 //blockNames.UnionWith(sceneTone.Blocks?.Keys ?? Enumerable.Empty<string>());
 
                 // Set the gain and volume:
-                var gain = liveAmp.SceneTone.Gain ?? liveAmp.SongTone?.Gain ?? liveAmp.ToneDefinition.Gain;
-                var volumeMIDI = liveAmp.SceneTone.Volume ?? liveAmp.SongTone?.Volume ?? liveAmp.ToneDefinition.Volume;
+                liveAmp.Gain = liveAmp.SceneTone.Gain ?? liveAmp.SongTone?.Gain ?? liveAmp.ToneDefinition.Gain;
+                liveAmp.VolumeMIDI = liveAmp.SceneTone.Volume ?? liveAmp.SongTone?.Volume ?? liveAmp.ToneDefinition.Volume;
 
-                Debug.WriteLine($"Amp[{i + 1}]: gain   val (CC {liveAmp.AmpDefinition.GainControllerCC:X2}h) to {gain:X2}h");
-                midi.SetController(channel, liveAmp.AmpDefinition.GainControllerCC, gain);
-                Debug.WriteLine($"Amp[{i + 1}]: volume val (CC {liveAmp.AmpDefinition.VolumeControllerCC:X2}h) to {volumeMIDI:X2}h ({MIDItoDB(volumeMIDI)} dB)");
-                midi.SetController(channel, liveAmp.AmpDefinition.VolumeControllerCC, volumeMIDI);
+                Debug.WriteLine($"Amp[{i + 1}]: gain   val (CC {liveAmp.AmpDefinition.GainControllerCC:X2}h) to {liveAmp.Gain:X2}h");
+                midi.SetController(channel, liveAmp.AmpDefinition.GainControllerCC, liveAmp.Gain);
+                Debug.WriteLine($"Amp[{i + 1}]: volume val (CC {liveAmp.AmpDefinition.VolumeControllerCC:X2}h) to {liveAmp.VolumeMIDI:X2}h ({MIDItoDB(liveAmp.VolumeMIDI)} dB)");
+                midi.SetController(channel, liveAmp.AmpDefinition.VolumeControllerCC, liveAmp.VolumeMIDI);
 
                 // Set all the controller values for the selected tone:
                 liveAmp.FX = new List<LiveFX>(blockNames.Count);
