@@ -23,12 +23,12 @@ namespace EMinor
 
         public void SetController(int channel, int controller, int value)
         {
-            Console.WriteLine("MIDI: {0:X02} {1:X02} {2:X02}", 0xB0 | (channel & 15), controller, value);
+            Console.Out.WriteLineAsync($"MIDI: {0xB0 | (channel & 15):X02} {controller:X02} {value:X02}");
         }
 
         public void SetProgram(int channel, int program)
         {
-            Console.WriteLine("MIDI: {0:X02} {1:X02}", 0xC0 | (channel & 15), program);
+            Console.Out.WriteLineAsync($"MIDI: {0xC0 | (channel & 15):X02} {program:X02}");
         }
     }
 }

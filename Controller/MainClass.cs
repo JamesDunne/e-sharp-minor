@@ -84,16 +84,21 @@ namespace EMinor
                     {
                         using (var ui = new VGUI(platform, controller))
                         {
+#if TIMING
                             var sw = new Stopwatch();
                             sw.Start();
+#endif
                             while (true)
                             {
+#if TIMING
                                 double start = sw.Elapsed.TotalMilliseconds;
-
+#endif
                                 // Render UI screen:
                                 ui.Render();
 
+#if TIMING
                                 Console.Out.WriteLineAsync($"{sw.Elapsed.TotalMilliseconds - start:N2} ms");
+#endif
 
                                 // Wait for next frame:
                                 ui.EndFrame();

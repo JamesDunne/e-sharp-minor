@@ -60,7 +60,7 @@ namespace EMinor
                 writeBytes(cmdbuf, 3);
             }
 
-            Console.Out.WriteLineAsync($"MIDI: {0xB0 | (channel & 15):X02} {controller:X02} {value:X02}");
+            //Console.Out.WriteLineAsync($"MIDI: {0xB0 | (channel & 15):X02} {controller:X02} {value:X02}");
         }
 
         public unsafe void SetProgram(int channel, int program)
@@ -79,7 +79,7 @@ namespace EMinor
                 writeBytes(cmdbuf, 2);
             }
 
-            Console.Out.WriteLineAsync($"MIDI: {0xC0 | (channel & 15):X02} {program:X02}");
+            //Console.Out.WriteLineAsync($"MIDI: {0xC0 | (channel & 15):X02} {program:X02}");
         }
     }
 }
