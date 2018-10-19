@@ -61,6 +61,17 @@ namespace EMinor.UI
             trackRect = new RoundRect(vg, trackBounds, 6, 6);
         }
 
+        public override bool IsPressable => true;
+
+        protected override void BeforeAction(in Point point, TouchAction action)
+        {
+            // Take a point relative to our root offset:
+            var value = PointToValue(point);
+            // Update the value:
+            ValueChanged?.Invoke(value);
+            LayoutCalculated = false;
+        }
+
         protected override void CalculateChildrenLayout(Point point, Bounds bounds, List<Component> fillChildren)
         {
             float value = Value();

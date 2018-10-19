@@ -96,16 +96,16 @@ namespace EMinor
                                 Dock = Dock.Top,
                                 Height = 32,
                                 Children = {
-                                    // RESET button:
+                                    // MIDI button:
                                     new Button(platform) {
                                         Dock = Dock.Left,
-                                        Width = 80,
+                                        Width = 60,
                                         Stroke = clrBtnOutline,
                                         Fill = clrBtnBg,
                                         StrokePressed = clrBtnBg,
                                         FillPressed = clrBtnOutline,
                                         OnRelease = (cmp, p) => {
-                                            controller.MidiReset();
+                                            controller.MidiResend();
                                             return true;
                                         },
                                         Children = {
@@ -115,7 +115,7 @@ namespace EMinor
                                                 TextColor = white,
                                                 TextHAlign = HAlign.Center,
                                                 TextVAlign = VAlign.Middle,
-                                                Text = () => "RESET"
+                                                Text = () => "MIDI"
                                             }
                                         }
                                     },
@@ -311,6 +311,12 @@ namespace EMinor
         };
         private Component componentPressed;
 
+        void RecreateAmpLayout()
+        {
+            // Recreate UI components after scene activation:
+            ampStack.Children = controller.LiveAmps.Select(amp => createAmpComponents(platform, amp)).ToList();
+        }
+
         void Platform_InputEvent(InputEvent ev)
         {
             if (ev.TouchEvent.HasValue)
@@ -364,8 +370,7 @@ namespace EMinor
                             footswitchMapping.Right?.Invoke();
                         }
 
-                        // Recreate UI components after scene activation:
-                        ampStack.Children = controller.LiveAmps.Select(amp => createAmpComponents(platform, amp)).ToList();
+                        RecreateAmpLayout();
                     }
 
                     if (fsw.Action == FootSwitchAction.Released)

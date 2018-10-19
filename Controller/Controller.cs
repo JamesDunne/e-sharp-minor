@@ -69,11 +69,15 @@ namespace EMinor
             }
         }
 
-        public void MidiReset()
+        public void MidiResend()
         {
+            // Re-send current MIDI amp state:
             midi.Reset();
             midi.StartBatch();
-            ActivateSong(CurrentSong, CurrentScene);
+            foreach (var liveAmp in liveAmps) {
+                ActivateLiveAmp(liveAmp);
+            }
+            //ActivateSong(CurrentSong, CurrentScene);
             midi.EndBatch();
         }
 
