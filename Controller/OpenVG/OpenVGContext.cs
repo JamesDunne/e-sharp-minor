@@ -367,7 +367,13 @@ namespace OpenVG
             }
 
             float[] m = new float[9];
-            GetMatrix(m);
+            unsafe
+            {
+                fixed (float* p = m)
+                {
+                    vgGetMatrix(p);
+                }
+            }
             stack.Push(m);
         }
 
@@ -381,7 +387,13 @@ namespace OpenVG
             }
 
             float[] m = stack.Pop();
-            LoadMatrix(m);
+            unsafe
+            {
+                fixed (float* p = m)
+                {
+                    vgLoadMatrix(p);
+                }
+            }
         }
 
         public void DrawText(FontHandle textFont, string text, PaintMode paintModes, bool allowAutoHinting, float size)
@@ -397,12 +409,12 @@ namespace OpenVG
                 // Switch to glyph matrix if not already:
                 if (mm != (int)MatrixMode.VG_MATRIX_GLYPH_USER_TO_SURFACE)
                 {
-                    Seti(ParamType.VG_MATRIX_MODE, (int)MatrixMode.VG_MATRIX_GLYPH_USER_TO_SURFACE);
+                    vgSeti(ParamType.VG_MATRIX_MODE, (int)MatrixMode.VG_MATRIX_GLYPH_USER_TO_SURFACE);
                     vgLoadMatrix(m);
                 }
 
                 // Render text:
-                Scale(size, size);
+                vgScale(size, size);
 
                 // TODO: restore VG_GLYPH_ORIGIN afterwards?
                 float* origin = stackalloc float[2];
@@ -417,7 +429,7 @@ namespace OpenVG
                 if (mm != (int)MatrixMode.VG_MATRIX_GLYPH_USER_TO_SURFACE)
                 {
                     // TODO: restore glyph matrix before switching back?
-                    Seti(ParamType.VG_MATRIX_MODE, mm);
+                    vgSeti(ParamType.VG_MATRIX_MODE, mm);
                 }
 
                 // Restore old matrix:
@@ -438,12 +450,12 @@ namespace OpenVG
                 // Switch to glyph matrix if not already:
                 if (mm != (int)MatrixMode.VG_MATRIX_GLYPH_USER_TO_SURFACE)
                 {
-                    Seti(ParamType.VG_MATRIX_MODE, (int)MatrixMode.VG_MATRIX_GLYPH_USER_TO_SURFACE);
+                    vgSeti(ParamType.VG_MATRIX_MODE, (int)MatrixMode.VG_MATRIX_GLYPH_USER_TO_SURFACE);
                     vgLoadMatrix(m);
                 }
 
                 // Render text:
-                Scale(size, size);
+                vgScale(size, size);
 
                 // TODO: restore VG_GLYPH_ORIGIN afterwards?
                 float* origin = stackalloc float[2];
@@ -451,14 +463,16 @@ namespace OpenVG
                 origin[1] = 0f;
                 vgSetfv(ParamType.VG_GLYPH_ORIGIN, 2, origin);
 
-                //var glyphIndices = System.Text.Encoding.UTF32.GetBytes(text);
-                DrawGlyphs(textFont, glyphCount, utf32Text, PaintMode.VG_FILL_PATH, false);
+                fixed (byte* bytes = utf32Text)
+                {
+                    vgDrawGlyphs(textFont, glyphCount, (uint*)bytes, null, null, (uint)PaintMode.VG_FILL_PATH, 0U);
+                }
 
                 // Restore matrix mode:
                 if (mm != (int)MatrixMode.VG_MATRIX_GLYPH_USER_TO_SURFACE)
                 {
                     // TODO: restore glyph matrix before switching back?
-                    Seti(ParamType.VG_MATRIX_MODE, mm);
+                    vgSeti(ParamType.VG_MATRIX_MODE, mm);
                 }
 
                 // Restore old matrix:
@@ -479,7 +493,13 @@ namespace OpenVG
             }
             set
             {
-                Setfv(ParamType.VG_CLEAR_COLOR, value);
+                unsafe
+                {
+                    fixed (float* p = value)
+                    {
+                        vgSetfv(ParamType.VG_CLEAR_COLOR, value.Length, p);
+                    }
+                }
             }
         }
 
@@ -496,7 +516,7 @@ namespace OpenVG
             set
             {
                 if (strokePaint == value) return;
-                SetPaint(value, PaintMode.VG_STROKE_PATH);
+                vgSetPaint(value, PaintMode.VG_STROKE_PATH);
                 strokePaint = value;
             }
         }
@@ -514,7 +534,7 @@ namespace OpenVG
             set
             {
                 if (fillPaint == value) return;
-                SetPaint(value, PaintMode.VG_FILL_PATH);
+                vgSetPaint(value, PaintMode.VG_FILL_PATH);
                 fillPaint = value;
             }
         }
