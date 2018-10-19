@@ -32,11 +32,9 @@ namespace EMinor.UI
             MaxValue = 1.0f;
 
             // Create handle child in constructor so that delegating property assignments will work:
-            handle = new HSliderHandle(platform)
-            {
-                ComputedBounds = new Bounds(12, 24)
-            };
+            handle = new HSliderHandle(platform);
             handle.SetParent(this);
+            handle.ComputedBounds = new Bounds(12, 24);
             children.Add(handle);
         }
 

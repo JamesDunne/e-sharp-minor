@@ -13,12 +13,16 @@ namespace EMinor.UI
         protected readonly IOpenVG vg;
 
         protected readonly List<Component> children;
+        private Point? _computedPoint;
+        private Bounds? _computedBounds;
 
         protected Component(IPlatform platform)
         {
             this.platform = platform;
             this.vg = platform.VG;
             this.children = new List<Component>();
+            Point = EMinor.Point.Zero;
+            Bounds = platform.Bounds;
         }
 
         public virtual void Dispose()
@@ -29,6 +33,8 @@ namespace EMinor.UI
         public virtual void SetParent(Component component)
         {
             this.Parent = component;
+            Bounds = Parent?.Bounds ?? platform.Bounds;
+            RootOffset = Point + (Parent?.RootOffset ?? EMinor.Point.Zero);
         }
 
         public virtual IList<Component> Children
@@ -50,13 +56,30 @@ namespace EMinor.UI
         public float? Width { get; set; }
         public float? Height { get; set; }
 
-        public Point? ComputedPoint { get; set; }
-        public Bounds? ComputedBounds { get; set; }
+        public Point? ComputedPoint
+        {
+            get => _computedPoint;
+            set
+            {
+                _computedPoint = value;
+                Point = _computedPoint ?? EMinor.Point.Zero;
+                RootOffset = Point + (Parent?.RootOffset ?? EMinor.Point.Zero);
+            }
+        }
+        public Bounds? ComputedBounds
+        {
+            get => _computedBounds;
+            set
+            {
+                _computedBounds = value;
+                Bounds = _computedBounds ?? Parent?.Bounds ?? platform.Bounds;
+            }
+        }
 
-        public Point Point => ComputedPoint ?? EMinor.Point.Zero;
-        public Bounds Bounds => ComputedBounds ?? Parent?.Bounds ?? platform.Bounds;
+        public Point Point; // => ComputedPoint ?? EMinor.Point.Zero;
+        public Bounds Bounds; // => ComputedBounds ?? Parent?.Bounds ?? platform.Bounds;
 
-        public Point RootOffset => Point + (Parent?.RootOffset ?? EMinor.Point.Zero);
+        public Point RootOffset; // => Point + (Parent?.RootOffset ?? EMinor.Point.Zero);
 
         public Padding Padding { get; set; }
 
@@ -67,7 +90,10 @@ namespace EMinor.UI
             {
                 child.ComputedPoint = point;
                 child.ComputedBounds = bounds;
-                child.CalculateLayout();
+                if (!child.LayoutCalculated)
+                {
+                    child.CalculateLayout();
+                }
             }
         }
 
@@ -78,8 +104,6 @@ namespace EMinor.UI
 
         public void CalculateLayout()
         {
-            if (LayoutCalculated) return;
-
             LayoutCalculated = true;
 
             CreateShape();
@@ -124,7 +148,10 @@ namespace EMinor.UI
                     point += new Point(child.Width.Value, 0);
                 }
 
-                child.CalculateLayout();
+                if (!child.LayoutCalculated)
+                {
+                    child.CalculateLayout();
+                }
             }
 
             // Fill in remaining children:
@@ -138,7 +165,10 @@ namespace EMinor.UI
 
         public virtual void Render()
         {
-            CalculateLayout();
+            if (!LayoutCalculated)
+            {
+                CalculateLayout();
+            }
 
             vg.PushMatrix();
 
