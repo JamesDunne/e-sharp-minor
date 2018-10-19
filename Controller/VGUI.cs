@@ -267,27 +267,27 @@ namespace EMinor
                             }
                         }
                     },
-                // FX toggle buttons on bottom:
-                new HorizontalStack(platform)
-                {
-                    Dock = Dock.Bottom,
-                    Height = 32,
-                    Children = amp.FX.Select(fx => (Component)new Button(platform)
+                    // FX toggle buttons on bottom:
+                    new HorizontalStack(platform)
                     {
-                        Fill = clrBtnBg,
-                        Stroke = clrBtnOutline,
-                        Children = {
-                            new Label(platform) {
-                                Text = () => fx.BlockName,
-                                TextHAlign = TextHAlign.Center,
-                                TextVAlign = TextVAlign.Middle,
-                                TextFont = vera,
-                                TextColor = white
+                        Dock = Dock.Bottom,
+                        Height = 32,
+                        Children = amp.FX.Select(fx => (Component)new Button(platform)
+                        {
+                            Fill = clrBtnBg,
+                            Stroke = clrBtnOutline,
+                            Children = {
+                                new Label(platform) {
+                                    Text = () => fx.BlockName,
+                                    TextHAlign = TextHAlign.Center,
+                                    TextVAlign = TextVAlign.Middle,
+                                    TextFont = vera,
+                                    TextColor = white
+                                }
                             }
-                        }
-                    }).ToList()
+                        }).ToList()
+                    }
                 }
-            }
             };
         }
 
