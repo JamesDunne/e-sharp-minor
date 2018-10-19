@@ -237,7 +237,10 @@ namespace EMinor
                                         MinValue = 0.0f,
                                         MaxValue = 127.0f,
                                         Value = () => (float)amp.VolumeMIDI,
-                                        ValueChanged = (value) => amp.VolumeMIDI = (int)value
+                                        ValueChanged = (value) => {
+                                            amp.VolumeMIDI = (int)value;
+                                            controller.ActivateLiveAmp(amp);
+                                        }
                                     }
                                 }
                             },
@@ -268,7 +271,10 @@ namespace EMinor
                                         MinValue = 0.0f,
                                         MaxValue = 127.0f,
                                         Value = () => (float)amp.Gain,
-                                        ValueChanged = (value) => amp.Gain = (int)value
+                                        ValueChanged = (value) => {
+                                            amp.Gain = (int)value;
+                                            controller.ActivateLiveAmp(amp);
+                                        }
                                     }
                                 }
                             }
