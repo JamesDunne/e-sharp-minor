@@ -266,7 +266,8 @@ namespace EMinor
                                         Stroke = clrBtnOutline,
                                         MinValue = 0.0f,
                                         MaxValue = 127.0f,
-                                        Value = () => (float)amp.Gain
+                                        Value = () => (float)amp.Gain,
+                                        ValueChanged = (value) => amp.Gain = (int)value
                                     }
                                 }
                             }

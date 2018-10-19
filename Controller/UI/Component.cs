@@ -56,6 +56,8 @@ namespace EMinor.UI
         public Point Point => ComputedPoint ?? EMinor.Point.Zero;
         public Bounds Bounds => ComputedBounds ?? Parent?.Bounds ?? platform.Bounds;
 
+        public Point RootOffset => Point + (Parent?.RootOffset ?? EMinor.Point.Zero);
+
         public Padding Padding { get; set; }
 
         protected virtual void CalculateChildrenLayout(Point point, Bounds bounds, List<Component> fillChildren)
@@ -169,6 +171,8 @@ namespace EMinor.UI
 
         public bool IsPointInside(in Point p) => p.X >= Point.X && p.Y >= Point.Y && p.X < Point.X + Bounds.W && p.Y < Point.Y + Bounds.H;
 
+        public virtual bool IsPressable => (OnPress != null || OnRelease != null);
+
         public Component FindPressableComponent(in Point point)
         {
             if (!IsPointInside(point))
@@ -187,11 +191,11 @@ namespace EMinor.UI
                 }
             }
 
-            // Only report this component if OnPress or OnRelease is defined:
-            return (OnPress != null || OnRelease != null) ? this : null;
+            // Only report this component if IsPressable:
+            return IsPressable ? this : null;
         }
 
-        public bool HandleAction(in Point point, TouchAction action)
+        public virtual bool HandleAction(in Point point, TouchAction action)
         {
             // Determine which handler function to invoke:
             ActionHandler fn = null;
