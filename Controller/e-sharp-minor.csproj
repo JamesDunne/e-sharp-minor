@@ -28,6 +28,13 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <LangVersion>Latest</LangVersion>
   </PropertyGroup>
+  <PropertyGroup Condition=" '$(RunConfiguration)' == 'Default' ">
+    <StartAction>Project</StartAction>
+    <ExternalConsole>false</ExternalConsole>
+    <EnvironmentVariables>
+      <Variable name="LANG" value="en_US.UTF-8" />
+    </EnvironmentVariables>
+  </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="YamlDotNet" Version="5.0.1" />
   </ItemGroup>
