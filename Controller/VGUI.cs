@@ -236,7 +236,8 @@ namespace EMinor
                                         Stroke = clrBtnOutline,
                                         MinValue = 0.0f,
                                         MaxValue = 127.0f,
-                                        Value = () => (float)amp.VolumeMIDI
+                                        Value = () => (float)amp.VolumeMIDI,
+                                        ValueChanged = (value) => amp.VolumeMIDI = (int)value
                                     }
                                 }
                             },
