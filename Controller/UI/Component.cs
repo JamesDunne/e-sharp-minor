@@ -208,6 +208,38 @@ namespace EMinor.UI
 
             return handled;
         }
+
+        protected Point TranslateAlignment(HAlign hAlign, VAlign vAlign, Bounds inner)
+        {
+            float tx = 0f;
+            switch (hAlign)
+            {
+                case HAlign.Left:
+                    tx = 0f;
+                    break;
+                case HAlign.Right:
+                    tx = Bounds.W - inner.W;
+                    break;
+                case HAlign.Center:
+                    tx = (Bounds.W * 0.5f) - (inner.W * 0.5f);
+                    break;
+            }
+
+            float ty = 0f;
+            switch (vAlign)
+            {
+                case VAlign.Bottom:
+                    break;
+                case VAlign.Top:
+                    ty = Bounds.H - inner.H;
+                    break;
+                case VAlign.Middle:
+                    ty = (Bounds.H * 0.5f) - (inner.H * 0.5f);
+                    break;
+            }
+
+            return new Point(tx, ty);
+        }
     }
 
     public enum Dock
@@ -217,5 +249,19 @@ namespace EMinor.UI
         Top,
         Right,
         Bottom
+    }
+
+    public enum VAlign
+    {
+        Bottom,
+        Middle,
+        Top
+    }
+
+    public enum HAlign
+    {
+        Left,
+        Center,
+        Right
     }
 }

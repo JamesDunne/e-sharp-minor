@@ -10,8 +10,8 @@ namespace EMinor.UI
         public PaintColor TextColor { get; set; }
         public VGFont TextFont { get; set; }
         public float TextSize { get; set; }
-        public TextVAlign TextVAlign { get; set; }
-        public TextHAlign TextHAlign { get; set; }
+        public VAlign TextVAlign { get; set; }
+        public HAlign TextHAlign { get; set; }
 
         public string LastText { get; private set; }
         private byte[] lastTextUTF32;
@@ -44,56 +44,16 @@ namespace EMinor.UI
                 }
 
                 // Determine translation point from alignment settings:
-                float tx = 0f;
-                switch (TextHAlign)
-                {
-                    case TextHAlign.Left:
-                        tx = 0f;
-                        break;
-                    case TextHAlign.Right:
-                        tx = Bounds.W - lastTextBounds.W * TextSize;
-                        break;
-                    case TextHAlign.Center:
-                        tx = Bounds.W * 0.5f - (lastTextBounds.W * 0.5f * TextSize);
-                        break;
-                }
-
-                float ty = 0f;
-                switch (TextVAlign)
-                {
-                    case TextVAlign.Bottom:
-                        break;
-                    case TextVAlign.Top:
-                        ty = Bounds.H - lastTextBounds.H * TextSize;
-                        break;
-                    case TextVAlign.Middle:
-                        ty = Bounds.H * 0.5f - (lastTextBounds.H * 0.5f * TextSize);
-                        break;
-                }
-
-                vg.FillPaint = TextColor;
+                var alignment = TranslateAlignment(TextHAlign, TextVAlign, lastTextBounds * TextSize);
 
                 // Translate to alignment point:
                 vg.PushMatrix();
-                vg.Translate(tx, ty);
+                vg.Translate(alignment.X, alignment.Y);
                 // Draw text:
+                vg.FillPaint = TextColor;
                 vg.DrawText(TextFont, lastTextLength, lastTextUTF32, PaintMode.VG_FILL_PATH, false, TextSize);
                 vg.PopMatrix();
             }
         }
-    }
-
-    public enum TextVAlign
-    {
-        Bottom,
-        Middle,
-        Top
-    }
-
-    public enum TextHAlign
-    {
-        Left,
-        Center,
-        Right,
     }
 }

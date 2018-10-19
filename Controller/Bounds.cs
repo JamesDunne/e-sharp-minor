@@ -22,5 +22,10 @@ namespace EMinor
         {
             return new Bounds(a.W - b.W, a.H - b.H);
         }
+
+        public static Bounds operator *(Bounds b, float scalar)
+        {
+            return new Bounds(b.W * scalar, b.H * scalar);
+        }
     }
 }
