@@ -372,9 +372,10 @@ namespace OpenVG
                 // Copy in new data:
                 fixed (float* f = Data)
                 {
-                    for (int i = 0; i < 9; i++)
+                    float* p = f + Head;
+                    for (int i = 0; i < 9; i++, p++, m++)
                     {
-                        f[Head + i] = m[i];
+                        *p = *m;
                     }
                 }
                 Head += 9;
