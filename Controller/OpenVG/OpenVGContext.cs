@@ -401,38 +401,37 @@ namespace OpenVG
             }
         }
 
+        private class MatrixState
+        {
+            public MatrixStack Stack;
+        }
+
         int matrixMode = (int)MatrixMode.VG_MATRIX_PATH_USER_TO_SURFACE;
-        Dictionary<int, MatrixStack[]> matrixStack = new Dictionary<int, MatrixStack[]>();
+        readonly Dictionary<int, MatrixState> matrixState = new Dictionary<int, MatrixState>()
+        {
+            { (int)MatrixMode.VG_MATRIX_PATH_USER_TO_SURFACE, new MatrixState() },
+            { (int)MatrixMode.VG_MATRIX_GLYPH_USER_TO_SURFACE, new MatrixState() },
+        };
 
         public void PushMatrix()
         {
-            MatrixStack[] stack;
-            if (!matrixStack.TryGetValue(matrixMode, out stack))
-            {
-                stack = new[] { new MatrixStack() };
-                matrixStack.Add(matrixMode, stack);
-            }
+            MatrixState state = matrixState[matrixMode];
 
             unsafe
             {
                 float* m = stackalloc float[9];
                 vgGetMatrix(m);
-                stack[0].Push(m);
+                state.Stack.Push(m);
             }
         }
 
         public void PopMatrix()
         {
-            MatrixStack[] stack;
-            if (!matrixStack.TryGetValue(matrixMode, out stack))
-            {
-                stack = new[] { new MatrixStack() };
-                matrixStack.Add(matrixMode, stack);
-            }
+            MatrixState state = matrixState[matrixMode];
 
             unsafe
             {
-                float* m = stack[0].Pop();
+                float* m = state.Stack.Pop();
                 vgLoadMatrix(m);
             }
         }
