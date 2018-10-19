@@ -12,7 +12,7 @@ namespace EMinor.UI
         protected readonly IPlatform platform;
         protected readonly IOpenVG vg;
 
-        private readonly List<Component> children;
+        protected readonly List<Component> children;
 
         protected Component(IPlatform platform)
         {
@@ -26,7 +26,7 @@ namespace EMinor.UI
             this.children.ForEach(c => c.Dispose());
         }
 
-        private void SetParent(Component component)
+        public virtual void SetParent(Component component)
         {
             this.Parent = component;
         }
@@ -163,9 +163,9 @@ namespace EMinor.UI
 
         public delegate bool ActionHandler(Component cmp, Point p);
 
-        public ActionHandler OnPress { get; set; }
-        public ActionHandler OnMove { get; set; }
-        public ActionHandler OnRelease { get; set; }
+        public virtual ActionHandler OnPress { get; set; }
+        public virtual ActionHandler OnMove { get; set; }
+        public virtual ActionHandler OnRelease { get; set; }
 
         public bool IsPointInside(in Point p) => p.X >= Point.X && p.Y >= Point.Y && p.X < Point.X + Bounds.W && p.Y < Point.Y + Bounds.H;
 
