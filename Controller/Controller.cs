@@ -415,6 +415,29 @@ namespace EMinor
             ActivateScene(scene);
         }
 
+        public void ActivateLiveAmp(LiveAmp liveAmp)
+        {
+            Debug.WriteLine($"Amp[{liveAmp.AmpDefinition.AmpNumber + 1}]: gain   val (CC {liveAmp.AmpDefinition.GainControllerCC:X2}h) to {liveAmp.Gain:X2}h");
+            midi.SetController(channel, liveAmp.AmpDefinition.GainControllerCC, liveAmp.Gain);
+            Debug.WriteLine($"Amp[{liveAmp.AmpDefinition.AmpNumber + 1}]: volume val (CC {liveAmp.AmpDefinition.VolumeControllerCC:X2}h) to {liveAmp.VolumeMIDI:X2}h ({MIDItoDB(liveAmp.VolumeMIDI)} dB)");
+            midi.SetController(channel, liveAmp.AmpDefinition.VolumeControllerCC, liveAmp.VolumeMIDI);
+
+            foreach (var liveFX in liveAmp.FX)
+            {
+                if (liveFX.Enabled.HasValue)
+                {
+                    Debug.WriteLine($"Amp[{liveAmp.AmpDefinition.AmpNumber + 1}]: {liveFX.BlockName}   1/0 (CC {liveFX.EnabledCC:X2}h) to {(liveFX.Enabled.Value ? "on" : "off")}");
+                    midi.SetController(channel, liveFX.EnabledCC, liveFX.Enabled.Value ? 0x7F : 0x00);
+                }
+
+                if (liveFX.XY.HasValue && liveFX.XYSwitchCC.HasValue)
+                {
+                    Debug.WriteLine($"Amp[{liveAmp.AmpDefinition.AmpNumber + 1}]: {liveFX.BlockName}   X/Y (CC {liveFX.XYSwitchCC.Value:X2}h) to {(liveFX.XY.Value == XYSwitch.X ? "X" : "Y")}");
+                    midi.SetController(channel, liveFX.XYSwitchCC.Value, liveFX.XY.Value == XYSwitch.X ? 0x7F : 0x00);
+                }
+            }
+        }
+
         public void ActivateScene(int scene)
         {
             this.currentScene = scene;
@@ -439,54 +462,32 @@ namespace EMinor
                 // Figure out the song-specific override of tone:
                 liveAmp.SongTone = currentSong.Amps?[i].Tones?.GetValueOrDefault(liveAmp.SceneTone.Tone);
 
-                // Combine tone definition with scene tone override:
-                var blockNames = liveAmp.ToneDefinition.Blocks.Keys.ToHashSet();
-                //blockNames.UnionWith(sceneTone.Blocks?.Keys ?? Enumerable.Empty<string>());
-
                 // Set the gain and volume:
                 liveAmp.Gain = liveAmp.SceneTone.Gain ?? liveAmp.SongTone?.Gain ?? liveAmp.ToneDefinition.Gain;
                 liveAmp.VolumeMIDI = liveAmp.SceneTone.Volume ?? liveAmp.SongTone?.Volume ?? liveAmp.ToneDefinition.Volume;
 
-                Debug.WriteLine($"Amp[{i + 1}]: gain   val (CC {liveAmp.AmpDefinition.GainControllerCC:X2}h) to {liveAmp.Gain:X2}h");
-                midi.SetController(channel, liveAmp.AmpDefinition.GainControllerCC, liveAmp.Gain);
-                Debug.WriteLine($"Amp[{i + 1}]: volume val (CC {liveAmp.AmpDefinition.VolumeControllerCC:X2}h) to {liveAmp.VolumeMIDI:X2}h ({MIDItoDB(liveAmp.VolumeMIDI)} dB)");
-                midi.SetController(channel, liveAmp.AmpDefinition.VolumeControllerCC, liveAmp.VolumeMIDI);
+                // Combine tone definition with scene tone override:
+                var blockNames = liveAmp.ToneDefinition.Blocks.Keys.ToHashSet();
 
                 // Set all the controller values for the selected tone:
-                liveAmp.FX = new List<LiveFX>(blockNames.Count);
-                foreach (string blockName in blockNames)
-                {
-                    var liveFX = new LiveFX
+                liveAmp.FX = (
+                    from blockName in blockNames
+                    let blockDefinition = liveAmp.AmpDefinition.Blocks[blockName]
+                    let blockDefault = liveAmp.ToneDefinition.Blocks[blockName]
+                    let songBlockOverride = liveAmp.SongTone?.Blocks?.GetValueOrDefault(blockName)
+                    let sceneBlockOverride = liveAmp.SceneTone.Blocks?.GetValueOrDefault(blockName)
+                    select new LiveFX
                     {
-                        BlockName = blockName
-                    };
-                    liveAmp.FX.Add(liveFX);
-
-                    FXBlock blockDefault = liveAmp.ToneDefinition.Blocks[blockName];
-                    FXBlockDefinition blockDefinition = liveAmp.AmpDefinition.Blocks[blockName];
-
-                    liveFX.EnabledCC = blockDefinition.EnabledSwitchCC;
-                    liveFX.XYSwitchCC = blockDefinition.XYSwitchCC;
-
-                    SongFXBlockOverride songBlockOverride = liveAmp.SongTone?.Blocks?.GetValueOrDefault(blockName);
-
-                    // Follow inheritance chain to determine enabled and X/Y switch values:
-                    var sceneBlockOverride = liveAmp.SceneTone.Blocks?.GetValueOrDefault(blockName);
-
-                    liveFX.Enabled = sceneBlockOverride?.On ?? songBlockOverride?.On ?? blockDefault.On;
-                    if (liveFX.Enabled.HasValue)
-                    {
-                        Debug.WriteLine($"Amp[{i + 1}]: {blockName}   1/0 (CC {liveFX.EnabledCC:X2}h) to {(liveFX.Enabled.Value ? "on" : "off")}");
-                        midi.SetController(channel, liveFX.EnabledCC, liveFX.Enabled.Value ? 0x7F : 0x00);
+                        BlockName = blockName,
+                        EnabledCC = blockDefinition.EnabledSwitchCC,
+                        XYSwitchCC = blockDefinition.XYSwitchCC,
+                        Enabled = sceneBlockOverride?.On ?? songBlockOverride?.On ?? blockDefault.On,
+                        XY = sceneBlockOverride?.XY ?? songBlockOverride?.XY ?? blockDefault.XY
                     }
+                ).ToList();
 
-                    liveFX.XY = sceneBlockOverride?.XY ?? songBlockOverride?.XY ?? blockDefault.XY;
-                    if (liveFX.XY.HasValue && liveFX.XYSwitchCC.HasValue)
-                    {
-                        Debug.WriteLine($"Amp[{i + 1}]: {blockName}   X/Y (CC {liveFX.XYSwitchCC.Value:X2}h) to {(liveFX.XY.Value == XYSwitch.X ? "X" : "Y")}");
-                        midi.SetController(channel, liveFX.XYSwitchCC.Value, liveFX.XY.Value == XYSwitch.X ? 0x7F : 0x00);
-                    }
-                }
+                // Send MIDI updates:
+                ActivateLiveAmp(liveAmp);
             }
 
             // TODO: send tempo SysEx message.
