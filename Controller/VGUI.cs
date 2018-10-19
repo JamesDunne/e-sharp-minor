@@ -231,14 +231,12 @@ namespace EMinor
                                         TextVAlign = VAlign.Middle,
                                         Text = () => $"{amp.Volume,4:N1} dB"
                                     },
-                                    new Panel(platform) {
-                                        Padding = new Padding(8, 8, 8, 8),
-                                        Children = {
-                                            new Button(platform) {
-                                                Fill = clrBtnBg,
-                                                Stroke = clrBtnOutline
-                                            }
-                                        }
+                                    new HSlider(platform) {
+                                        Fill = clrBtnBg,
+                                        Stroke = clrBtnOutline,
+                                        MinValue = 0.0f,
+                                        MaxValue = 127.0f,
+                                        Value = () => (float)amp.VolumeMIDI
                                     }
                                 }
                             },
@@ -262,6 +260,13 @@ namespace EMinor
                                         TextSize = 16,
                                         TextVAlign = VAlign.Middle,
                                         Text = () => $"{amp.Gain:X02}"
+                                    },
+                                    new HSlider(platform) {
+                                        Fill = clrBtnBg,
+                                        Stroke = clrBtnOutline,
+                                        MinValue = 0.0f,
+                                        MaxValue = 127.0f,
+                                        Value = () => (float)amp.Gain
                                     }
                                 }
                             }
