@@ -199,7 +199,7 @@ namespace EMinor
 
             public List<LiveFX> FX;
 
-            public double Volume => Controller.MIDItoDB(VolumeMIDI);
+            public float Volume => (float)Controller.MIDItoDB(VolumeMIDI);
         }
     }
 }

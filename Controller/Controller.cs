@@ -387,10 +387,10 @@ namespace EMinor
 
         public static double MIDItoDB(int volume)
         {
-            double p = (double)volume / 127.0;
+            var p = (double)volume / 127.0;
             // log20a taper (50% -> 20%)
             p = (Pow(15.5, p) - 1.0) / 14.5;
-            double db = dB(p) + 6.0;
+            var db = dB(p) + 6.0;
             return db;
         }
 
