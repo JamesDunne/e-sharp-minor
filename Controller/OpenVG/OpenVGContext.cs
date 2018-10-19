@@ -354,45 +354,85 @@ namespace OpenVG
 
         #region VG fakes
 
+        private unsafe struct MatrixStack
+        {
+            public uint Head;
+            public fixed float Data[maxBytes];
+
+            public const int MaxSize = 20;
+            private const int maxBytes = 9 * MaxSize;
+
+            public unsafe void Push(float* m)
+            {
+                if (Head >= maxBytes)
+                {
+                    throw new InvalidOperationException();
+                }
+
+                // Copy in new data:
+                fixed (float* f = Data)
+                {
+                    for (int i = 0; i < 9; i++)
+                    {
+                        f[Head + i] = m[i];
+                    }
+                }
+                Head += 9;
+            }
+
+            public unsafe float* Pop()
+            {
+                if (Head <= 0)
+                {
+                    throw new InvalidOperationException();
+                }
+
+                Head -= 9;
+                //for (int i = 0; i < 9; i++)
+                //{
+                //    m[i] = Data[Head + i];
+                //}
+
+                fixed (float* f = Data)
+                {
+                    return &f[Head];
+                }
+            }
+        }
+
         int matrixMode = (int)MatrixMode.VG_MATRIX_PATH_USER_TO_SURFACE;
-        Dictionary<int, Stack<float[]>> matrixStack = new Dictionary<int, Stack<float[]>>();
+        Dictionary<int, MatrixStack[]> matrixStack = new Dictionary<int, MatrixStack[]>();
 
         public void PushMatrix()
         {
-            Stack<float[]> stack;
+            MatrixStack[] stack;
             if (!matrixStack.TryGetValue(matrixMode, out stack))
             {
-                stack = new Stack<float[]>();
+                stack = new[] { new MatrixStack() };
                 matrixStack.Add(matrixMode, stack);
             }
 
-            float[] m = new float[9];
             unsafe
             {
-                fixed (float* p = m)
-                {
-                    vgGetMatrix(p);
-                }
+                float* m = stackalloc float[9];
+                vgGetMatrix(m);
+                stack[0].Push(m);
             }
-            stack.Push(m);
         }
 
         public void PopMatrix()
         {
-            Stack<float[]> stack;
+            MatrixStack[] stack;
             if (!matrixStack.TryGetValue(matrixMode, out stack))
             {
-                stack = new Stack<float[]>();
+                stack = new[] { new MatrixStack() };
                 matrixStack.Add(matrixMode, stack);
             }
 
-            float[] m = stack.Pop();
             unsafe
             {
-                fixed (float* p = m)
-                {
-                    vgLoadMatrix(p);
-                }
+                float* m = stack[0].Pop();
+                vgLoadMatrix(m);
             }
         }
 
