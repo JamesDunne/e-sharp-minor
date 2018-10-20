@@ -12,14 +12,27 @@ namespace EMinor
 {
     class MainClass
     {
+        // assuming 60Hz, 10 seconds:
+        const int totalBenchmarkPoints = 60 * 10;
+
         static void Main(string[] args)
         {
-            if (args.Length != 0 && args[0] == "translate")
+            bool benchmark = false;
+
+            if (args.Length != 0)
             {
-                Console.WriteLine("Running v5 to v6 translator...");
-                var translator = new Translator();
-                translator.Translate();
-                return;
+                if (args[0] == "translate")
+                {
+                    Console.WriteLine("Running v5 to v6 translator...");
+                    var translator = new Translator();
+                    translator.Translate();
+                    return;
+                }
+                else if (args[0] == "benchmark")
+                {
+                    Console.WriteLine("Benchmark mode ON");
+                    benchmark = true;
+                }
             }
 
             try
@@ -79,33 +92,94 @@ namespace EMinor
 
                     // Initialize UI:
                     IOpenVG vg = platform.VG;
+
+                    List<double> benchmarkPoints = null;
+                    if (benchmark)
+                    {
+                        benchmarkPoints = new List<double>(totalBenchmarkPoints);
+                    }
+
+                    VGUI ui = null;
+                    ManualResetEvent uiInitialized = new ManualResetEvent(false);
+
                     // Start a new thread to handle rendering:
                     var renderThread = platform.NewRenderThread(() =>
                     {
-                        using (var ui = new VGUI(platform, controller))
+                        using (ui = new VGUI(platform, controller))
                         {
-#if TIMING
-                            var sw = new Stopwatch();
-                            sw.Start();
-#endif
-                            while (true)
+                            uiInitialized.Set();
+
+                            if (benchmark)
+                            {
+                                var sw = new Stopwatch();
+                                sw.Start();
+
+                                while (true)
+                                {
+                                    double start = sw.Elapsed.TotalMilliseconds;
+
+                                    // Render UI screen:
+                                    ui.Render();
+
+                                    var elapsed = sw.Elapsed.TotalMilliseconds - start;
+                                    benchmarkPoints.Add(elapsed);
+
+                                    Console.WriteLine($"{elapsed:N2} ms");
+
+                                    // Wait for next frame:
+                                    ui.WaitForNextFrame();
+                                }
+                            }
+                            else
                             {
 #if TIMING
-                                double start = sw.Elapsed.TotalMilliseconds;
+                                var sw = new Stopwatch();
+                                sw.Start();
 #endif
-                                // Render UI screen:
-                                ui.Render();
+                                while (true)
+                                {
+#if TIMING
+                                    double start = sw.Elapsed.TotalMilliseconds;
+#endif
+                                    // Render UI screen:
+                                    ui.Render();
 
 #if TIMING
-                                Console.Out.WriteLineAsync($"{sw.Elapsed.TotalMilliseconds - start:N2} ms");
+                                    Console.Out.WriteLineAsync($"{sw.Elapsed.TotalMilliseconds - start:N2} ms");
 #endif
 
-                                // Wait for next frame:
-                                ui.EndFrame();
+                                    // Wait for next frame:
+                                    ui.WaitForNextFrame();
+                                }
                             }
                         }
                     });
                     renderThread.Start();
+
+                    // Wait for renderer thread to initialize:
+                    uiInitialized.WaitOne();
+                    if (benchmark)
+                    {
+                        // Toss out 20 frames to warm up JIT:
+                        for (int i = 0; i < 20; i++)
+                        {
+                            platform.PollEvents();
+                            ui.AllowFrame();
+                            ui.WaitForFrameReady();
+                        }
+                        benchmarkPoints.Clear();
+                        // Start the benchmark:
+                        Console.WriteLine("Benchmark started");
+                        for (int i = 0; i < totalBenchmarkPoints; i++)
+                        {
+                            platform.PollEvents();
+                            ui.AllowFrame();
+                            ui.WaitForFrameReady();
+                        }
+                        Console.WriteLine("Benchmark complete");
+                        Console.WriteLine($"Total time: {benchmarkPoints.Sum():N2} ms");
+                        return;
+                    }
 
                     // Main thread:
                     bool quit = false;

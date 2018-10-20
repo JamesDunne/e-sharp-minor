@@ -143,6 +143,11 @@ namespace EMinor
             Glfw.WaitEvents();
         }
 
+        public void PollEvents()
+        {
+            Glfw.PollEvents();
+        }
+
         void handleMousePos(Glfw.Window window, double x, double y)
         {
             float newX = ((float)x - 1.0f);

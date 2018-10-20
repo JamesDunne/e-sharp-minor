@@ -29,6 +29,7 @@ namespace EMinor
 
         private Component selectedComponent;
         private readonly AutoResetEvent needFrame;
+        private readonly AutoResetEvent frameReady;
 
         public struct FootSwitchMapping
         {
@@ -58,6 +59,7 @@ namespace EMinor
             selectedComponent = null;
 
             needFrame = new AutoResetEvent(false);
+            frameReady = new AutoResetEvent(false);
 
             vg.ClearColor = new float[] { 0.0f, 0.0f, 0.2f, 1.0f };
 
@@ -416,12 +418,26 @@ namespace EMinor
 
             // Swap buffers to display and vsync (if applicable):
             platform.SwapBuffers();
+
+            frameReady.Set();
         }
 
-        public void EndFrame()
+        public void WaitForNextFrame()
         {
             needFrame.WaitOne();
             needFrame.Reset();
+        }
+
+        public void AllowFrame()
+        {
+            // Unblock the render loop:
+            needFrame.Set();
+        }
+
+        public void WaitForFrameReady()
+        {
+            frameReady.WaitOne();
+            frameReady.Reset();
         }
     }
 }

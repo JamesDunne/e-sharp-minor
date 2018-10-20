@@ -163,12 +163,14 @@ namespace EMinor.UI
 
         public bool LayoutCalculated { get; set; }
 
-        public virtual void Render()
+        public virtual unsafe void Render()
         {
             if (!LayoutCalculated)
             {
                 CalculateLayout();
             }
+
+            //float* m = stackalloc float[9];
 
             vg.PushMatrix();
 

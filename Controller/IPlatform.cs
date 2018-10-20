@@ -26,6 +26,7 @@ namespace EMinor
         void SwapBuffers();
         bool ShouldQuit();
         void WaitEvents();
+        void PollEvents();
 
         Thread NewRenderThread(ThreadStart threadStart);
     }

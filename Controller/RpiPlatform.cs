@@ -386,6 +386,12 @@ namespace EMinor
             }
         }
 
+        public void PollEvents()
+        {
+            fsw.PollEvents();
+            touchScreen.PollEvents();
+        }
+
         #region DispmanX
 
         [StructLayout(LayoutKind.Sequential)]
