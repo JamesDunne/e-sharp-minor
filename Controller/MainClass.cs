@@ -179,6 +179,9 @@ namespace EMinor
                             ui.WaitForFrameReady();
                         }
                         Console.WriteLine("Benchmark complete");
+                        Console.WriteLine($"Min   time: {benchmarkPoints.Min():N2} ms");
+                        Console.WriteLine($"Max   time: {benchmarkPoints.Max():N2} ms");
+                        Console.WriteLine($"Avg   time: {benchmarkPoints.Average():N2} ms");
                         Console.WriteLine($"Total time: {benchmarkPoints.Sum():N2} ms");
                         return;
                     }
