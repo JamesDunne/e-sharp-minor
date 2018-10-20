@@ -35,14 +35,18 @@ namespace EMinor
             // Create a renderer instance that renders glyphs to OpenVG paths:
             var renderer = new NRasterizer.Renderer(typeFace, this);
 
+            var allChars = typeFace.AllCharacters().ToList();
+            var escapements = new Dictionary<uint, float[]>(allChars.Count);
+
             // Run through all glyphs defined and create OpenVG paths for them:
-            foreach (var c in typeFace.AllCharacters())
+            foreach (var c in allChars)
             {
                 renderer.RenderChar(0, 0, c, 1, false);
                 this.SetGlyphToPath(destFont, c);
+                escapements[c] = escapement;
             }
 
-            return new VGFont(vg, destFont, typeFace);
+            return new VGFont(vg, destFont, escapements);
         }
 
         public void SetGlyphToPath(FontHandle font, uint glyphIndex)

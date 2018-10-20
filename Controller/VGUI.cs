@@ -222,8 +222,8 @@ namespace EMinor
                                         TextColor = white,
                                         TextSize = 16,
                                         TextVAlign = VAlign.Middle,
-                                        Text = () => $"Volume"
-                                    },
+                                        Text = () => "Volume"
+                                    }/*,
                                     new Label(platform) {
                                         Dock = Dock.Right,
                                         Width = 80,
@@ -243,12 +243,13 @@ namespace EMinor
                                             amp.VolumeMIDI = (int)value;
                                             controller.ActivateLiveAmp(amp);
                                         }
-                                    }
+                                    }*/
                                 }
                             },
                             // Gain slider:
                             new HorizontalStack(platform) {
                                 Children = {
+                                    /*
                                     new Label(platform) {
                                         Dock = Dock.Left,
                                         Width = 80,
@@ -277,7 +278,7 @@ namespace EMinor
                                             amp.Gain = (int)value;
                                             controller.ActivateLiveAmp(amp);
                                         }
-                                    }
+                                    }*/
                                 }
                             }
                         }

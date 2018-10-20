@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using NRasterizer;
 using OpenVG;
 
@@ -8,17 +9,17 @@ namespace EMinor
     {
         private readonly IOpenVG vg;
         private FontHandle fontHandle;
-        private Typeface typeFace;
+        private Dictionary<uint, float[]> escapements;
 
-        public VGFont(IOpenVG vg, FontHandle fontHandle, Typeface typeFace)
+        public VGFont(IOpenVG vg, FontHandle fontHandle, Dictionary<uint, float[]> escapements)
         {
             this.vg = vg;
             this.fontHandle = fontHandle;
-            this.typeFace = typeFace;
+            this.escapements = escapements;
         }
 
         public FontHandle FontHandle => fontHandle;
-        public Typeface TypeFace => typeFace;
+        public Dictionary<uint, float[]> Escapements => escapements;
 
         public static implicit operator FontHandle(VGFont font)
         {
@@ -30,7 +31,7 @@ namespace EMinor
             float w = 0f;
             foreach (var ch in text)
             {
-                w += (float)typeFace.GetAdvanceWidth(ch) / 2048;
+                w += escapements[ch][0];
             }
             return new Bounds(w, 1.0f);
         }
@@ -39,7 +40,7 @@ namespace EMinor
         {
             vg.DestroyFont(this.fontHandle);
             this.fontHandle = FontHandle.Invalid;
-            this.typeFace = null;
+            this.escapements = null;
         }
     }
 }
