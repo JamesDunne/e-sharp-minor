@@ -354,6 +354,7 @@ namespace OpenVG
 
         #region VG fakes
 
+#if FIXEDSTACK
         private unsafe struct MatrixStack
         {
             public uint Head;
@@ -400,10 +401,15 @@ namespace OpenVG
                 }
             }
         }
+#endif
 
         private class MatrixState
         {
+#if FIXEDSTACK
             public MatrixStack Stack;
+#else
+            public Stack<float[]> Stack = new Stack<float[]>();
+#endif
         }
 
         int matrixMode = (int)MatrixMode.VG_MATRIX_PATH_USER_TO_SURFACE;
@@ -419,9 +425,18 @@ namespace OpenVG
 
             unsafe
             {
+#if FIXEDSTACK
                 float* m = stackalloc float[9];
                 vgGetMatrix(m);
                 state.Stack.Push(m);
+#else
+                float[] m = new float[9];
+                fixed (float* p = m)
+                {
+                    vgGetMatrix(p);
+                }
+                state.Stack.Push(m);
+#endif
             }
         }
 
@@ -431,8 +446,16 @@ namespace OpenVG
 
             unsafe
             {
+#if FIXEDSTACK
                 float* m = state.Stack.Pop();
                 vgLoadMatrix(m);
+#else
+                float[] m = state.Stack.Pop();
+                fixed (float* p = m)
+                {
+                    vgLoadMatrix(p);
+                }
+#endif
             }
         }
 
