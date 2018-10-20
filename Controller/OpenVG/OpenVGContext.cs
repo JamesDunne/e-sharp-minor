@@ -533,7 +533,7 @@ namespace OpenVG
 
                 fixed (byte* bytes = utf32Text)
                 {
-                    vgDrawGlyphs(textFont, glyphCount, (uint*)bytes, null, null, (uint)PaintMode.VG_FILL_PATH, 0U);
+                    vgDrawGlyphs(textFont, glyphCount, (uint*)bytes, null, null, (uint)paintModes, 0U);
                 }
 
                 // Restore matrix mode:
