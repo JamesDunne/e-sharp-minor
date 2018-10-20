@@ -224,7 +224,7 @@ namespace EMinor
                                         TextSize = 16,
                                         TextVAlign = VAlign.Middle,
                                         Text = () => "Volume"
-                                    }/*,
+                                    },
                                     new Label(platform) {
                                         Dock = Dock.Right,
                                         Width = 80,
@@ -244,13 +244,12 @@ namespace EMinor
                                             amp.VolumeMIDI = (int)value;
                                             controller.ActivateLiveAmp(amp);
                                         }
-                                    }*/
+                                    }
                                 }
                             },
                             // Gain slider:
                             new HorizontalStack(platform) {
                                 Children = {
-                                    /*
                                     new Label(platform) {
                                         Dock = Dock.Left,
                                         Width = 80,
@@ -258,7 +257,7 @@ namespace EMinor
                                         TextColor = white,
                                         TextSize = 16,
                                         TextVAlign = VAlign.Middle,
-                                        Text = () => $"Gain"
+                                        Text = () => "Gain"
                                     },
                                     new Label(platform) {
                                         Dock = Dock.Right,
@@ -279,7 +278,7 @@ namespace EMinor
                                             amp.Gain = (int)value;
                                             controller.ActivateLiveAmp(amp);
                                         }
-                                    }*/
+                                    }
                                 }
                             }
                         }

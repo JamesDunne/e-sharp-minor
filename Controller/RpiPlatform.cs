@@ -356,7 +356,7 @@ namespace EMinor
 
         public void SwapBuffers()
         {
-            vg.Flush();
+            //vg.Flush();
             //vg.Finish();
 
             //Debug.WriteLine("eglSwapBuffers(display, surface)");
