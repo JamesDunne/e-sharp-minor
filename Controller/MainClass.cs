@@ -1,4 +1,5 @@
 ﻿#define TIMING
+#define THREADS
 
 using System;
 using System.Collections.Generic;
@@ -128,7 +129,9 @@ namespace EMinor
                                     benchmarkPoints.Add(elapsed);
 
                                     ui.FrameReady();
-                                    //Console.WriteLine($"{elapsed:N2} ms");
+#if TIMING
+                                    Console.Out.WriteLineAsync($"{elapsed:N2} ms");
+#endif
 
                                     // Wait for next frame:
                                     ui.WaitForNextFrame();
@@ -227,7 +230,7 @@ namespace EMinor
                                 var elapsed = sw.Elapsed.TotalMilliseconds - start;
                                 benchmarkPoints.Add(elapsed);
 #if TIMING
-                                Console.Out.WriteLineAsync($"{sw.Elapsed.TotalMilliseconds - start:N2} ms");
+                                Console.Out.WriteLineAsync($"{elapsed:N2} ms");
 #endif
                             }
 

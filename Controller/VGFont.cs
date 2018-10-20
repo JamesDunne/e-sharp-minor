@@ -28,6 +28,7 @@ namespace EMinor
 
         public Bounds MeasureText(string text)
         {
+            Console.WriteLine($"MeasureText('{text}')");
             float w = 0f;
             foreach (var ch in text)
             {
