@@ -13,9 +13,10 @@ namespace EMinor.UI
         public VAlign TextVAlign { get; set; }
         public HAlign TextHAlign { get; set; }
 
-        public string LastText { get; private set; }
+        private string LastText;
         private byte[] lastTextUTF32;
         private Bounds lastTextBounds;
+        private Point lastTextAlignment;
         private uint lastTextLength;
 
         public Label(IPlatform platform) : base(platform)
@@ -40,15 +41,13 @@ namespace EMinor.UI
                     LastText = text;
                     lastTextLength = (uint)LastText.Length;
                     lastTextUTF32 = System.Text.Encoding.UTF32.GetBytes(LastText);
-                    lastTextBounds = TextFont.MeasureText(LastText);
+                    lastTextBounds = TextFont.MeasureText(LastText) * TextSize;
+                    lastTextAlignment = TranslateAlignment(TextHAlign, TextVAlign, lastTextBounds);
                 }
-
-                // Determine translation point from alignment settings:
-                var alignment = TranslateAlignment(TextHAlign, TextVAlign, lastTextBounds * TextSize);
 
                 // Translate to alignment point:
                 vg.PushMatrix();
-                vg.Translate(alignment.X, alignment.Y);
+                vg.Translate(lastTextAlignment.X, lastTextAlignment.Y);
                 // Draw text:
                 vg.FillPaint = TextColor;
                 vg.DrawText(TextFont, lastTextLength, lastTextUTF32, PaintMode.VG_FILL_PATH, false, TextSize);
