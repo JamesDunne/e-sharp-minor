@@ -28,6 +28,7 @@ namespace EMinor
         void WaitEvents();
         void PollEvents();
 
+        void InitRenderThread();
         Thread NewRenderThread(ThreadStart threadStart);
     }
 

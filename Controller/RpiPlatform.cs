@@ -179,36 +179,40 @@ namespace EMinor
             vg.Translate(0.5f, 0.5f);
         }
 
+        public void InitRenderThread()
+        {
+            Debug.WriteLine("eglBindAPI(EGL_OPENVG_API)");
+            uint success = eglBindAPI(EGL.EGL_OPENVG_API);
+            if (success == 0)
+            {
+                throwIfError();
+                throw new Exception("eglBindAPI returned FALSE");
+            }
+
+            Debug.WriteLine("eglMakeCurrent(egldisplay, eglsurface, eglsurface, eglcontext)");
+            success = eglMakeCurrent(egldisplay, eglsurface, eglsurface, eglcontext);
+            if (success == 0)
+            {
+                throwIfError();
+                throw new Exception("eglMakeCurrent returned FALSE");
+            }
+
+            Debug.WriteLine("eglSwapInterval(egldisplay, 0)");
+            success = eglSwapInterval(egldisplay, 0);
+            if (success == 0)
+            {
+                throwIfError();
+                throw new Exception("eglSwapInterval returned FALSE");
+            }
+        }
+
         public Thread NewRenderThread(ThreadStart threadStart)
         {
             return new Thread(() =>
             {
                 try
                 {
-                    Debug.WriteLine("eglBindAPI(EGL_OPENVG_API)");
-                    uint success = eglBindAPI(EGL.EGL_OPENVG_API);
-                    if (success == 0)
-                    {
-                        throwIfError();
-                        throw new Exception("eglBindAPI returned FALSE");
-                    }
-
-                    Debug.WriteLine("eglMakeCurrent(egldisplay, eglsurface, eglsurface, eglcontext)");
-                    success = eglMakeCurrent(egldisplay, eglsurface, eglsurface, eglcontext);
-                    if (success == 0)
-                    {
-                        throwIfError();
-                        throw new Exception("eglMakeCurrent returned FALSE");
-                    }
-
-                    Debug.WriteLine("eglSwapInterval(egldisplay, 0)");
-                    success = eglSwapInterval(egldisplay, 0);
-                    if (success == 0)
-                    {
-                        throwIfError();
-                        throw new Exception("eglSwapInterval returned FALSE");
-                    }
-
+                    InitRenderThread();
                     threadStart();
                 }
                 catch (Exception ex)

@@ -103,12 +103,24 @@ namespace EMinor
             Glfw.SetCursorPosCallback(window, handleMousePos);
         }
 
+        public void InitRenderThread()
+        {
+            Glfw.MakeContextCurrent(window);
+        }
+
         public Thread NewRenderThread(ThreadStart threadStart)
         {
             return new Thread(() =>
             {
-                Glfw.MakeContextCurrent(window);
-                threadStart();
+                try
+                {
+                    InitRenderThread();
+                    threadStart();
+                }
+                catch (Exception ex)
+                {
+                    Console.Error.WriteLine(ex);
+                }
             })
             {
                 IsBackground = true

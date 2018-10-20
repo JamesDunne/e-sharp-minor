@@ -194,6 +194,7 @@ namespace EMinor
                     } while (!quit);
 #else
                     // Non-threaded version:
+                    platform.InitRenderThread();
                     using (ui = new VGUI(platform, controller))
                     {
                         if (benchmark)
