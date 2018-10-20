@@ -100,6 +100,7 @@ namespace EMinor
                     }
 
                     VGUI ui = null;
+#if THREADS
                     ManualResetEvent uiInitialized = new ManualResetEvent(false);
 
                     // Start a new thread to handle rendering:
@@ -124,6 +125,7 @@ namespace EMinor
                                     var elapsed = sw.Elapsed.TotalMilliseconds - start;
                                     benchmarkPoints.Add(elapsed);
 
+                                    ui.FrameReady();
                                     //Console.WriteLine($"{elapsed:N2} ms");
 
                                     // Wait for next frame:
@@ -190,6 +192,55 @@ namespace EMinor
                         // Check with the GUI if user indicated app should quit:
                         quit |= platform.ShouldQuit();
                     } while (!quit);
+#else
+                    // Non-threaded version:
+                    using (ui = new VGUI(platform, controller))
+                    {
+                        if (benchmark)
+                        {
+                            // Toss out 20 frames to warm up JIT:
+                            for (int i = 0; i < 20; i++)
+                            {
+                                ui.Render();
+                                platform.PollEvents();
+                            }
+
+                            // Start the benchmark:
+                            Console.WriteLine("Benchmark started");
+                            var sw = new Stopwatch();
+                            sw.Start();
+                            for (int i = 0; i < totalBenchmarkPoints; i++)
+                            {
+                                double start = sw.Elapsed.TotalMilliseconds;
+
+                                ui.Render();
+                                platform.PollEvents();
+
+                                var elapsed = sw.Elapsed.TotalMilliseconds - start;
+                                benchmarkPoints.Add(elapsed);
+                            }
+
+                            Console.WriteLine("Benchmark complete");
+                            Console.WriteLine($"Min   time: {benchmarkPoints.Min():N2} ms");
+                            Console.WriteLine($"Max   time: {benchmarkPoints.Max():N2} ms");
+                            Console.WriteLine($"Avg   time: {benchmarkPoints.Average():N2} ms");
+                            Console.WriteLine($"Total time: {benchmarkPoints.Sum():N2} ms");
+                            return;
+                        }
+
+                        // Main thread:
+                        bool quit = false;
+                        do
+                        {
+                            ui.Render();
+
+                            platform.WaitEvents();
+
+                            // Check with the GUI if user indicated app should quit:
+                            quit |= platform.ShouldQuit();
+                        } while (!quit);
+                    }
+#endif
                 }
             }
             catch (Exception ex)

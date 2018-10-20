@@ -418,8 +418,6 @@ namespace EMinor
 
             // Swap buffers to display and vsync (if applicable):
             platform.SwapBuffers();
-
-            frameReady.Set();
         }
 
         public void WaitForNextFrame()
@@ -431,6 +429,11 @@ namespace EMinor
         {
             // Unblock the render loop:
             needFrame.Set();
+        }
+
+        public void FrameReady()
+        {
+            frameReady.Set();
         }
 
         public void WaitForFrameReady()
