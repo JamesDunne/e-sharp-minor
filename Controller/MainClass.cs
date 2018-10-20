@@ -1,4 +1,6 @@
-﻿using System;
+﻿#define TIMING
+
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -200,6 +202,8 @@ namespace EMinor
                     platform.InitRenderThread();
                     using (ui = new VGUI(platform, controller))
                     {
+                        Stopwatch sw;
+
                         if (benchmark)
                         {
                             // Toss out 20 frames to warm up JIT:
@@ -211,7 +215,7 @@ namespace EMinor
 
                             // Start the benchmark:
                             Console.WriteLine("Benchmark started");
-                            var sw = new Stopwatch();
+                            sw = new Stopwatch();
                             sw.Start();
                             for (int i = 0; i < totalBenchmarkPoints; i++)
                             {
@@ -222,6 +226,9 @@ namespace EMinor
 
                                 var elapsed = sw.Elapsed.TotalMilliseconds - start;
                                 benchmarkPoints.Add(elapsed);
+#if TIMING
+                                Console.Out.WriteLineAsync($"{sw.Elapsed.TotalMilliseconds - start:N2} ms");
+#endif
                             }
 
                             Console.WriteLine("Benchmark complete");
@@ -234,9 +241,20 @@ namespace EMinor
 
                         // Main thread:
                         bool quit = false;
+#if TIMING
+                        sw = new Stopwatch();
+                        sw.Start();
+#endif
                         do
                         {
+#if TIMING
+                            double start = sw.Elapsed.TotalMilliseconds;
+#endif
                             ui.Render();
+
+#if TIMING
+                            Console.Out.WriteLineAsync($"{sw.Elapsed.TotalMilliseconds - start:N2} ms");
+#endif
 
                             platform.WaitEvents();
 
