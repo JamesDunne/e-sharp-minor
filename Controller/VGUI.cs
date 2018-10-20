@@ -425,7 +425,6 @@ namespace EMinor
         public void WaitForNextFrame()
         {
             needFrame.WaitOne();
-            needFrame.Reset();
         }
 
         public void AllowFrame()
@@ -437,7 +436,6 @@ namespace EMinor
         public void WaitForFrameReady()
         {
             frameReady.WaitOne();
-            frameReady.Reset();
         }
     }
 }

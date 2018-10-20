@@ -124,7 +124,7 @@ namespace EMinor
                                     var elapsed = sw.Elapsed.TotalMilliseconds - start;
                                     benchmarkPoints.Add(elapsed);
 
-                                    Console.WriteLine($"{elapsed:N2} ms");
+                                    //Console.WriteLine($"{elapsed:N2} ms");
 
                                     // Wait for next frame:
                                     ui.WaitForNextFrame();
