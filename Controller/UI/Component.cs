@@ -16,6 +16,9 @@ namespace EMinor.UI
         private Point? _computedPoint;
         private Bounds? _computedBounds;
 
+        public bool LayoutCalculated;
+        public bool ShapeCreated;
+
         protected Component(IPlatform platform)
         {
             this.platform = platform;
@@ -73,6 +76,7 @@ namespace EMinor.UI
             {
                 _computedBounds = value;
                 Bounds = _computedBounds ?? Parent?.Bounds ?? platform.Bounds;
+                ShapeCreated = false;
             }
         }
 
@@ -97,6 +101,12 @@ namespace EMinor.UI
             }
         }
 
+        public void UpdateShape()
+        {
+            CreateShape();
+            ShapeCreated = true;
+        }
+
         protected virtual void CreateShape()
         {
             // Override me to create OpenVG paths for the component.
@@ -106,7 +116,10 @@ namespace EMinor.UI
         {
             LayoutCalculated = true;
 
-            CreateShape();
+            if (!ShapeCreated)
+            {
+                UpdateShape();
+            }
 
             Point point = new Point(Padding.Left, Padding.Bottom);
             Bounds bounds = Bounds - new Bounds(Padding.Left + Padding.Right, Padding.Bottom + Padding.Top);
@@ -160,8 +173,6 @@ namespace EMinor.UI
                 CalculateChildrenLayout(point, bounds, fillChildren);
             }
         }
-
-        public bool LayoutCalculated { get; set; }
 
         public virtual unsafe void Render()
         {
