@@ -196,6 +196,7 @@ namespace OpenVG
             PathCapabilities capabilities
         )
         {
+            //Console.WriteLine("vgCreatePath");
             var result = vgCreatePath(
                 pathFormat,
                 datatype,
@@ -210,6 +211,7 @@ namespace OpenVG
 
         public PathHandle CreatePathStandardFloat()
         {
+            //Console.WriteLine("vgCreatePath");
             var result = vgCreatePath(
                 Constants.VG_PATH_FORMAT_STANDARD,
                 PathDatatype.VG_PATH_DATATYPE_F,
@@ -226,6 +228,7 @@ namespace OpenVG
         extern static void vgDestroyPath(uint path);
         public void DestroyPath(PathHandle path)
         {
+            //Console.WriteLine("vgDestroyPath");
             vgDestroyPath(path);
         }
 
