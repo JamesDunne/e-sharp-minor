@@ -125,6 +125,20 @@ namespace OpenVG
         VG_IMAGE_QUALITY_BETTER = (1 << 2)
     }
 
+    public enum BlendMode : int
+    {
+        VG_BLEND_SRC = 0x2000,
+        VG_BLEND_SRC_OVER = 0x2001,
+        VG_BLEND_DST_OVER = 0x2002,
+        VG_BLEND_SRC_IN = 0x2003,
+        VG_BLEND_DST_IN = 0x2004,
+        VG_BLEND_MULTIPLY = 0x2005,
+        VG_BLEND_SCREEN = 0x2006,
+        VG_BLEND_DARKEN = 0x2007,
+        VG_BLEND_LIGHTEN = 0x2008,
+        VG_BLEND_ADDITIVE = 0x2009
+    }
+
     [StructLayout(LayoutKind.Sequential)]
     public struct ImageHandle
     {
