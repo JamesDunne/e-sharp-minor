@@ -222,7 +222,6 @@ namespace EMinor
                                         Width = 80,
                                         TextFont = vera,
                                         TextColor = white,
-                                        TextSize = 16,
                                         TextVAlign = VAlign.Middle,
                                         Text = () => "Volume"
                                     },
@@ -231,7 +230,6 @@ namespace EMinor
                                         Width = 80,
                                         TextFont = vera,
                                         TextColor = white,
-                                        TextSize = 16,
                                         TextVAlign = VAlign.Middle,
                                         Text = () => $"{amp.Volume,4:N1} dB"
                                     },
@@ -256,7 +254,6 @@ namespace EMinor
                                         Width = 80,
                                         TextFont = vera,
                                         TextColor = white,
-                                        TextSize = 16,
                                         TextVAlign = VAlign.Middle,
                                         Text = () => "Gain"
                                     },
@@ -265,7 +262,6 @@ namespace EMinor
                                         Width = 80,
                                         TextFont = vera,
                                         TextColor = white,
-                                        TextSize = 16,
                                         TextVAlign = VAlign.Middle,
                                         Text = () => $"{amp.Gain:X02}"
                                     },

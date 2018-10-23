@@ -21,7 +21,7 @@ namespace EMinor.UI
 
         public Label(IPlatform platform) : base(platform)
         {
-            TextSize = 18.0f;
+            TextSize = 1.0f;
         }
 
         protected override void RenderSelf()

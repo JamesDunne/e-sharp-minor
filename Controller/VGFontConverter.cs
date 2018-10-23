@@ -71,7 +71,7 @@ namespace EMinor
                 var ch = entry.Key[0];
                 var desc = entry.Value;
 
-                Console.WriteLine($"img for '{ch}': {parent}, x={desc.X}, y={(height - 1) - (desc.Y + desc.Height - 1)}, {desc.Width}, {desc.Height}");
+                //Console.WriteLine($"img for '{ch}': {parent}, x={desc.X}, y={(height - 1) - (desc.Y + desc.Height - 1)}, {desc.Width}, {desc.Height}");
                 var child = vg.ChildImage(parent, desc.X, (height - 1) - (desc.Y + desc.Height - 1), desc.Width, desc.Height);
                 vg.ThrowIfError();
 
@@ -79,7 +79,7 @@ namespace EMinor
                 var escapement = new float[2] { desc.Advance, 0f };
                 escapements.Add(ch, escapement);
 
-                Console.WriteLine($"set glyph: origin = {origin[0]},{origin[1]}; escapement = {escapement[0]},{escapement[1]}");
+                //Console.WriteLine($"set glyph: origin = {origin[0]},{origin[1]}; escapement = {escapement[0]},{escapement[1]}");
                 vg.SetGlyphToImage(destFont, ch, child, origin, escapement);
                 vg.ThrowIfError();
 
