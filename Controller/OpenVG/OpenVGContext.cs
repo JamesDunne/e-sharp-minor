@@ -276,6 +276,34 @@ namespace OpenVG
             vgSetPaint(paint, paintModes);
         }
 
+        [DllImport(vg)]
+        extern static uint vgCreateImage(int format, int width, int height, int allowedQuality);
+        public ImageHandle CreateImage(ImageFormat format, int width, int height, ImageQuality allowedQuality)
+        {
+            return vgCreateImage((int)format, width, height, (int)allowedQuality);
+        }
+
+        [DllImport(vg)]
+        extern static void vgDestroyImage(uint image);
+        public void DestroyImage(ImageHandle image)
+        {
+            vgDestroyImage(image);
+        }
+
+        [DllImport(vg)]
+        extern static unsafe void vgImageSubData(uint image, void* data, int dataStride, int dataFormat, int x, int y, int width, int height);
+        public unsafe void ImageSubData(ImageHandle image, void* data, int dataStride, ImageFormat dataFormat, int x, int y, int width, int height)
+        {
+            vgImageSubData(image, data, dataStride, (int)dataFormat, x, y, width, height);
+        }
+
+        [DllImport(vg)]
+        extern static uint vgChildImage(uint parent, int x, int y, int width, int height);
+        public ImageHandle ChildImage(ImageHandle parent, int x, int y, int width, int height)
+        {
+            return vgChildImage(parent, x, y, width, height);
+        }
+
         [DllImport(vg, EntryPoint = "vgCreateFont")]
         extern static uint vgCreateFont(int glyphCapacityHint);
         public FontHandle CreateFont(int glyphCapacityHint)
@@ -296,6 +324,22 @@ namespace OpenVG
         public void SetGlyphToPath(FontHandle font, uint glyphIndex, PathHandle path, bool isHinted, float[] origin, float[] escapement)
         {
             vgSetGlyphToPath(font, glyphIndex, path, isHinted ? 1U : 0, origin, escapement);
+        }
+
+        [DllImport(vg)]
+        extern static unsafe void vgSetGlyphToImage(uint font, uint glyphIndex, uint image, float* origin, float* escapement);
+        public void SetGlyphToImage(FontHandle font, uint glyphIndex, ImageHandle image, float[] origin, float[] escapement)
+        {
+            unsafe
+            {
+                float* op = stackalloc float[2];
+                float* ep = stackalloc float[2];
+                op[0] = origin[0];
+                op[1] = origin[1];
+                ep[0] = escapement[0];
+                ep[1] = escapement[1];
+                vgSetGlyphToImage(font, glyphIndex, image, op, ep);
+            }
         }
 
         [DllImport(vg, EntryPoint = "vgDrawGlyph")]

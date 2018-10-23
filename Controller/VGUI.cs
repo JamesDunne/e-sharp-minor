@@ -74,9 +74,10 @@ namespace EMinor
 
             // Load TTF font:
             Debug.WriteLine("Load Vera.ttf");
-            var vgRasterizer = new VGFontConverter(vg);
-            //vera = vgRasterizer.OpenFont("Vera.ttf");
-            vera = vgRasterizer.OpenFont("DroidSans.ttf");
+            var fontConverter = new VGFontConverter(vg);
+            //vera = fontConverter.FromTTF("Vera.ttf");
+            //vera = fontConverter.FromTTF("DroidSans.ttf");
+            vera = fontConverter.FromODX("Verdana.json");
 
             this.disposalContainer = new DisposalContainer(
                 white = new PaintColor(vg, new float[] { 1.0f, 1.0f, 1.0f, 1.0f }),

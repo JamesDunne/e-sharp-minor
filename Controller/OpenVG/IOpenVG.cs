@@ -55,9 +55,23 @@ namespace OpenVG
         PaintHandle GetPaint(PaintMode paintModes);
         void SetPaint(PaintHandle paint, PaintMode paintModes);
 
+        ImageHandle CreateImage(ImageFormat format, int width, int height, ImageQuality allowedQuality);
+        void DestroyImage(ImageHandle image);
+        unsafe void ImageSubData(
+            ImageHandle image,
+            void* data,
+            int dataStride,
+            ImageFormat dataFormat,
+            int x, int y,
+            int width, int height
+        );
+        ImageHandle ChildImage(ImageHandle parent, int x, int y, int width, int height);
+
         FontHandle CreateFont(int glyphCapacityHint);
         void DestroyFont(FontHandle font);
         void SetGlyphToPath(FontHandle font, uint glyphIndex, PathHandle path, bool isHinted, float[] origin, float[] escapement);
+        void SetGlyphToImage(FontHandle font, uint glyphIndex, ImageHandle path, float[] origin, float[] escapement);
+
         void DrawGlyph(FontHandle font, uint glyphIndex, PaintMode paintModes, bool allowAutoHinting);
 
         unsafe void DrawGlyphs(FontHandle font, uint glyphCount, uint* glyphIndices, PaintMode paintModes, bool allowAutoHinting);
@@ -89,6 +103,44 @@ namespace OpenVG
         uint Ellipse(PathHandle path, float cx, float cy, float width, float height);
 
         #endregion
+    }
+
+    public static class OpenVGExtensions
+    {
+        public static void ThrowIfError(this IOpenVG vg)
+        {
+            int err = vg.GetError();
+            if (err != 0)
+            {
+                throw new Exception(String.Format("VG error {0:X04}", err));
+            }
+        }
+    }
+
+    [Flags]
+    public enum ImageQuality : int
+    {
+        VG_IMAGE_QUALITY_NONANTIALIASED = (1 << 0),
+        VG_IMAGE_QUALITY_FASTER = (1 << 1),
+        VG_IMAGE_QUALITY_BETTER = (1 << 2)
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct ImageHandle
+    {
+        public uint Handle;
+
+        private ImageHandle(uint handle) => Handle = handle;
+
+        public static implicit operator uint(ImageHandle paint)
+        {
+            return paint.Handle;
+        }
+
+        public static implicit operator ImageHandle(uint handle)
+        {
+            return new ImageHandle(handle);
+        }
     }
 
     [StructLayout(LayoutKind.Sequential)]
@@ -154,6 +206,54 @@ namespace OpenVG
         internal const int VG_MAX_ENUM = 0x7FFFFFFF;
 
         public const int VG_PATH_FORMAT_STANDARD = 0;
+    }
+
+    public enum ImageFormat : int
+    {
+        /* RGB{A,X} channel ordering */
+        VG_sRGBX_8888 = 0,
+        VG_sRGBA_8888 = 1,
+        VG_sRGBA_8888_PRE = 2,
+        VG_sRGB_565 = 3,
+        VG_sRGBA_5551 = 4,
+        VG_sRGBA_4444 = 5,
+        VG_sL_8 = 6,
+        VG_lRGBX_8888 = 7,
+        VG_lRGBA_8888 = 8,
+        VG_lRGBA_8888_PRE = 9,
+        VG_lL_8 = 10,
+        VG_A_8 = 11,
+        VG_BW_1 = 12,
+        VG_A_1 = 13,
+        VG_A_4 = 14,
+        /* {A,X}RGB channel ordering */
+        VG_sXRGB_8888 = 0 | (1 << 6),
+        VG_sARGB_8888 = 1 | (1 << 6),
+        VG_sARGB_8888_PRE = 2 | (1 << 6),
+        VG_sARGB_1555 = 4 | (1 << 6),
+        VG_sARGB_4444 = 5 | (1 << 6),
+        VG_lXRGB_8888 = 7 | (1 << 6),
+        VG_lARGB_8888 = 8 | (1 << 6),
+        VG_lARGB_8888_PRE = 9 | (1 << 6),
+        /* BGR{A,X} channel ordering */
+        VG_sBGRX_8888 = 0 | (1 << 7),
+        VG_sBGRA_8888 = 1 | (1 << 7),
+        VG_sBGRA_8888_PRE = 2 | (1 << 7),
+        VG_sBGR_565 = 3 | (1 << 7),
+        VG_sBGRA_5551 = 4 | (1 << 7),
+        VG_sBGRA_4444 = 5 | (1 << 7),
+        VG_lBGRX_8888 = 7 | (1 << 7),
+        VG_lBGRA_8888 = 8 | (1 << 7),
+        VG_lBGRA_8888_PRE = 9 | (1 << 7),
+        /* {A,X}BGR channel ordering */
+        VG_sXBGR_8888 = 0 | (1 << 6) | (1 << 7),
+        VG_sABGR_8888 = 1 | (1 << 6) | (1 << 7),
+        VG_sABGR_8888_PRE = 2 | (1 << 6) | (1 << 7),
+        VG_sABGR_1555 = 4 | (1 << 6) | (1 << 7),
+        VG_sABGR_4444 = 5 | (1 << 6) | (1 << 7),
+        VG_lXBGR_8888 = 7 | (1 << 6) | (1 << 7),
+        VG_lABGR_8888 = 8 | (1 << 6) | (1 << 7),
+        VG_lABGR_8888_PRE = 9 | (1 << 6) | (1 << 7)
     }
 
     public enum PathDatatype : int
