@@ -134,7 +134,8 @@ namespace EMinor
             }
 #endif
 
-#if AMANITH_GLE
+#if false // AMANITH_GLE
+            // NOTE: this selecting GLES version 2 fails on RPI.
             int[] context_attribs = new int[] {
                 (int)EGL_ATTRIBUTES.EGL_CONTEXT_CLIENT_VERSION, 2,
                 (int)EGL_ATTRIBUTES.EGL_NONE
@@ -147,7 +148,7 @@ namespace EMinor
                 (int)EGL_ATTRIBUTES.EGL_RED_SIZE,           8,
                 (int)EGL_ATTRIBUTES.EGL_GREEN_SIZE,         8,
                 (int)EGL_ATTRIBUTES.EGL_BLUE_SIZE,          8,
-                (int)EGL_ATTRIBUTES.EGL_ALPHA_SIZE,         0,
+                (int)EGL_ATTRIBUTES.EGL_ALPHA_SIZE,         8,
                 //(int)EGL_ATTRIBUTES.EGL_LUMINANCE_SIZE,     (int)EGL_ATTRIBUTES.EGL_DONT_CARE,
                 (int)EGL_ATTRIBUTES.EGL_SURFACE_TYPE,       (int)EGL_ATTRIBUTES.EGL_WINDOW_BIT,
                 //(int)EGL_ATTRIBUTES.EGL_COLOR_BUFFER_TYPE,  (int)EGL.EGL_RGB_BUFFER,
