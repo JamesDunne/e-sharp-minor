@@ -18,6 +18,9 @@
 
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'pi-debug|AnyCPU' ">
     <LangVersion>Latest</LangVersion>
+    <DebugType></DebugType>
+    <DefineConstants>AMANITH_GLE;RPI;DEBUG;TRACE;PI_DEBUG;NETCOREAPP;NETCOREAPP2_1</DefineConstants>
+    <PlatformTarget>anycpu</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'pi-release|AnyCPU' ">
     <LangVersion>Latest</LangVersion>
