@@ -108,6 +108,17 @@ namespace EMinor
                 throw new Exception("eglInitialize returned FALSE");
             }
             Debug.WriteLine("egl majorVersion={0} minorVersion={1}", majorVersion, minorVersion);
+
+#if false
+#if AMANITH_GLE
+            Debug.WriteLine("eglBindAPI(EGL_OPENGL_ES_API)");
+            success = eglBindAPI(EGL.EGL_OPENGL_ES_API);
+            if (success == 0)
+            {
+                throwIfError();
+                throw new Exception("eglBindAPI returned FALSE");
+            }
+#else
             Debug.WriteLine("eglBindAPI(EGL_OPENVG_API)");
             success = eglBindAPI(EGL.EGL_OPENVG_API);
             if (success == 0)
@@ -115,6 +126,8 @@ namespace EMinor
                 throwIfError();
                 throw new Exception("eglBindAPI returned FALSE");
             }
+#endif
+#endif
 
             int[] attribs = {
                 (int)EGL_ATTRIBUTES.EGL_RED_SIZE,           5,
@@ -148,7 +161,6 @@ namespace EMinor
             window.height = Height;
             var windowHandle = GCHandle.Alloc(window, GCHandleType.Pinned);
 
-
             Debug.WriteLine("eglCreateWindowSurface(egldisplay, ...)");
             eglsurface = eglCreateWindowSurface(egldisplay, eglconfig, windowHandle.AddrOfPinnedObject(), null);
             if (eglsurface == 0)
@@ -170,24 +182,29 @@ namespace EMinor
             Debug.WriteLine("new OpenVGContext()");
             vg = new OpenVGContext();
 
-            // Translate to pixel-perfect offset:
-            Debug.WriteLine("vgSeti(VG_MATRIX_MODE)");
-            vg.Seti(OpenVG.ParamType.VG_MATRIX_MODE, (int)OpenVG.MatrixMode.VG_MATRIX_PATH_USER_TO_SURFACE);
-            Debug.WriteLine("vgLoadIdentity()");
-            vg.LoadIdentity();
-            Debug.WriteLine("vgTranslate()");
-            vg.Translate(0.5f, 0.5f);
         }
 
         public void InitRenderThread()
         {
-            Debug.WriteLine("eglBindAPI(EGL_OPENVG_API)");
-            uint success = eglBindAPI(EGL.EGL_OPENVG_API);
+            // First build and make current the OpenGL ES context:
+            uint success;
+#if AMANITH_GLE
+            Debug.WriteLine("eglBindAPI(EGL_OPENGL_ES_API)");
+            success = eglBindAPI(EGL.EGL_OPENGL_ES_API);
             if (success == 0)
             {
                 throwIfError();
                 throw new Exception("eglBindAPI returned FALSE");
             }
+#else
+            Debug.WriteLine("eglBindAPI(EGL_OPENVG_API)");
+            success = eglBindAPI(EGL.EGL_OPENVG_API);
+            if (success == 0)
+            {
+                throwIfError();
+                throw new Exception("eglBindAPI returned FALSE");
+            }
+#endif
 
             Debug.WriteLine("eglMakeCurrent(egldisplay, eglsurface, eglsurface, eglcontext)");
             success = eglMakeCurrent(egldisplay, eglsurface, eglsurface, eglcontext);
@@ -204,6 +221,31 @@ namespace EMinor
                 throwIfError();
                 throw new Exception("eglSwapInterval returned FALSE");
             }
+
+#if AMANITH_GLE
+            // Now build the AmanithVG context:
+            unsafe
+            {
+                var mztContext = vgPrivContextCreateMZT(null);
+                var mztSurface = vgPrivSurfaceCreateMZT(Width, Height, 0U, 1U, 0U);
+                // VGboolean vgPrivMakeCurrentMZT(void *context, void *surface);
+                success = vgPrivMakeCurrentMZT(mztContext, mztSurface);
+                if (success != 0)
+                {
+                    vg.CheckError();
+                }
+
+            }
+#else
+#endif
+
+            // Translate to pixel-perfect offset:
+            Debug.WriteLine("vgSeti(VG_MATRIX_MODE)");
+            vg.Seti(OpenVG.ParamType.VG_MATRIX_MODE, (int)OpenVG.MatrixMode.VG_MATRIX_PATH_USER_TO_SURFACE);
+            Debug.WriteLine("vgLoadIdentity()");
+            vg.LoadIdentity();
+            Debug.WriteLine("vgTranslate()");
+            vg.Translate(0.5f, 0.5f);
         }
 
         public Thread NewRenderThread(ThreadStart threadStart)
@@ -365,6 +407,10 @@ namespace EMinor
                 throwIfError();
                 throw new Exception("eglSwapBuffers returned FALSE");
             }
+
+#if AMANITH_GLE
+            vgPostSwapBuffersMZT();
+#endif
         }
 
         public bool ShouldQuit()
@@ -395,7 +441,23 @@ namespace EMinor
             touchScreen.PollEvents();
         }
 
-        #region DispmanX
+#region AmanithVG
+#if AMANITH_GLE
+        [DllImport("AmanithVG")]
+        extern static unsafe void* vgPrivContextCreateMZT(void* sharedContext);
+
+        [DllImport("AmanithVG")]
+        extern static unsafe void* vgPrivSurfaceCreateMZT(int width, int height, uint linearColorSpace, uint alphaPremultiplied, uint alphaMask);
+
+        [DllImport("AmanithVG")]
+        extern static unsafe uint vgPrivMakeCurrentMZT(void* context, void* surface);
+
+        [DllImport("AmanithVG")]
+        extern static unsafe void vgPostSwapBuffersMZT();
+#endif
+#endregion
+
+#region DispmanX
 
         [StructLayout(LayoutKind.Sequential)]
         internal struct VC_RECT_T
@@ -538,9 +600,9 @@ namespace EMinor
         [DllImport("bcm_host", EntryPoint = "vc_dispmanx_display_close")]
         extern static int vc_dispmanx_display_close(uint display);
 
-        #endregion
+#endregion
 
-        #region EGL
+#region EGL
 
         [StructLayout(LayoutKind.Sequential)]
         internal struct EGL_DISPMANX_WINDOW_T
@@ -673,6 +735,6 @@ namespace EMinor
         [DllImport(eglName, EntryPoint = "eglSwapBuffers")]
         extern static uint eglSwapBuffers(uint dpy, uint surface); // returns EGLBoolean
 
-        #endregion
+#endregion
     }
 }

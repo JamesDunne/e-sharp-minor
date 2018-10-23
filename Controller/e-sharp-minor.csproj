@@ -21,6 +21,9 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'pi-release|AnyCPU' ">
     <LangVersion>Latest</LangVersion>
+    <DebugType></DebugType>
+    <DefineConstants>AMANITH_GLE;RPI;PI_RELEASE;NETCOREAPP;NETCOREAPP2_1</DefineConstants>
+    <PlatformTarget>anycpu</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <LangVersion>Latest</LangVersion>
@@ -74,6 +77,10 @@
     <ContentWithTargetPath Include="lib\libOpenVG.dylib">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <TargetPath>libOpenVG.dylib</TargetPath>
+    </ContentWithTargetPath>
+    <ContentWithTargetPath Include="lib\libOpenVG.so">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <TargetPath>libOpenVG.so</TargetPath>
     </ContentWithTargetPath>
     <Content Include="setlists.yml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

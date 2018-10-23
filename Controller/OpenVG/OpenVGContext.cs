@@ -16,7 +16,7 @@ namespace OpenVG
 
         #region VG
 
-        const string vg = "OpenVG";
+        const string vg = "AmanithVG";
 
         [DllImport(vg, EntryPoint = "vgGetError")]
         extern static int vgGetError();
