@@ -75,7 +75,7 @@ namespace EMinor
 
                 //Console.WriteLine($"img for '{ch}': {parent}, x={desc.X}, y={(height - 1) - (desc.Y + desc.Height - 1)}, {desc.Width}, {desc.Height}");
                 var child = vg.ChildImage(parent, desc.X, (height - 1) - (desc.Y + desc.Height - 1), desc.Width, desc.Height);
-                vg.ThrowIfError();
+                //vg.ThrowIfError();
 
                 var origin = new float[2] { desc.OriginX, (desc.Height - 1) - desc.OriginY };
                 var escapement = new float[2] { desc.Advance, 0f };
@@ -84,7 +84,7 @@ namespace EMinor
                 images.Add(ch, child);
                 origins.Add(ch, origin);
 
-                Console.WriteLine($"set glyph: origin = {origin[0]},{origin[1]}; escapement = {escapement[0]},{escapement[1]}");
+                //Console.WriteLine($"set glyph: origin = {origin[0]},{origin[1]}; escapement = {escapement[0]},{escapement[1]}");
 
                 //vg.SetGlyphToImage(destFont, ch, child, origin, escapement);
                 //vg.ThrowIfError();
@@ -94,6 +94,7 @@ namespace EMinor
             }
 
             vg.DestroyImage(parent);
+            vg.ThrowIfError();
 
             return new VGFont(vg, destFont, escapements, textureDescriptor.Size)
             {

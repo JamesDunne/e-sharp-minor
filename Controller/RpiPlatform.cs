@@ -144,14 +144,18 @@ namespace EMinor
 #endif
 
             int[] attribs = {
-                (int)EGL_ATTRIBUTES.EGL_RED_SIZE,           5,
-                (int)EGL_ATTRIBUTES.EGL_GREEN_SIZE,         6,
-                (int)EGL_ATTRIBUTES.EGL_BLUE_SIZE,          5,
+                (int)EGL_ATTRIBUTES.EGL_RED_SIZE,           8,
+                (int)EGL_ATTRIBUTES.EGL_GREEN_SIZE,         8,
+                (int)EGL_ATTRIBUTES.EGL_BLUE_SIZE,          8,
                 (int)EGL_ATTRIBUTES.EGL_ALPHA_SIZE,         0,
-                (int)EGL_ATTRIBUTES.EGL_LUMINANCE_SIZE,     (int)EGL_ATTRIBUTES.EGL_DONT_CARE,
+                //(int)EGL_ATTRIBUTES.EGL_LUMINANCE_SIZE,     (int)EGL_ATTRIBUTES.EGL_DONT_CARE,
                 (int)EGL_ATTRIBUTES.EGL_SURFACE_TYPE,       (int)EGL_ATTRIBUTES.EGL_WINDOW_BIT,
                 //(int)EGL_ATTRIBUTES.EGL_COLOR_BUFFER_TYPE,  (int)EGL.EGL_RGB_BUFFER,
                 (int)EGL_ATTRIBUTES.EGL_SAMPLES,            0,
+#if AMANITH_GLE
+                (int)EGL_ATTRIBUTES.EGL_DEPTH_SIZE,         8,
+                (int)EGL_ATTRIBUTES.EGL_STENCIL_SIZE,       8,
+#endif
                 (int)EGL_ATTRIBUTES.EGL_NONE
             };
             int numconfigs;
@@ -212,19 +216,22 @@ namespace EMinor
             // Now build the AmanithVG context:
             unsafe
             {
+                Debug.WriteLine("mztContext = vgPrivContextCreateAM(null)");
                 var mztContext = vgPrivContextCreateAM(null);
-                vg.CheckError();
+                Debug.WriteLine($"mztContext = {(uint)mztContext}");
 
-                var mztSurface = vgPrivSurfaceCreateAM(Width, Height, 0U, 1U, 0U);
-                vg.CheckError();
+                Debug.WriteLine("mztSurface = vgPrivSurfaceCreateAM()");
+                var mztSurface = vgPrivSurfaceCreateAM(Width, Height, 0U, 0U, 0U);
+                Debug.WriteLine($"mztSurface = {(uint)mztSurface}");
 
+                Debug.WriteLine("success = vgPrivMakeCurrentAM(mztContext, mztSurface)");
                 success = vgPrivMakeCurrentAM(mztContext, mztSurface);
-                if (success != 0)
+                Debug.WriteLine($"success = {success}");
+                if (success == 0)
                 {
-                    vg.CheckError();
+                    Console.Error.WriteLine("vgPrivMakeCurrentAM failed");
                 }
             }
-#else
 #endif
 
             // Translate to pixel-perfect offset:
@@ -321,6 +328,8 @@ namespace EMinor
 
         public void Dispose()
         {
+            Debug.WriteLine("Dispose()");
+
             Debug.WriteLine("eglMakeCurrent(display, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT)");
             eglMakeCurrent(egldisplay, (uint)EGL.EGL_NO_SURFACE, (uint)EGL.EGL_NO_SURFACE, (uint)EGL.EGL_NO_CONTEXT);
             throwIfError();
@@ -625,6 +634,8 @@ namespace EMinor
             EGL_BLUE_SIZE = 0x3022,
             EGL_GREEN_SIZE = 0x3023,
             EGL_RED_SIZE = 0x3024,
+            EGL_DEPTH_SIZE = 0x3025,
+            EGL_STENCIL_SIZE = 0x3026,
             EGL_SAMPLES = 0x3031,
             EGL_SURFACE_TYPE = 0x3033,
             EGL_NONE = 0x3038,   /* Attrib list terminator */
