@@ -526,7 +526,7 @@ namespace OpenVG
                 }
 
                 // Render text:
-                vgScale(size, size);
+                //vgScale(size, size);
 
                 // TODO: restore VG_GLYPH_ORIGIN afterwards?
                 float* origin = stackalloc float[2];
@@ -567,7 +567,7 @@ namespace OpenVG
                 }
 
                 // Render text:
-                vgScale(size, size);
+                //vgScale(size, size);
 
                 // TODO: restore VG_GLYPH_ORIGIN afterwards?
                 float* origin = stackalloc float[2];
