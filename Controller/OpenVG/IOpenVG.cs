@@ -1,5 +1,6 @@
 using System;
 using System.Runtime.InteropServices;
+using EMinor;
 
 namespace OpenVG
 {
@@ -66,6 +67,7 @@ namespace OpenVG
             int width, int height
         );
         ImageHandle ChildImage(ImageHandle parent, int x, int y, int width, int height);
+        void DrawImage(ImageHandle image);
 
         FontHandle CreateFont(int glyphCapacityHint);
         void DestroyFont(FontHandle font);
@@ -81,6 +83,8 @@ namespace OpenVG
 
         void DrawText(FontHandle textFont, string text, PaintMode paintModes, bool allowAutoHinting, float size);
         void DrawText(FontHandle textFont, uint glyphCount, byte[] utf32Text, PaintMode paintModes, bool allowAutoHinting, float size);
+
+        void DrawText(VGFont textFont, uint glyphCount, byte[] utf32Text, PaintMode paintModes, bool allowAutoHinting);
 
         #endregion
 

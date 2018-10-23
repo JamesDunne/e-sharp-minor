@@ -1,5 +1,5 @@
 ﻿#define TIMING
-#define THREADS
+//#define THREADS
 
 using System;
 using System.Collections.Generic;

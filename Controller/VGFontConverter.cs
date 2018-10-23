@@ -34,6 +34,8 @@ namespace EMinor
             var image = Image.Load(textureDescriptor.Name + ".png");
 
             var escapements = new Dictionary<uint, float[]>(textureDescriptor.Characters.Count);
+            var images = new Dictionary<uint, ImageHandle>(textureDescriptor.Characters.Count);
+            var origins = new Dictionary<uint, float[]>(textureDescriptor.Characters.Count);
 
             // Create OpenVG font object:
             var destFont = vg.CreateFont(textureDescriptor.Characters.Count);
@@ -55,7 +57,7 @@ namespace EMinor
                     {
                         for (int x = 0; x < width; x++)
                         {
-                            *p++ = image[x, (height - 1) - y].R;
+                            *p++ = image[x, (height - 1) - y].G;
                         }
                     }
 
@@ -77,19 +79,27 @@ namespace EMinor
 
                 var origin = new float[2] { desc.OriginX, (desc.Height - 1) - desc.OriginY };
                 var escapement = new float[2] { desc.Advance, 0f };
+
                 escapements.Add(ch, escapement);
+                images.Add(ch, child);
+                origins.Add(ch, origin);
 
-                //Console.WriteLine($"set glyph: origin = {origin[0]},{origin[1]}; escapement = {escapement[0]},{escapement[1]}");
-                vg.SetGlyphToImage(destFont, ch, child, origin, escapement);
-                vg.ThrowIfError();
+                Console.WriteLine($"set glyph: origin = {origin[0]},{origin[1]}; escapement = {escapement[0]},{escapement[1]}");
 
-                vg.DestroyImage(child);
-                vg.ThrowIfError();
+                //vg.SetGlyphToImage(destFont, ch, child, origin, escapement);
+                //vg.ThrowIfError();
+
+                //vg.DestroyImage(child);
+                //vg.ThrowIfError();
             }
 
             vg.DestroyImage(parent);
 
-            return new VGFont(vg, destFont, escapements, textureDescriptor.Size);
+            return new VGFont(vg, destFont, escapements, textureDescriptor.Size)
+            {
+                Images = images,
+                Origins = origins
+            };
         }
 
         public VGFont FromTTF(String path)

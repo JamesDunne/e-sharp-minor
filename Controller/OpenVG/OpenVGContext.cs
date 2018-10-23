@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using EMinor;
 
 namespace OpenVG
 {
@@ -304,6 +305,13 @@ namespace OpenVG
             return vgChildImage(parent, x, y, width, height);
         }
 
+        [DllImport(vg)]
+        extern static void vgDrawImage(uint image);
+        public void DrawImage(ImageHandle image)
+        {
+            vgDrawImage(image);
+        }
+
         [DllImport(vg, EntryPoint = "vgCreateFont")]
         extern static uint vgCreateFont(int glyphCapacityHint);
         public FontHandle CreateFont(int glyphCapacityHint)
@@ -569,7 +577,6 @@ namespace OpenVG
                 // Render text:
                 //vgScale(size, size);
 
-                // TODO: restore VG_GLYPH_ORIGIN afterwards?
                 float* origin = stackalloc float[2];
                 origin[0] = 0f;
                 origin[1] = 0f;
@@ -577,13 +584,76 @@ namespace OpenVG
 
                 fixed (byte* bytes = utf32Text)
                 {
+                    // default:
                     vgDrawGlyphs(textFont, glyphCount, (uint*)bytes, null, null, (uint)paintModes, 0U);
+
+                    // paintModes = 0 still renders glyphs!
+                    //vgDrawGlyphs(textFont, glyphCount, (uint*)bytes, null, null, (uint)0, 0U);
+
+                    //uint* p = (uint*)bytes;
+                    //for (uint i = 0; i < glyphCount; i++, p++)
+                    //{
+                    //    vgDrawGlyph(textFont, *p++, (uint)paintModes, 0U);
+                    //}
                 }
 
                 // Restore matrix mode:
                 if (mm != (int)MatrixMode.VG_MATRIX_GLYPH_USER_TO_SURFACE)
                 {
                     // TODO: restore glyph matrix before switching back?
+                    vgSeti(ParamType.VG_MATRIX_MODE, mm);
+                }
+
+                // Restore old matrix:
+                vgLoadMatrix(m);
+            }
+        }
+
+        public void DrawText(VGFont font, uint glyphCount, byte[] utf32Text, PaintMode paintModes, bool allowAutoHinting)
+        {
+            unsafe
+            {
+                int mm = matrixMode;
+
+                // Get current matrix:
+                float* m = stackalloc float[9];
+                vgGetMatrix(m);
+
+                // Switch to image matrix if not already:
+                if (mm != (int)MatrixMode.VG_MATRIX_IMAGE_USER_TO_SURFACE)
+                {
+                    vgSeti(ParamType.VG_MATRIX_MODE, (int)MatrixMode.VG_MATRIX_IMAGE_USER_TO_SURFACE);
+                    vgLoadMatrix(m);
+                }
+
+                //VG_MATRIX_IMAGE_USER_TO_SURFACE
+                // Render text:
+                fixed (byte* bytes = utf32Text)
+                {
+                    uint* p = (uint*)bytes;
+                    for (uint i = 0; i < glyphCount; i++, p++)
+                    {
+                        //vgDrawGlyph(textFont, *p, (uint)paintModes, 0U);
+
+                        // Translate to origin of glyph:
+                        var origin = font.Origins[*p];
+                        vgTranslate(-origin[0], -origin[1]);
+
+                        // Draw the image:
+                        vgDrawImage(font.Images[*p]);
+
+                        // Undo origin translation:
+                        vgTranslate(origin[0], origin[1]);
+
+                        // Advance to next glyph position:
+                        var escapement = font.Escapements[*p];
+                        vgTranslate(escapement[0], escapement[1]);
+                    }
+                }
+
+                // Restore previous matrix mode:
+                if (mm != (int)MatrixMode.VG_MATRIX_IMAGE_USER_TO_SURFACE)
+                {
                     vgSeti(ParamType.VG_MATRIX_MODE, mm);
                 }
 

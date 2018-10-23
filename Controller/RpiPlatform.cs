@@ -357,7 +357,6 @@ namespace EMinor
         public void SwapBuffers()
         {
             //vg.Flush();
-            //vg.Finish();
 
             //Debug.WriteLine("eglSwapBuffers(display, surface)");
             uint success = eglSwapBuffers(egldisplay, eglsurface);

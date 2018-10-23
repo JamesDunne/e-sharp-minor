@@ -22,6 +22,8 @@ namespace EMinor
 
         public FontHandle FontHandle => fontHandle;
         public Dictionary<uint, float[]> Escapements => escapements;
+        public Dictionary<uint, ImageHandle> Images { get; set; }
+        public Dictionary<uint, float[]> Origins { get; set; }
 
         public static implicit operator FontHandle(VGFont font)
         {

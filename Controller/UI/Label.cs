@@ -52,7 +52,7 @@ namespace EMinor.UI
                 vg.Translate(lastTextAlignment.X, lastTextAlignment.Y);
                 // Draw text:
                 vg.FillPaint = TextColor;
-                vg.DrawText(TextFont, lastTextLength, lastTextUTF32, PaintMode.VG_FILL_PATH, true, 1.0f);
+                vg.DrawText(TextFont, lastTextLength, lastTextUTF32, PaintMode.VG_FILL_PATH, false);
                 vg.PopMatrix();
             }
         }
