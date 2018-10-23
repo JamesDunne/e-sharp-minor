@@ -535,7 +535,7 @@ namespace OpenVG
                 vgSetfv(ParamType.VG_GLYPH_ORIGIN, 2, origin);
 
                 //var glyphIndices = System.Text.Encoding.UTF32.GetBytes(text);
-                DrawGlyphString(textFont, text, PaintMode.VG_FILL_PATH, false);
+                DrawGlyphString(textFont, text, paintModes, false);
 
                 // Restore matrix mode:
                 if (mm != (int)MatrixMode.VG_MATRIX_GLYPH_USER_TO_SURFACE)

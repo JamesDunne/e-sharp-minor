@@ -8,14 +8,16 @@ namespace EMinor
     public class VGFont : IDisposable
     {
         private readonly IOpenVG vg;
+        private readonly float Height;
         private FontHandle fontHandle;
         private Dictionary<uint, float[]> escapements;
 
-        public VGFont(IOpenVG vg, FontHandle fontHandle, Dictionary<uint, float[]> escapements)
+        public VGFont(IOpenVG vg, FontHandle fontHandle, Dictionary<uint, float[]> escapements, float height)
         {
             this.vg = vg;
             this.fontHandle = fontHandle;
             this.escapements = escapements;
+            Height = height;
         }
 
         public FontHandle FontHandle => fontHandle;
@@ -34,7 +36,7 @@ namespace EMinor
             {
                 w += escapements[ch][0];
             }
-            return new Bounds(w, 1.0f);
+            return new Bounds(w, Height);
         }
 
         public void Dispose()

@@ -89,7 +89,7 @@ namespace EMinor
 
             vg.DestroyImage(parent);
 
-            return new VGFont(vg, destFont, escapements);
+            return new VGFont(vg, destFont, escapements, textureDescriptor.Size);
         }
 
         public VGFont FromTTF(String path)
@@ -118,7 +118,7 @@ namespace EMinor
                 escapements[c] = escapement;
             }
 
-            return new VGFont(vg, destFont, escapements);
+            return new VGFont(vg, destFont, escapements, 18.0f);
         }
 
         public void SetGlyphToPath(FontHandle font, uint glyphIndex)
