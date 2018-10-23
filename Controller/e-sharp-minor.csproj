@@ -56,6 +56,8 @@
     <None Remove="song-names.yml" />
     <None Remove="Vera.ttf" />
     <None Remove="DroidSans.ttf" />
+    <None Remove="Verdana.json" />
+    <None Remove="Verdana.png" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="all-programs-v6.yml">
@@ -85,11 +87,25 @@
     <Content Include="DroidSans.ttf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Verdana.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Verdana.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="UI\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\NOpenType\NOpenType.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="Verdana.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Verdana.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 </Project>
