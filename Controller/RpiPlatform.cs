@@ -19,19 +19,19 @@ namespace EMinor
         private readonly LinuxEventDevice fsw;
         private readonly LinuxEventDevice touchScreen;
 
-        internal readonly ushort bcmDisplay;
+        internal ushort bcmDisplay;
 
         internal uint dispman_display;
         internal uint dispman_update;
         internal uint dispman_element;
 
-        public readonly int majorVersion, minorVersion;
+        public int majorVersion, minorVersion;
 
-        internal readonly uint egldisplay;
-        internal readonly uint eglsurface;
-        internal readonly uint eglcontext;
+        internal uint egldisplay;
+        internal uint eglsurface;
+        internal uint eglcontext;
 
-        internal readonly EGL_DISPMANX_WINDOW_T window;
+        internal EGL_DISPMANX_WINDOW_T window;
 
         public RpiPlatform(int display)
         {
@@ -91,12 +91,19 @@ namespace EMinor
             Debug.WriteLine("vc_dispmanx_update_submit_sync(dispman_update)");
             checkError(vc_dispmanx_update_submit_sync(dispman_update));
 
+            // Create OpenVGContext:
+            Debug.WriteLine("new OpenVGContext()");
+            vg = new OpenVGContext();
+        }
 
+        public void InitRenderThread()
+        {
             uint success;
+
             // TODO: validate this assumption that display number goes here (what other values to use besides EGL_DEFAULT_DISPLAY?)
             Debug.WriteLine("eglGetDisplay(...)");
             egldisplay = eglGetDisplay(bcmDisplay);
-            //this.egldisplay = eglGetDisplay(EGL_DEFAULT_DISPLAY);
+            //egldisplay = eglGetDisplay(EGL_DEFAULT_DISPLAY);
             throwIfError();
             Debug.WriteLine("egldisplay = {0}", egldisplay);
 
@@ -109,7 +116,6 @@ namespace EMinor
             }
             Debug.WriteLine("egl majorVersion={0} minorVersion={1}", majorVersion, minorVersion);
 
-#if false
 #if AMANITH_GLE
             Debug.WriteLine("eglBindAPI(EGL_OPENGL_ES_API)");
             success = eglBindAPI(EGL.EGL_OPENGL_ES_API);
@@ -127,6 +133,14 @@ namespace EMinor
                 throw new Exception("eglBindAPI returned FALSE");
             }
 #endif
+
+#if AMANITH_GLE
+            int[] context_attribs = new int[] {
+                (int)EGL_ATTRIBUTES.EGL_CONTEXT_CLIENT_VERSION, 2,
+                (int)EGL_ATTRIBUTES.EGL_NONE
+            };
+#else
+            int[] context_attribs = null;
 #endif
 
             int[] attribs = {
@@ -170,41 +184,13 @@ namespace EMinor
             }
             Debug.WriteLine("eglsurface = {0}", eglsurface);
             Debug.WriteLine("eglCreateContext(egldisplay, ...)");
-            eglcontext = eglCreateContext(egldisplay, eglconfig, 0, null);
+            eglcontext = eglCreateContext(egldisplay, eglconfig, 0, context_attribs);
             if (eglcontext == 0)
             {
                 throwIfError();
                 throw new Exception("eglCreateContext returned FALSE");
             }
             Debug.WriteLine("eglcontext = {0}", eglcontext);
-
-            // Create OpenVGContext:
-            Debug.WriteLine("new OpenVGContext()");
-            vg = new OpenVGContext();
-
-        }
-
-        public void InitRenderThread()
-        {
-            // First build and make current the OpenGL ES context:
-            uint success;
-#if AMANITH_GLE
-            Debug.WriteLine("eglBindAPI(EGL_OPENGL_ES_API)");
-            success = eglBindAPI(EGL.EGL_OPENGL_ES_API);
-            if (success == 0)
-            {
-                throwIfError();
-                throw new Exception("eglBindAPI returned FALSE");
-            }
-#else
-            Debug.WriteLine("eglBindAPI(EGL_OPENVG_API)");
-            success = eglBindAPI(EGL.EGL_OPENVG_API);
-            if (success == 0)
-            {
-                throwIfError();
-                throw new Exception("eglBindAPI returned FALSE");
-            }
-#endif
 
             Debug.WriteLine("eglMakeCurrent(egldisplay, eglsurface, eglsurface, eglcontext)");
             success = eglMakeCurrent(egldisplay, eglsurface, eglsurface, eglcontext);
@@ -226,15 +212,17 @@ namespace EMinor
             // Now build the AmanithVG context:
             unsafe
             {
-                var mztContext = vgPrivContextCreateMZT(null);
-                var mztSurface = vgPrivSurfaceCreateMZT(Width, Height, 0U, 1U, 0U);
-                // VGboolean vgPrivMakeCurrentMZT(void *context, void *surface);
-                success = vgPrivMakeCurrentMZT(mztContext, mztSurface);
+                var mztContext = vgPrivContextCreateAM(null);
+                vg.CheckError();
+
+                var mztSurface = vgPrivSurfaceCreateAM(Width, Height, 0U, 1U, 0U);
+                vg.CheckError();
+
+                success = vgPrivMakeCurrentAM(mztContext, mztSurface);
                 if (success != 0)
                 {
                     vg.CheckError();
                 }
-
             }
 #else
 #endif
@@ -409,7 +397,7 @@ namespace EMinor
             }
 
 #if AMANITH_GLE
-            vgPostSwapBuffersMZT();
+            vgPostSwapBuffersAM();
 #endif
         }
 
@@ -441,23 +429,23 @@ namespace EMinor
             touchScreen.PollEvents();
         }
 
-#region AmanithVG
+        #region AmanithVG
 #if AMANITH_GLE
         [DllImport("AmanithVG")]
-        extern static unsafe void* vgPrivContextCreateMZT(void* sharedContext);
+        extern static unsafe void* vgPrivContextCreateAM(void* sharedContext);
 
         [DllImport("AmanithVG")]
-        extern static unsafe void* vgPrivSurfaceCreateMZT(int width, int height, uint linearColorSpace, uint alphaPremultiplied, uint alphaMask);
+        extern static unsafe void* vgPrivSurfaceCreateAM(int width, int height, uint linearColorSpace, uint alphaPremultiplied, uint alphaMask);
 
         [DllImport("AmanithVG")]
-        extern static unsafe uint vgPrivMakeCurrentMZT(void* context, void* surface);
+        extern static unsafe uint vgPrivMakeCurrentAM(void* context, void* surface);
 
         [DllImport("AmanithVG")]
-        extern static unsafe void vgPostSwapBuffersMZT();
+        extern static unsafe void vgPostSwapBuffersAM();
 #endif
-#endregion
+        #endregion
 
-#region DispmanX
+        #region DispmanX
 
         [StructLayout(LayoutKind.Sequential)]
         internal struct VC_RECT_T
@@ -600,9 +588,9 @@ namespace EMinor
         [DllImport("bcm_host", EntryPoint = "vc_dispmanx_display_close")]
         extern static int vc_dispmanx_display_close(uint display);
 
-#endregion
+        #endregion
 
-#region EGL
+        #region EGL
 
         [StructLayout(LayoutKind.Sequential)]
         internal struct EGL_DISPMANX_WINDOW_T
@@ -629,6 +617,8 @@ namespace EMinor
         internal enum EGL_ATTRIBUTES : int
         {
             EGL_DONT_CARE = -1,
+
+            EGL_CONTEXT_CLIENT_VERSION = 0x3098,
 
             /* Config attributes */
             EGL_ALPHA_SIZE = 0x3021,
@@ -735,6 +725,6 @@ namespace EMinor
         [DllImport(eglName, EntryPoint = "eglSwapBuffers")]
         extern static uint eglSwapBuffers(uint dpy, uint surface); // returns EGLBoolean
 
-#endregion
+        #endregion
     }
 }

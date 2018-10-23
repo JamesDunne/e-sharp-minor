@@ -72,15 +72,15 @@
     </ContentWithTargetPath>
     <ContentWithTargetPath Include="lib\OpenVG.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <TargetPath>OpenVG.dll</TargetPath>
+      <TargetPath>AmanithVG.dll</TargetPath>
     </ContentWithTargetPath>
     <ContentWithTargetPath Include="lib\libOpenVG.dylib">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <TargetPath>libOpenVG.dylib</TargetPath>
+      <TargetPath>libAmanithVG.dylib</TargetPath>
     </ContentWithTargetPath>
     <ContentWithTargetPath Include="lib\libOpenVG.so">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <TargetPath>libOpenVG.so</TargetPath>
+      <TargetPath>libAmanithVG.so</TargetPath>
     </ContentWithTargetPath>
     <Content Include="setlists.yml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

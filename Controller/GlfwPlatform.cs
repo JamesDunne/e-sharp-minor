@@ -71,7 +71,7 @@ namespace EMinor
 
             // create a drawing surface (sRGBA premultiplied color space)
             //vgSurface = vgPrivSurfaceCreateAM(fbWidth, fbHeight, 0, 1, 1);
-            vgSurface = vgPrivSurfaceCreateAM(fbWidth, fbHeight, 0, 0, 0);
+            vgSurface = vgPrivSurfaceCreateAM(fbWidth, fbHeight, 0, 1, 0);
 
             // bind context and surface
             vgPrivMakeCurrentAM(vgContext, vgSurface);
@@ -275,7 +275,7 @@ namespace EMinor
 
         #region AmanithVG
 
-        const string vgLib = "OpenVG"; // really AmanithVG but renamed
+        const string vgLib = "AmanithVG"; // really AmanithVG but renamed
 
         [DllImport(vgLib)]
         extern static IntPtr vgPrivContextCreateAM(IntPtr sharedContext);
