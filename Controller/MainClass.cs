@@ -1,5 +1,5 @@
 ﻿#define TIMING
-//#define THREADS
+#define THREADS
 
 using System;
 using System.Collections.Generic;
@@ -7,9 +7,6 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using OpenVG;
-using Shapes;
-using YamlDotNet.Serialization;
-using YamlDotNet.Serialization.NamingConventions;
 
 namespace EMinor
 {

@@ -671,8 +671,13 @@ namespace EMinor
             EGL_BAD_SURFACE = 0x300D,
             EGL_CONTEXT_LOST = 0x300E   /* EGL 1.1 - IMG_power_management */
         }
+
+#if AMANITH_GLE
+        const string eglName = "EGL";
+#else
         // This should be "EGL" but libEGL.so on raspbian is missing some symbols that are found in libGLESv2.so
         const string eglName = "GLESv2";
+#endif
 
         [DllImport(eglName, EntryPoint = "eglGetError")]
         extern static EGL_ERROR eglGetError();
@@ -737,6 +742,6 @@ namespace EMinor
         [DllImport(eglName, EntryPoint = "eglSwapBuffers")]
         extern static uint eglSwapBuffers(uint dpy, uint surface); // returns EGLBoolean
 
-        #endregion
+#endregion
     }
 }

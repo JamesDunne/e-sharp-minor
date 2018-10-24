@@ -14,9 +14,14 @@ namespace OpenVG
         {
         }
 
-        #region VG
 
+#if AMANITH_GLE
         const string vg = "AmanithVG";
+#else
+        const string vg = "OpenVG";
+#endif
+
+        #region VG
 
         [DllImport(vg, EntryPoint = "vgGetError")]
         extern static int vgGetError();
@@ -407,9 +412,9 @@ namespace OpenVG
             }
         }
 
-        #endregion
+#endregion
 
-        #region VG fakes
+#region VG fakes
 
 #if FIXEDSTACK
         private unsafe struct MatrixStack
@@ -662,9 +667,9 @@ namespace OpenVG
             }
         }
 
-        #endregion
+#endregion
 
-        #region VG Properties
+#region VG Properties
 
         public float[] ClearColor
         {
@@ -721,9 +726,9 @@ namespace OpenVG
             }
         }
 
-        #endregion
+#endregion
 
-        #region VGU
+#region VGU
 
         [DllImport(vg, EntryPoint = "vguLine")]
         extern static uint vgLine(uint path, float x0, float y0, float x1, float y1);
@@ -749,6 +754,6 @@ namespace OpenVG
             return result;
         }
 
-        #endregion
+#endregion
     }
 }
