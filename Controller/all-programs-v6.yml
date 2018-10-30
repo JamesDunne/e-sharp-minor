@@ -1732,6 +1732,25 @@ midi_programs:
         blocks:
           dly2:
             on: true
+  - name: Ghostbusters
+    short_name: Ghostbusters
+    alternate_names:
+    - Ghostbusters
+    - Ghost Busters
+    who_starts: Glaz
+    tempo: 120
+    amps:
+    - tones:
+        dirty:
+          gain: 68
+    - tones:
+        dirty:
+          gain: 68
+    scenes:
+    - name: JD dirty;MG dirty
+      amps:
+      - tone: dirty
+      - tone: dirty
 - midi: 1
   amps:
   - name: MG
