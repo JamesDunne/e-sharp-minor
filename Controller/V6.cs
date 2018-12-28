@@ -86,7 +86,7 @@ namespace EMinor
             public string Name { get; set; }
 
             // Available FX blocks for this amp in this MIDI program, including amp, cab, gate, etc.:
-            public Dictionary<string, FXBlockDefinition> Blocks { get; set; }
+            public List<FXBlockDefinition> Blocks { get; set; }
 
             // MIDI CC of external controller that is mapped to gain:
             [YamlMember(Alias = "GainControllerCc")]
@@ -96,11 +96,12 @@ namespace EMinor
             public int VolumeControllerCC { get; set; }
 
             // Available general tones for this amp and their block settings, e.g. clean, dirty, acoustic:
-            public Dictionary<string, AmpToneDefinition> Tones { get; set; }
+            public List<AmpToneDefinition> Tones { get; set; }
         }
 
         public class FXBlockDefinition
         {
+            public string Name { get; set; }
             [YamlMember(Alias = "EnabledSwitchCc")]
             public int EnabledSwitchCC { get; set; }
             [YamlMember(Alias = "XySwitchCc")]
@@ -115,6 +116,7 @@ namespace EMinor
 
         public class FXBlock
         {
+            public string Name { get; set; }
             public bool? On { get; set; }
             [YamlMember(Alias = "Xy")]
             public XYSwitch? XY { get; set; }
@@ -125,17 +127,19 @@ namespace EMinor
             [YamlIgnore]
             public AmpDefinition AmpDefinition { get; set; }
 
+            public string Name { get; set; }
             public int Gain { get; set; }
             [YamlMember(Alias = "Volume")]
             public double VolumeDB { get; set; }
             [YamlIgnore]
             public int Volume { get; set; }
 
-            public Dictionary<string, FXBlock> Blocks { get; set; }
+            public List<FXBlock> Blocks { get; set; }
         }
 
         public class SongFXBlockOverride
         {
+            public string Name { get; set; }
             public bool? On { get; set; }
             [YamlMember(Alias = "Xy")]
             public XYSwitch? XY { get; set; }
@@ -146,13 +150,14 @@ namespace EMinor
             [YamlIgnore]
             public AmpToneDefinition AmpToneDefinition { get; set; }
 
+            public string Name { get; set; }
             public int? Gain { get; set; }
             [YamlMember(Alias = "Volume")]
             public double? VolumeDB { get; set; }
             [YamlIgnore]
             public int? Volume { get; set; }
 
-            public Dictionary<string, SongFXBlockOverride> Blocks { get; set; }
+            public List<SongFXBlockOverride> Blocks { get; set; }
         }
 
         public class SongAmpOverrides
@@ -162,7 +167,7 @@ namespace EMinor
             [YamlIgnore]
             public int AmpNumber { get; set; }
 
-            public Dictionary<string, SongAmpToneOverride> Tones { get; set; }
+            public List<SongAmpToneOverride> Tones { get; set; }
         }
 
         public class SceneAmpToneSelection : SongAmpToneOverride
@@ -199,7 +204,9 @@ namespace EMinor
 
             public List<LiveFX> FX;
 
+#if !TRANSLATOR
             public float Volume => (float)Controller.MIDItoDB(VolumeMIDI);
+#endif
         }
     }
 }

@@ -58,13 +58,13 @@ namespace EMinor
                 Tone = amp.Channel,
                 Gain = amp.Gain == 0 ? (amp.GainLog == 0 ? (int?)null : logTaper(amp.GainLog)) : amp.Gain,
                 VolumeDB = amp.Level == 0 ? (double?)null : amp.Level,
-                Blocks = amp.FX?.ToDictionary(
-                    fx => fx,
+                Blocks = amp.FX?.Select(
                     fx => new V6.SongFXBlockOverride
                     {
+                        Name = fx,
                         On = true
                     }
-                )
+                ).ToList()
             };
         }
 
@@ -86,53 +86,56 @@ namespace EMinor
                             new V6.AmpDefinition
                             {
                                 Name = "MG",
-                                Blocks = new Dictionary<string, V6.FXBlockDefinition>
+                                Blocks = new List<V6.FXBlockDefinition>
                                 {
-                                    { "amp1", new V6.FXBlockDefinition { EnabledSwitchCC = 37, XYSwitchCC = 100 } },
-                                    { "cab1", new V6.FXBlockDefinition { EnabledSwitchCC = 39, XYSwitchCC = 102 } },
-                                    { "gte1", new V6.FXBlockDefinition { EnabledSwitchCC = 60 } },
-                                    { "cmp1", new V6.FXBlockDefinition { EnabledSwitchCC = 43 } },
-                                    { "pit1", new V6.FXBlockDefinition { EnabledSwitchCC = 77 } },
-                                    { "rtr1", new V6.FXBlockDefinition { EnabledSwitchCC = 86 } },
-                                    { "phr1", new V6.FXBlockDefinition { EnabledSwitchCC = 75 } },
-                                    { "cho1", new V6.FXBlockDefinition { EnabledSwitchCC = 41 } },
-                                    { "dly1", new V6.FXBlockDefinition { EnabledSwitchCC = 47 } }
+                                    new V6.FXBlockDefinition { Name = "amp1", EnabledSwitchCC = 37, XYSwitchCC = 100 },
+                                    new V6.FXBlockDefinition { Name = "cab1", EnabledSwitchCC = 39, XYSwitchCC = 102 },
+                                    new V6.FXBlockDefinition { Name = "gte1", EnabledSwitchCC = 60 },
+                                    new V6.FXBlockDefinition { Name = "cmp1", EnabledSwitchCC = 43 },
+                                    new V6.FXBlockDefinition { Name = "pit1", EnabledSwitchCC = 77 },
+                                    new V6.FXBlockDefinition { Name = "rtr1", EnabledSwitchCC = 86 },
+                                    new V6.FXBlockDefinition { Name = "phr1", EnabledSwitchCC = 75 },
+                                    new V6.FXBlockDefinition { Name = "cho1", EnabledSwitchCC = 41 },
+                                    new V6.FXBlockDefinition { Name = "dly1", EnabledSwitchCC = 47 }
                                 },
-                                Tones = new Dictionary<string, V6.AmpToneDefinition>
+                                Tones = new List<V6.AmpToneDefinition>
                                 {
-                                    { "clean", new V6.AmpToneDefinition {
+                                    new V6.AmpToneDefinition {
+                                        Name = "clean",
                                         Gain = 0x12,
                                         VolumeDB = 0,
-                                        Blocks = new Dictionary<string, V6.FXBlock>
+                                        Blocks = new List<V6.FXBlock>
                                         {
-                                            { "amp1", new V6.FXBlock { On = true, XY = V6.XYSwitch.Y } },
-                                            { "cab1", new V6.FXBlock { On = true, XY = V6.XYSwitch.X } },
-                                            { "gte1", new V6.FXBlock { On = false, XY = V6.XYSwitch.X } },
-                                            { "cmp1", new V6.FXBlock { On = true, XY = V6.XYSwitch.X } }
+                                            new V6.FXBlock { Name = "amp1", On = true, XY = V6.XYSwitch.Y },
+                                            new V6.FXBlock { Name = "cab1", On = true, XY = V6.XYSwitch.X },
+                                            new V6.FXBlock { Name = "gte1", On = false, XY = V6.XYSwitch.X },
+                                            new V6.FXBlock { Name = "cmp1", On = true, XY = V6.XYSwitch.X }
                                         }
-                                    } },
-                                    { "dirty", new V6.AmpToneDefinition {
+                                    },
+                                    new V6.AmpToneDefinition {
+                                        Name = "dirty",
                                         Gain = 0x40,
                                         VolumeDB = 0,
-                                        Blocks = new Dictionary<string, V6.FXBlock>
+                                        Blocks = new List<V6.FXBlock>
                                         {
-                                            { "amp1", new V6.FXBlock { On = true, XY = V6.XYSwitch.X } },
-                                            { "cab1", new V6.FXBlock { On = true, XY = V6.XYSwitch.X } },
-                                            { "gte1", new V6.FXBlock { On = true, XY = V6.XYSwitch.X } },
-                                            { "cmp1", new V6.FXBlock { On = true, XY = V6.XYSwitch.X } }
+                                            new V6.FXBlock { Name = "amp1", On = true, XY = V6.XYSwitch.X },
+                                            new V6.FXBlock { Name = "cab1", On = true, XY = V6.XYSwitch.X },
+                                            new V6.FXBlock { Name = "gte1", On = true, XY = V6.XYSwitch.X },
+                                            new V6.FXBlock { Name = "cmp1", On = true, XY = V6.XYSwitch.X }
                                         }
-                                    } },
-                                    { "acoustic", new V6.AmpToneDefinition {
+                                    },
+                                    new V6.AmpToneDefinition {
+                                        Name = "acoustic",
                                         Gain = 0x12,
                                         VolumeDB = 0,
-                                        Blocks = new Dictionary<string, V6.FXBlock>
+                                        Blocks = new List<V6.FXBlock>
                                         {
-                                            { "amp1", new V6.FXBlock { On = false, XY = V6.XYSwitch.Y } },
-                                            { "cab1", new V6.FXBlock { On = true, XY = V6.XYSwitch.Y } },
-                                            { "gte1", new V6.FXBlock { On = false, XY = V6.XYSwitch.X } },
-                                            { "cmp1", new V6.FXBlock { On = true, XY = V6.XYSwitch.X } }
+                                            new V6.FXBlock { Name = "amp1", On = false, XY = V6.XYSwitch.Y },
+                                            new V6.FXBlock { Name = "cab1", On = true, XY = V6.XYSwitch.Y },
+                                            new V6.FXBlock { Name = "gte1", On = false, XY = V6.XYSwitch.X },
+                                            new V6.FXBlock { Name = "cmp1", On = true, XY = V6.XYSwitch.X }
                                         }
-                                    } }
+                                    }
                                 },
                                 VolumeControllerCC = 16,
                                 GainControllerCC = 18
@@ -141,53 +144,56 @@ namespace EMinor
                             new V6.AmpDefinition
                             {
                                 Name = "JD",
-                                Blocks = new Dictionary<string, V6.FXBlockDefinition>
+                                Blocks = new List<V6.FXBlockDefinition>
                                 {
-                                    { "amp2", new V6.FXBlockDefinition { EnabledSwitchCC = 38, XYSwitchCC = 101 } },
-                                    { "cab2", new V6.FXBlockDefinition { EnabledSwitchCC = 40, XYSwitchCC = 103 } },
-                                    { "gte2", new V6.FXBlockDefinition { EnabledSwitchCC = 61 } },
-                                    { "cmp2", new V6.FXBlockDefinition { EnabledSwitchCC = 44 } },
-                                    { "pit2", new V6.FXBlockDefinition { EnabledSwitchCC = 78 } },
-                                    { "rtr2", new V6.FXBlockDefinition { EnabledSwitchCC = 87 } },
-                                    { "phr2", new V6.FXBlockDefinition { EnabledSwitchCC = 76 } },
-                                    { "cho2", new V6.FXBlockDefinition { EnabledSwitchCC = 42 } },
-                                    { "dly2", new V6.FXBlockDefinition { EnabledSwitchCC = 48 } }
+                                    new V6.FXBlockDefinition { Name = "amp2", EnabledSwitchCC = 38, XYSwitchCC = 101 },
+                                    new V6.FXBlockDefinition { Name = "cab2", EnabledSwitchCC = 40, XYSwitchCC = 103 },
+                                    new V6.FXBlockDefinition { Name = "gte2", EnabledSwitchCC = 61 },
+                                    new V6.FXBlockDefinition { Name = "cmp2", EnabledSwitchCC = 44 },
+                                    new V6.FXBlockDefinition { Name = "pit2", EnabledSwitchCC = 78 },
+                                    new V6.FXBlockDefinition { Name = "rtr2", EnabledSwitchCC = 87 },
+                                    new V6.FXBlockDefinition { Name = "phr2", EnabledSwitchCC = 76 },
+                                    new V6.FXBlockDefinition { Name = "cho2", EnabledSwitchCC = 42 },
+                                    new V6.FXBlockDefinition { Name = "dly2", EnabledSwitchCC = 48 }
                                 },
-                                Tones = new Dictionary<string, V6.AmpToneDefinition>
+                                Tones = new List<V6.AmpToneDefinition>
                                 {
-                                    { "clean", new V6.AmpToneDefinition {
+                                    new V6.AmpToneDefinition {
+                                        Name = "clean",
                                         Gain = 0x12,
                                         VolumeDB = 0,
-                                        Blocks = new Dictionary<string, V6.FXBlock>
+                                        Blocks = new List<V6.FXBlock>
                                         {
-                                            { "amp2", new V6.FXBlock { On = true, XY = V6.XYSwitch.Y } },
-                                            { "cab2", new V6.FXBlock { On = true, XY = V6.XYSwitch.X } },
-                                            { "gte2", new V6.FXBlock { On = false, XY = V6.XYSwitch.X } },
-                                            { "cmp2", new V6.FXBlock { On = true, XY = V6.XYSwitch.X } }
+                                            new V6.FXBlock { Name = "amp2", On = true, XY = V6.XYSwitch.Y },
+                                            new V6.FXBlock { Name = "cab2", On = true, XY = V6.XYSwitch.X },
+                                            new V6.FXBlock { Name = "gte2", On = false, XY = V6.XYSwitch.X },
+                                            new V6.FXBlock { Name = "cmp2", On = true, XY = V6.XYSwitch.X }
                                         }
-                                    } },
-                                    { "dirty", new V6.AmpToneDefinition {
+                                    },
+                                    new V6.AmpToneDefinition {
+                                        Name = "dirty",
                                         Gain = 0x40,
                                         VolumeDB = 0,
-                                        Blocks = new Dictionary<string, V6.FXBlock>
+                                        Blocks = new List<V6.FXBlock>
                                         {
-                                            { "amp2", new V6.FXBlock { On = true, XY = V6.XYSwitch.X } },
-                                            { "cab2", new V6.FXBlock { On = true, XY = V6.XYSwitch.X } },
-                                            { "gte2", new V6.FXBlock { On = true, XY = V6.XYSwitch.X } },
-                                            { "cmp2", new V6.FXBlock { On = true, XY = V6.XYSwitch.X } }
+                                            new V6.FXBlock { Name = "amp2", On = true, XY = V6.XYSwitch.X },
+                                            new V6.FXBlock { Name = "cab2", On = true, XY = V6.XYSwitch.X },
+                                            new V6.FXBlock { Name = "gte2", On = true, XY = V6.XYSwitch.X },
+                                            new V6.FXBlock { Name = "cmp2", On = true, XY = V6.XYSwitch.X }
                                         }
-                                    } },
-                                    { "acoustic", new V6.AmpToneDefinition {
+                                    },
+                                    new V6.AmpToneDefinition {
+                                        Name = "acoustic",
                                         Gain = 0x12,
                                         VolumeDB = 0,
-                                        Blocks = new Dictionary<string, V6.FXBlock>
+                                        Blocks = new List<V6.FXBlock>
                                         {
-                                            { "amp2", new V6.FXBlock { On = false, XY = V6.XYSwitch.Y } },
-                                            { "cab2", new V6.FXBlock { On = true, XY = V6.XYSwitch.Y } },
-                                            { "gte2", new V6.FXBlock { On = false, XY = V6.XYSwitch.X } },
-                                            { "cmp2", new V6.FXBlock { On = true, XY = V6.XYSwitch.X } }
+                                            new V6.FXBlock { Name = "amp2", On = false, XY = V6.XYSwitch.Y },
+                                            new V6.FXBlock { Name = "cab2", On = true, XY = V6.XYSwitch.Y },
+                                            new V6.FXBlock { Name = "gte2", On = false, XY = V6.XYSwitch.X },
+                                            new V6.FXBlock { Name = "cmp2", On = true, XY = V6.XYSwitch.X }
                                         }
-                                    } }
+                                    }
                                 },
                                 VolumeControllerCC = 17,
                                 GainControllerCC = 19
@@ -237,27 +243,23 @@ namespace EMinor
             {
                 new V6.SongAmpOverrides
                 {
-                    Tones = new Dictionary<string, V6.SongAmpToneOverride>
+                    Tones = new List<V6.SongAmpToneOverride>
                     {
+                        new V6.SongAmpToneOverride
                         {
-                            "dirty",
-                            new V6.SongAmpToneOverride
-                            {
-                                Gain = g
-                            }
+                            Name = "dirty",
+                            Gain = g
                         }
                     }
                 },
                 new V6.SongAmpOverrides
                 {
-                    Tones = new Dictionary<string, V6.SongAmpToneOverride>
+                    Tones = new List<V6.SongAmpToneOverride>
                     {
+                        new V6.SongAmpToneOverride
                         {
-                            "dirty",
-                            new V6.SongAmpToneOverride
-                            {
-                                Gain = g
-                            }
+                            Name = "dirty",
+                            Gain = g
                         }
                     }
                 }

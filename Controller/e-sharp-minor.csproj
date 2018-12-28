@@ -5,6 +5,11 @@
     <RootNamespace>EMinor</RootNamespace>
     <Platforms>AnyCPU</Platforms>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <LangVersion>Latest</LangVersion>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)' == 'translator'">
+    <DefineConstants>TRANSLATOR</DefineConstants>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)' == 'pi-debug'">
@@ -17,23 +22,15 @@
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'pi-debug|AnyCPU' ">
-    <LangVersion>Latest</LangVersion>
-    <DebugType></DebugType>
     <DefineConstants>MESA;RPI;DEBUG;TRACE;PI_DEBUG;NETCOREAPP;NETCOREAPP2_1</DefineConstants>
     <PlatformTarget>anycpu</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'pi-release|AnyCPU' ">
-    <LangVersion>Latest</LangVersion>
-    <DebugType></DebugType>
     <DefineConstants>MESA;RPI;PI_RELEASE;NETCOREAPP;NETCOREAPP2_1</DefineConstants>
     <PlatformTarget>anycpu</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <LangVersion>Latest</LangVersion>
     <DefineConstants>MESA;TRACE;DEBUG;NETCOREAPP;NETCOREAPP2_1</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <LangVersion>Latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(RunConfiguration)' == 'Default' ">
     <StartAction>Project</StartAction>
@@ -118,5 +115,9 @@
     <None Update="Verdana.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+  <ItemGroup Condition=" '$(Configuration)' == 'translator' ">
+    <Compile Remove="Controller.cs" />
+    <Compile Remove="VGUI.cs" />
   </ItemGroup>
 </Project>

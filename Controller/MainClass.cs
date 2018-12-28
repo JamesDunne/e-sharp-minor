@@ -17,15 +17,18 @@ namespace EMinor
 
         static void Main(string[] args)
         {
+#if !TRANSLATOR
             bool benchmark = false;
 
             if (args.Length != 0)
             {
                 if (args[0] == "translate")
                 {
+#endif
                     Console.WriteLine("Running v5 to v6 translator...");
                     var translator = new Translator();
                     translator.Translate();
+#if !TRANSLATOR
                     return;
                 }
                 else if (args[0] == "benchmark")
@@ -269,6 +272,7 @@ namespace EMinor
             {
                 System.Console.Error.WriteLine(ex);
             }
+#endif
         }
     }
 }
