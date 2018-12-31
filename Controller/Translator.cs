@@ -45,7 +45,7 @@ namespace EMinor
             Console.WriteLine("Done");
         }
 
-        private int logTaper(int b)
+        static int logTaper(int b)
         {
             // 127 * (ln(x+1)^2) / (ln(127+1)^2)
             return (int)(127.0 * Pow(Math.Log((double)(b) + 1.0), 2) / Pow(Log(127.0 + 1.0), 2));
@@ -65,6 +65,101 @@ namespace EMinor
                         On = true
                     }
                 ).ToList()
+            };
+        }
+
+        static int? maybeGain(int gain, int gainLog)
+        {
+            return gain == 0 ? (gainLog == 0 ? (int?)null : logTaper(gainLog)) : gain;
+        }
+
+        public class ToneV5 : IEquatable<ToneV5>
+        {
+            public bool IsDirty;
+            public int? Gain;
+            public double? VolumeDB;
+            public HashSet<string> FX;
+
+            public override bool Equals(object obj)
+            {
+                return Equals(obj as ToneV5);
+            }
+
+            public bool Equals(ToneV5 other)
+            {
+                return other != null &&
+                       IsDirty == other.IsDirty &&
+                       EqualityComparer<int?>.Default.Equals(Gain, other.Gain) &&
+                       EqualityComparer<double?>.Default.Equals(VolumeDB, other.VolumeDB) &&
+                       EqualityComparer<HashSet<string>>.Default.Equals(FX, other.FX);
+            }
+
+            public override int GetHashCode()
+            {
+                return HashCode.Combine(IsDirty, Gain, VolumeDB, FX);
+            }
+
+            public static bool operator ==(ToneV5 v1, ToneV5 v2)
+            {
+                return EqualityComparer<ToneV5>.Default.Equals(v1, v2);
+            }
+
+            public static bool operator !=(ToneV5 v1, ToneV5 v2)
+            {
+                return !(v1 == v2);
+            }
+        }
+
+        private List<V6.SongAmpOverrides> createSongAmps(V5.Program p)
+        {
+            // Song-default dirty gain level:
+            int? g = maybeGain(p.Gain, p.GainLog);
+
+            // Create distinct tones for each amp:
+            var mgTones = (
+                from s in p.SceneDescriptors
+                select tone(g, s.MG)
+            ).Distinct().ToList();
+
+            var jdTones = (
+                from s in p.SceneDescriptors
+                select tone(g, s.JD)
+            ).Distinct().ToList();
+
+            // These instances must be separate to avoid YAML serializer aliasing:
+            return new List<V6.SongAmpOverrides>
+            {
+                // MG:
+                new V6.SongAmpOverrides
+                {
+                    Tones = mgTones.Select((t, i) => new V6.SongAmpToneOverride {
+                        Name = (t.IsDirty ? "dirty" : "clean") + i.ToString(),
+                        VolumeDB = t.VolumeDB,
+                        Gain = t.Gain,
+                        Blocks = t.FX?.Select(fx => new V6.SongFXBlockOverride{ Name = fx, On = true }).ToList()
+                    }).ToList()
+                },
+                // JD:
+                new V6.SongAmpOverrides
+                {
+                    Tones = jdTones.Select((t, i) => new V6.SongAmpToneOverride {
+                        Name = (t.IsDirty ? "dirty" : "clean") + i.ToString(),
+                        VolumeDB = t.VolumeDB,
+                        Gain = t.Gain,
+                        Blocks = t.FX?.Select(fx => new V6.SongFXBlockOverride{ Name = fx, On = true }).ToList()
+                    }).ToList()
+                }
+            };
+        }
+
+        private static ToneV5 tone(int? g, V5.Amp amp)
+        {
+            return new ToneV5
+            {
+                IsDirty = amp.Channel == "dirty",
+                Gain = maybeGain(amp.Gain, amp.GainLog) ?? (amp.Channel == "dirty" ? g : null),
+                VolumeDB = amp.Level == 0.0 ? (double?)null : amp.Level,
+                FX = amp.FX?.ToHashSet()
             };
         }
 
@@ -206,6 +301,7 @@ namespace EMinor
                                 where sn.Names.Any(name => String.Compare(p.Name, name, true) == 0) || String.Compare(p.Name, sn.ShortName, true) == 0
                                 select sn
                             ).Single()
+                            let amps = createSongAmps(p)  // defaultAmps(p)
                             select new V6.Song
                             {
                                 Name = p.Name,
@@ -213,7 +309,7 @@ namespace EMinor
                                 AlternateNames = alternateNames.Names,
                                 WhoStarts = alternateNames.Starts,
                                 Tempo = p.Tempo,
-                                Amps = defaultAmps(p),
+                                Amps = amps,
                                 SceneDescriptors = (
                                     from s in p.SceneDescriptors
                                     select new V6.SceneDescriptor
