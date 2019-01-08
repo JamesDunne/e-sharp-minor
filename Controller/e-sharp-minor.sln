@@ -31,8 +31,8 @@ Global
 		{3CB962BE-429A-4E7F-92A5-5986BB0E1AA5}.pi-debug|Any CPU.Build.0 = Debug|Any CPU
 		{3CB962BE-429A-4E7F-92A5-5986BB0E1AA5}.pi-release|Any CPU.ActiveCfg = Release|Any CPU
 		{3CB962BE-429A-4E7F-92A5-5986BB0E1AA5}.pi-release|Any CPU.Build.0 = Release|Any CPU
-		{3CB962BE-429A-4E7F-92A5-5986BB0E1AA5}.translator|Any CPU.ActiveCfg = translator|Any CPU
-		{3CB962BE-429A-4E7F-92A5-5986BB0E1AA5}.translator|Any CPU.Build.0 = translator|Any CPU
+		{3CB962BE-429A-4E7F-92A5-5986BB0E1AA5}.translator|Any CPU.ActiveCfg = Debug|Any CPU
+		{3CB962BE-429A-4E7F-92A5-5986BB0E1AA5}.translator|Any CPU.Build.0 = Debug|Any CPU
 		{3CB962BE-429A-4E7F-92A5-5986BB0E1AA5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3CB962BE-429A-4E7F-92A5-5986BB0E1AA5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection

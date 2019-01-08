@@ -5,6 +5,7 @@ using static System.Math;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 using System.Linq;
+using EMinor.V5;
 
 namespace EMinor
 {
@@ -80,6 +81,16 @@ namespace EMinor
             public double? VolumeDB;
             public HashSet<string> FX;
 
+            private static readonly IEqualityComparer<HashSet<string>> fxComparer = HashSet<string>.CreateSetComparer();
+
+            public bool IsBasic
+            {
+                get
+                {
+                    return !Gain.HasValue && !VolumeDB.HasValue && (FX == null || FX.Count == 0);
+                }
+            }
+
             public override bool Equals(object obj)
             {
                 return Equals(obj as ToneV5);
@@ -87,16 +98,32 @@ namespace EMinor
 
             public bool Equals(ToneV5 other)
             {
+                //if (other == null) 
+                //    return false;
+                //if (IsDirty != other.IsDirty) 
+                //    return false;
+                //if (!EqualityComparer<int?>.Default.Equals(Gain, other.Gain))
+                //    return false;
+                //if (!EqualityComparer<double?>.Default.Equals(VolumeDB, other.VolumeDB))
+                //    return false;
+                //if (!fxComparer.Equals(FX, other.FX))
+                //    return false;
+                //return true;
                 return other != null &&
                        IsDirty == other.IsDirty &&
                        EqualityComparer<int?>.Default.Equals(Gain, other.Gain) &&
                        EqualityComparer<double?>.Default.Equals(VolumeDB, other.VolumeDB) &&
-                       EqualityComparer<HashSet<string>>.Default.Equals(FX, other.FX);
+                       fxComparer.Equals(FX, other.FX);
             }
 
             public override int GetHashCode()
             {
-                return HashCode.Combine(IsDirty, Gain, VolumeDB, FX);
+                HashCode hash = new HashCode();
+                hash.Add(IsDirty);
+                hash.Add(Gain);
+                hash.Add(VolumeDB);
+                hash.Add(FX, fxComparer);
+                return hash.ToHashCode();
             }
 
             public static bool operator ==(ToneV5 v1, ToneV5 v2)
@@ -132,22 +159,46 @@ namespace EMinor
                 // MG:
                 new V6.SongAmpOverrides
                 {
-                    Tones = mgTones.Select((t, i) => new V6.SongAmpToneOverride {
-                        Name = (t.IsDirty ? "dirty" : "clean") + i.ToString(),
-                        VolumeDB = t.VolumeDB,
-                        Gain = t.Gain,
-                        Blocks = t.FX?.Select(fx => new V6.SongFXBlockOverride{ Name = fx, On = true }).ToList()
-                    }).ToList()
+                    Tones = mgTones
+                        //.Where(t => !t.IsBasic)
+                        .Select((t, i) => {
+                            var songAmpTone = new V6.SongAmpToneOverride {
+                                Name = (t.IsDirty ? "dirty" : "clean") + i.ToString(),
+                                VolumeDB = t.VolumeDB,
+                                Gain = t.Gain,
+                                Blocks = t.FX?.Select(fx => new V6.SongFXBlockOverride{ Name = fx, On = true }).ToList()
+                            };
+
+                            // Link V5 amps to V6 tone name:
+                            p.SceneDescriptors.ForEach(amp => {
+                                if (t == tone(g, amp.MG)) {
+                                    amp.MG.V6Name = songAmpTone.Name;
+                                }
+                            });
+                            return songAmpTone;
+                        }).ToList()
                 },
                 // JD:
                 new V6.SongAmpOverrides
                 {
-                    Tones = jdTones.Select((t, i) => new V6.SongAmpToneOverride {
-                        Name = (t.IsDirty ? "dirty" : "clean") + i.ToString(),
-                        VolumeDB = t.VolumeDB,
-                        Gain = t.Gain,
-                        Blocks = t.FX?.Select(fx => new V6.SongFXBlockOverride{ Name = fx, On = true }).ToList()
-                    }).ToList()
+                    Tones = jdTones
+                        //.Where(t => !t.IsBasic)
+                        .Select((t, i) => {
+                            var songAmpTone = new V6.SongAmpToneOverride {
+                                Name = (t.IsDirty ? "dirty" : "clean") + i.ToString(),
+                                VolumeDB = t.VolumeDB,
+                                Gain = t.Gain,
+                                Blocks = t.FX?.Select(fx => new V6.SongFXBlockOverride{ Name = fx, On = true }).ToList()
+                            };
+
+                            // Link V5 amps to V6 tone name:
+                            p.SceneDescriptors.ForEach(amp => {
+                                if (t == tone(g, amp.JD)) {
+                                    amp.JD.V6Name = songAmpTone.Name;
+                                }
+                            });
+                            return songAmpTone;
+                        }).ToList()
                 }
             };
         }
@@ -317,8 +368,8 @@ namespace EMinor
                                         Name = s.Name,
                                         Amps = new List<V6.SceneAmpToneSelection>
                                         {
-                                            convertAmp(s.MG),
-                                            convertAmp(s.JD)
+                                            new V6.SceneAmpToneSelection { Tone = s.MG.V6Name },
+                                            new V6.SceneAmpToneSelection { Tone = s.JD.V6Name }
                                         }
                                     }
                                 ).ToList()
@@ -409,6 +460,8 @@ namespace EMinor
             public double Level { get; set; } // `yaml:"level"`    // pre-delay volume in dB (-inf to +6dB)
             [YamlMember(Alias = "fx", ApplyNamingConventions = false)]
             public List<string> FX { get; set; } // `yaml:"fx,flow"`  // any combo of "delay", "pitch", or "chorus"
+
+            public string V6Name { get; internal set; }
         }
 
         public class SongName
